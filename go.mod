@@ -2,17 +2,11 @@ module github.com/dextryz/tenet
 
 go 1.22.0
 
-replace github.com/dextryz/nostr => ../nostr
-
-replace github.com/dextryz/nip23 => ../nip23
-
-replace github.com/dextryz/nip84 => ../nip84
-
 require (
 	github.com/a-h/templ v0.2.543
-	github.com/dextryz/nip84 v0.0.0-00010101000000-000000000000
 	github.com/dextryz/nostr v0.0.0-00010101000000-000000000000
-	github.com/fiatjaf/eventstore v0.3.11
+	github.com/fiatjaf/eventstore v0.3.12
+	github.com/mattn/go-sqlite3 v1.14.22
 	github.com/nbd-wtf/go-nostr v0.28.6
 )
 
@@ -31,6 +25,8 @@ require (
 	github.com/tidwall/gjson v1.17.0 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
-	golang.org/x/exp v0.0.0-20231006140011-7918f672742d // indirect
+	golang.org/x/exp v0.0.0-20240222234643-814bf88cf225 // indirect
 	golang.org/x/sys v0.14.0 // indirect
 )
+
+replace github.com/dextryz/nostr => ../nostr

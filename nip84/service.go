@@ -1,4 +1,4 @@
-package service
+package nip84
 
 import (
 	"context"
@@ -6,7 +6,8 @@ import (
 	"log/slog"
 	"sync"
 
-	"github.com/dextryz/nip84"
+	"github.com/dextryz/tenet"
+
 	nos "github.com/dextryz/nostr"
 	"github.com/dextryz/tenet/db"
 
@@ -28,7 +29,7 @@ func New(l *slog.Logger, d *db.EventStore, c *nos.Config) Service {
 	}
 }
 
-func (s Service) Request(ctx context.Context, naddr string) ([]*nip84.Highlight, error) {
+func (s Service) Request(ctx context.Context, naddr string) ([]*tenet.Highlight, error) {
 
 	// 1. Create the REQ filters for relays.
 
@@ -56,9 +57,9 @@ func (s Service) Request(ctx context.Context, naddr string) ([]*nip84.Highlight,
 
 	// 3. Convert the nostr events to current domain language (Highlights)
 
-	h := []*nip84.Highlight{}
+	h := []*tenet.Highlight{}
 	for _, e := range events {
-		a, err := nip84.ToHighlight(e)
+		a, err := toHighlight(e)
 		if err != nil {
 			return nil, err
 		}

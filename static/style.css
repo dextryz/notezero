@@ -31,10 +31,11 @@ p, h1, h2, h3, h4, h5, h6 {
     --title: #FFFFFF;
     --p: #fb923c;   /* orange */
     --s: #c084fc; /* purple */
-    --t: #B384FF;  /* purple */
+    --t: #fd6f9c;  /* red-pinkish */
     --borders: #9fb9d0;
     --bor: #2f3943;
     --card: #1b252d; /* dark blue */
+    --search: #091319;
 }
 
 main {
@@ -80,7 +81,7 @@ main {
 .search-bar:focus {
     background:
         linear-gradient(to right, var(--card), var(--card)) padding-box,
-        linear-gradient(to right, var(--p), var(--t)) border-box;
+        linear-gradient(to right, var(--p), var(--s)) border-box;
 }
 
 .small {
@@ -133,13 +134,13 @@ h2 {
 }
 
 a {
-    color: var(--clr-cyan);
+    color: var(--s);
     text-decoration: none; /* Removes the underline */
 }
 
 /* Changing the color when the link is hovered over */
 a:hover {
-    color: var(--red); /* Set your desired hover color */
+    color: var(--t); /* Set your desired hover color */
 }
 
 .card {
