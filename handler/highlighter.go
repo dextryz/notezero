@@ -15,7 +15,7 @@ type HighlighterService interface {
 }
 
 type ProfileService interface {
-	Request(ctx context.Context, pubkey string) ([]*tenet.Profile, error)
+	Request(ctx context.Context, pubkey string) (tenet.Profile, error)
 }
 
 type Handler struct {
@@ -36,7 +36,7 @@ func (s *Handler) Get(w http.ResponseWriter, r *http.Request) {
 
 	naddr := r.URL.Query().Get("naddr")
 
-	s.Log.Info("pulling article hightlights for %s", naddr)
+	s.Log.Info("pulling article hightlights", "naddr", naddr)
 
 	highlights, err := s.HighlightService.Request(r.Context(), naddr)
 	if err != nil {
@@ -45,7 +45,7 @@ func (s *Handler) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.Log.Info("%d highlights pulled", len(highlights))
+	s.Log.Info("highlights pulled", "count", len(highlights))
 
 	// TODO: Use TEMPL to view
 	for _, v := range highlights {
@@ -57,7 +57,7 @@ func (s *Handler) Get(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		component.Card(*v).Render(r.Context(), w)
+		component.Card(*v, p).Render(r.Context(), w)
 	}
 }
 
