@@ -9,6 +9,7 @@ replace github.com/dextryz/nip23 => ../nip23
 replace github.com/dextryz/nip84 => ../nip84
 
 require (
+	github.com/a-h/templ v0.2.543
 	github.com/dextryz/nip84 v0.0.0-00010101000000-000000000000
 	github.com/dextryz/nostr v0.0.0-00010101000000-000000000000
 	github.com/fiatjaf/eventstore v0.3.11

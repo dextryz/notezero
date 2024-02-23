@@ -24,15 +24,17 @@ p, h1, h2, h3, h4, h5, h6 {
 /* ---------------------------------------------------- */
 
 :root {
-    --bg: #0F172A;
+    --red: #f87171;
+    --bg: #121c23;
     --muted: #64748B;
-    --text: #FFFFFF;
+    --text: #9fb9d0;
     --title: #FFFFFF;
-    --primary: #ABFF84;   /* green */
-    --sec: #475569;
-    --tetr: #B384FF;  /* purple */
-    --borders: #25334A;
-    --card: #1E293B; /* dark blue */
+    --p: #fb923c;   /* orange */
+    --s: #c084fc; /* purple */
+    --t: #B384FF;  /* purple */
+    --borders: #9fb9d0;
+    --bor: #2f3943;
+    --card: #1b252d; /* dark blue */
 }
 
 main {
@@ -40,7 +42,7 @@ main {
 }
 
 body {
-    font-family: 'Courier New';
+    font-family: 'IBM Plex Sans';
     font-size: 16px;
     color: var(--text);
     background: var(--bg);
@@ -77,8 +79,8 @@ main {
 
 .search-bar:focus {
     background:
-        linear-gradient(to top, var(--card), var(--card)) padding-box,
-        linear-gradient(to top, var(--tetr), var(--tetr)) border-box;
+        linear-gradient(to right, var(--card), var(--card)) padding-box,
+        linear-gradient(to right, var(--p), var(--t)) border-box;
 }
 
 .small {
@@ -87,7 +89,7 @@ main {
 }
 
 .message.error {
-    color: var(--clr-red);
+    color: var(--red);
 }
 
 .message.success {
@@ -120,7 +122,7 @@ h2 {
 }
 
 .inline {
-    color: var(--clr-red);
+    color: var(--red);
     font-weight: normal;
     text-decoration: none;
 }
@@ -137,7 +139,7 @@ a {
 
 /* Changing the color when the link is hovered over */
 a:hover {
-    color: var(--clr-red); /* Set your desired hover color */
+    color: var(--red); /* Set your desired hover color */
 }
 
 .card {
@@ -188,16 +190,14 @@ a:hover {
 .card-container {
     background: var(--card);
     border-radius: 0.5rem;
-    border: 0px solid var(--borders); /* Updated for consistency */
+    border: 1px solid var(--bor); /* Updated for consistency */
     text-align: left;
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for transform and shadow */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Initial subtle shadow for 3D effect */
 }
 
 .card-container:hover {
-    transform: scale(1.01); /* Slightly larger scale for lift effect */
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); /* Increased shadow for more pronounced 3D and lift effect */
-    border-color: #4c8fbd; /* Change to a more noticeable border color */
+    border-radius: 0.5rem;
 }
 
 .highlight {
@@ -222,7 +222,7 @@ footer {
 }
 
 footer i {
-    color: var(--clr-red);
+    color: var(--red);
 }
 
 ::placeholder {

@@ -1,0 +1,64 @@
+package component
+
+import (
+	"github.com/dextryz/nip84"
+)
+
+templ Index() {
+    <!doctype html>
+    <html>
+
+        <head>
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <link rel="stylesheet" href="/static/style.css" type="text/css"/>
+            <link href="https://fonts.cdnfonts.com/css/ibm-plex-sans" rel="stylesheet"/>
+            <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+        </head>
+
+        <body hx-boost="true">
+
+            <main>
+                <div class="search">
+                    <form class="search-container"
+                        hx-get="/highlights"
+                        hx-target="#cards"
+                        hx-swap="innerHTML">
+
+                        <input class="search-bar" name="naddr" type="search" placeholder="naddr"/>
+                    </form>
+                    <small class="message"></small>
+                </div>
+
+                <div id="cards" class="cards">
+                </div>
+
+                <footer>
+                    <p>Made with <i class="fas fa-heart"></i> by <a href="https://github.com/dextryz">dextryz</a></p>
+                </footer>
+            </main>
+
+        </body>
+    </html>
+}
+
+templ Card(h nip84.Highlight) {
+
+    <div class="card-container">
+        <div class="card-body">
+
+            <h2>Content</h2>
+            <section>
+                { h.Content }
+            </section>
+
+            <h2>
+                Context
+            </h2>
+            <section>
+                { h.Context }
+            </section>
+
+        </div>
+    </div>
+}
