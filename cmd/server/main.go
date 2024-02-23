@@ -1,4 +1,4 @@
-package tenet
+package main
 
 import (
 	"fmt"
@@ -19,6 +19,8 @@ func main() {
 
 	log := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 
+	log.Info("Starting")
+
 	dbEvents, err := db.New()
 	if err != nil {
 		log.Error("failed to create store", slog.Any("error", err))
@@ -30,11 +32,11 @@ func main() {
 		panic(err)
 	}
 
-	dbProfile := sqlite.New("nostr.db")
+	dbProfile := sqlite.New("profile.db")
 	defer dbProfile.Close()
 
+	ps := nip01.New(log, dbProfile, cfg)
 	hs := nip84.New(log, dbEvents, cfg)
-	ps := nip01.New(log, dbProfile)
 
 	h := handler.New(log, hs, ps)
 

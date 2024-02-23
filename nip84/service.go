@@ -59,7 +59,7 @@ func (s Service) Request(ctx context.Context, naddr string) ([]*tenet.Highlight,
 
 	h := []*tenet.Highlight{}
 	for _, e := range events {
-		a, err := toHighlight(e)
+		a, err := tenet.ParseHighlight(*e)
 		if err != nil {
 			return nil, err
 		}

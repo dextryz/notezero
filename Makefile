@@ -4,4 +4,4 @@ fmt:
 	go fmt ./...
 
 run:
-	go run .
+	go run ./cmd/server/

@@ -28,7 +28,6 @@ p, h1, h2, h3, h4, h5, h6 {
     --bg: #121c23;
     --muted: #64748B;
     --text: #9fb9d0;
-    --title: #FFFFFF;
     --p: #fb923c;   /* orange */
     --s: #c084fc; /* purple */
     --t: #fd6f9c;  /* red-pinkish */
@@ -36,10 +35,6 @@ p, h1, h2, h3, h4, h5, h6 {
     --bor: #2f3943;
     --card: #1b252d; /* dark blue */
     --search: #091319;
-}
-
-main {
-    display: block;
 }
 
 body {
@@ -98,10 +93,16 @@ main {
 }
 
 h1 {
-    color: var(--title);
+    color: var(--text);
     font-size: 1.3rem;
     font-weight: bold; /* bold is 700, normal is 400, this is semi-bold */
     max-width: 800px;
+}
+
+h2 {
+    color: var(--text);
+    font-size: large;
+    font-weight: bold;
 }
 
 ul {
@@ -114,12 +115,6 @@ section {
     color: var(--text);
     font-size: 1rem;
     max-width: 800px;
-}
-
-h2 {
-    color: var(--title);
-    font-size: large;
-    font-weight: bold;
 }
 
 .inline {
@@ -143,14 +138,22 @@ a:hover {
     color: var(--t); /* Set your desired hover color */
 }
 
-.card {
-    color: var(--card);
-    background: var(--bg);
-    border-radius: 0.5rem;
-    border-width: 0px;
-    border-style: solid;
-    border-color: var(--border);
-    text-align: left;
+.cards {
+    display: flex;
+    flex-flow: column wrap;
+    gap: 2rem;
+}
+
+.card-container {
+    display: flex;
+    flex-flow: column;
+    flex: 1;
+    position: relative;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--card);
+    border-radius: 1rem;
+    max-width: 60rem;
 }
 
 .card-body {
@@ -175,30 +178,11 @@ a:hover {
     height: 55px;
     border-radius: 50%;
     transition: border-radius 200ms ease-in-out;
-    border: 0px solid black;
+    border: 2px solid transparent;
 }
 
 .card-profile img:hover {
-    border-radius: 10px;
-}
-
-.cards {
-    display: flex;
-    flex-flow: column wrap;
-    gap: 1rem;
-}
-
-.card-container {
-    background: var(--card);
-    border-radius: 0.5rem;
-    border: 1px solid var(--bor); /* Updated for consistency */
-    text-align: left;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Initial subtle shadow for 3D effect */
-}
-
-.card-container:hover {
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); /* Increased shadow for more pronounced 3D and lift effect */
-    border-radius: 0.5rem;
+    border: 2px solid var(--borders);
 }
 
 .highlight {
@@ -211,6 +195,24 @@ a:hover {
 
 .highlight:hover {
     text-decoration-thickness: 4px; /* Optional: specify the thickness of the underline */
+}
+
+.card-profile {
+    -webkit-margin-before: auto;
+    margin-block-start: auto;
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 1rem;
+    align-items: center;
+    cursor: pointer;
+}
+
+.card-profile img {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    transition: border-radius 200ms ease-in-out;
+    border: 0px solid black;
 }
 
 footer {

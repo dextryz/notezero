@@ -8,8 +8,6 @@ import (
 
 	"github.com/dextryz/tenet"
 
-	"github.com/dextryz/nostr"
-
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -72,33 +70,46 @@ func New(database string) *Db {
 	}
 }
 
-func (s *Db) StoreProfile(ctx context.Context, p *nostr.Profile, pubkey string) (*tenet.Profile, error) {
+func (s *Db) StoreProfile(ctx context.Context, p tenet.Profile, pubkey string) (tenet.Profile, error) {
 
 	// TODO: Add convertion to npub maybe
 
-	profile := &tenet.Profile{
+	profile := tenet.Profile{
 		PubKey:     pubkey,
 		Name:       p.Name,
 		About:      p.About,
 		Website:    p.Website,
 		Banner:     p.Banner,
 		Picture:    p.Picture,
-		Identifier: p.Nip05,
+		Identifier: p.Identifier,
 	}
 
-	err := s.InsertProfile(ctx, profile)
+	err := s.insertProfile(ctx, &profile)
 	if err != nil {
-		return nil, err
+		return profile, err
 	}
 
 	return profile, nil
 }
 
-func (s *Db) InsertProfile(ctx context.Context, p *tenet.Profile) error {
+func (s *Db) QueryProfileByPubkey(pubkey string) (*tenet.Profile, error) {
+
+	rows := s.QueryRow(`SELECT * FROM profile WHERE pubkey = ?`, pubkey)
+
+	var p tenet.Profile
+	err := rows.Scan(&p.PubKey, &p.Name, &p.About, &p.Website, &p.Banner, &p.Picture, &p.Identifier)
+	if err != nil {
+		return nil, err
+	}
+
+	return &p, nil
+}
+
+func (s *Db) insertProfile(ctx context.Context, p *tenet.Profile) error {
 
 	eventSql := "INSERT OR IGNORE INTO profile (pubkey, name, about, website, banner, picture, identifier) VALUES ($1, $2, $3, $4, $5, $6, $7)"
 
-	res, err := s.DB.ExecContext(ctx, eventSql, p.PubKey, p.Name, p.About, p.Website, p.Banner, p.Picture, p.Identifier)
+	res, err := s.ExecContext(ctx, eventSql, p.PubKey, p.Name, p.About, p.Website, p.Banner, p.Picture, p.Identifier)
 	if err != nil {
 		return err
 	}
@@ -109,17 +120,4 @@ func (s *Db) InsertProfile(ctx context.Context, p *tenet.Profile) error {
 	}
 
 	return nil
-}
-
-func (s *Db) QueryProfileByPubkey(pubkey string) (*tenet.Profile, error) {
-
-	rows := s.DB.QueryRow(`SELECT * FROM profile WHERE pubkey = ?`, pubkey)
-
-	var p tenet.Profile
-	err := rows.Scan(&p.PubKey, &p.Name, &p.About, &p.Website, &p.Banner, &p.Picture, &p.Identifier)
-	if err != nil {
-		return nil, err
-	}
-
-	return &p, nil
 }
