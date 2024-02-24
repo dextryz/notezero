@@ -11,6 +11,7 @@ import (
 	"github.com/dextryz/tenet/db"
 	"github.com/dextryz/tenet/handler"
 	"github.com/dextryz/tenet/nip01"
+	"github.com/dextryz/tenet/nip23"
 	"github.com/dextryz/tenet/nip84"
 	"github.com/dextryz/tenet/sqlite"
 )
@@ -37,8 +38,9 @@ func main() {
 
 	ps := nip01.New(log, dbProfile, cfg)
 	hs := nip84.New(log, dbEvents, cfg)
+	as := nip23.New(log, dbEvents, cfg)
 
-	h := handler.New(log, hs, ps)
+	h := handler.New(log, hs, ps, as)
 
 	mux := http.NewServeMux()
 
@@ -46,7 +48,8 @@ func main() {
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
 
 	mux.HandleFunc("/", h.View)
-	mux.HandleFunc("GET /highlights", h.Get)
+	mux.HandleFunc("GET /highlights", h.Highlights)
+	mux.HandleFunc("GET /articles/{naddr}", h.Article)
 
 	port := os.Getenv("PORT")
 	if port == "" {

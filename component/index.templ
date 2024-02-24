@@ -42,7 +42,7 @@ templ Index() {
     </html>
 }
 
-templ Card(h tenet.Highlight, p tenet.Profile) {
+templ Card(h tenet.Highlight, p tenet.Profile, a tenet.Article, url string) {
 
     <div class="card-container">
 
@@ -51,6 +51,16 @@ templ Card(h tenet.Highlight, p tenet.Profile) {
             <div>
                 <b class="author-name">{ p.Name }</b>
                 <time datetime> { h.CreatedAt } </time>
+
+                <b class="card-header"
+                    hx-get={ url }
+                    hx-push-url="true"
+                    hx-target="main"
+                    hx-swap="outerHTML">
+
+                    { a.Title }
+                </b>
+
             </div>
         </section>
 
@@ -70,4 +80,19 @@ templ Card(h tenet.Highlight, p tenet.Profile) {
 
         </div>
     </div>
+}
+
+templ Article(a tenet.Article, content string) {
+
+    <article class="article">
+
+        <h1 class="content">
+            { a.Title }
+        </h1>
+
+        <section id="#content" class="content">
+            @templ.Raw(content)
+        </section>
+
+    </article>
 }
