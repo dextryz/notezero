@@ -56,10 +56,10 @@ type Highlight struct {
 	Content    string `json:"content"`
 	Context    string `json:"context"`
 	CreatedAt  string `json:"created_at"`
+	Url        string `json:"url"` // https://example.com
 	Event      string `json:"event"`
 	Article    string `json:"article"`    // 30032:pub:identifier
 	Identifier string `json:"identifier"` // dentifier
-	Url        string `json:"url"`        // https://example.com
 }
 
 func ParseHighlight(e nostr.Event) (Highlight, error) {

@@ -19,16 +19,13 @@ templ Index() {
         <body hx-boost="true">
 
             <main>
-                <div class="search">
-                    <form class="search-container"
-                        hx-get="/highlights"
-                        hx-target="#cards"
-                        hx-swap="innerHTML">
+                <form class="search-container"
+                    hx-get="/highlights"
+                    hx-target="#cards"
+                    hx-swap="innerHTML">
 
-                        <input class="search-bar" name="naddr" type="search" placeholder="naddr"/>
-                    </form>
-                    <small class="message"></small>
-                </div>
+                    <input class="search-bar" name="naddr" type="search" placeholder="naddr"/>
+                </form>
 
                 <div id="cards" class="cards">
                 </div>
@@ -50,16 +47,8 @@ templ Card(h tenet.Highlight, p tenet.Profile, a tenet.Article, url string) {
             <img src={ p.Picture } />
             <div>
                 <b class="author-name">{ p.Name }</b>
+
                 <time datetime> { h.CreatedAt } </time>
-
-                <b class="card-header"
-                    hx-get={ url }
-                    hx-push-url="true"
-                    hx-target="main"
-                    hx-swap="outerHTML">
-
-                    { a.Title }
-                </b>
 
             </div>
         </section>
@@ -79,20 +68,35 @@ templ Card(h tenet.Highlight, p tenet.Profile, a tenet.Article, url string) {
             }
 
         </div>
+
+        <hr class="custom-divider"/>
+
+        <b class="card-header"
+            hx-get={ url }
+            hx-push-url="true"
+            hx-target="main"
+            hx-swap="outerHTML">
+
+            { a.Title }
+        </b>
+
     </div>
 }
 
 templ Article(a tenet.Article, content string) {
 
-    <article class="article">
+    <div class="article-container">
 
-        <h1 class="content">
-            { a.Title }
-        </h1>
+        <article class="article">
 
-        <section id="#content" class="content">
-            @templ.Raw(content)
-        </section>
+            <h1 class="content">
+                { a.Title }
+            </h1>
 
-    </article>
+            <section id="#content" class="content">
+                @templ.Raw(content)
+            </section>
+
+        </article>
+    </div>
 }
