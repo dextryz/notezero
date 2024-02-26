@@ -33,6 +33,7 @@ func MdToHtml(a *tenet.Article) (tenet.Article, error) {
 	c := markdown.Render(doc, renderer)
 
 	return tenet.Article{
+		PubKey:     a.PubKey,
 		Identifier: a.Identifier,
 		Title:      a.Title,
 		Content:    string(c),

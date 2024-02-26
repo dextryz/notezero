@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"net/http"
 
@@ -12,6 +13,7 @@ import (
 
 type HighlighterService interface {
 	Request(ctx context.Context, naddr string) ([]*tenet.Highlight, error)
+	ApplyToContent(ctx context.Context, a *tenet.Article) error
 }
 
 type ProfileService interface {
@@ -51,7 +53,7 @@ func (s *Handler) Highlights(w http.ResponseWriter, r *http.Request) {
 	// TODO: cache
 	a, err := s.ArticleService.Request(r.Context(), naddr)
 	if err != nil {
-		s.Log.Error("failed to get events", slog.Any("error", err))
+		s.Log.Error("failed to REQ articles", slog.Any("error", err))
 		http.Error(w, "failed to get counts", http.StatusInternalServerError)
 		return
 	}
@@ -60,7 +62,7 @@ func (s *Handler) Highlights(w http.ResponseWriter, r *http.Request) {
 
 	highlights, err := s.HighlightService.Request(r.Context(), naddr)
 	if err != nil {
-		s.Log.Error("failed to get events", slog.Any("error", err))
+		s.Log.Error("failed to REQ highlights", slog.Any("error", err))
 		http.Error(w, "failed to get counts", http.StatusInternalServerError)
 		return
 	}
@@ -70,9 +72,11 @@ func (s *Handler) Highlights(w http.ResponseWriter, r *http.Request) {
 	// TODO: Use TEMPL to view
 	for _, v := range highlights {
 
+		fmt.Println(v)
+
 		p, err := s.ProfileService.Request(r.Context(), v.PubKey)
 		if err != nil {
-			s.Log.Error("failed to get events", slog.Any("error", err), "naddr", naddr)
+			s.Log.Error("failed to REQ profile", slog.Any("error", err), "naddr", naddr)
 			http.Error(w, "failed to get counts", http.StatusInternalServerError)
 			return
 		}
@@ -96,6 +100,15 @@ func (s *Handler) Article(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "failed to get counts", http.StatusInternalServerError)
 		return
 	}
+
+	err = s.HighlightService.ApplyToContent(r.Context(), &a)
+	if err != nil {
+		s.Log.Error("failed to get events", slog.Any("error", err), "naddr", naddr)
+		http.Error(w, "failed to get counts", http.StatusInternalServerError)
+		return
+	}
+
+	s.Log.Info("highlights applied to article content", "naddr", naddr)
 
 	component.Article(a, a.Content).Render(r.Context(), w)
 }

@@ -11,6 +11,7 @@ import (
 )
 
 type Article struct {
+	PubKey      string   `json:"pubkey"` // Author who signed the highlight
 	Identifier  string   `json:"identifier"`
 	Title       string   `json:"title"`
 	Content     string   `json:"content"`
@@ -23,6 +24,7 @@ type Article struct {
 func ParseArticle(e nostr.Event) (Article, error) {
 
 	a := Article{
+		PubKey:      e.PubKey,
 		Content:     e.Content,
 		PublishedAt: e.CreatedAt.Time().String(),
 	}
