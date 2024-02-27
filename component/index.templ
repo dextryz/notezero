@@ -39,7 +39,7 @@ templ Index() {
     </html>
 }
 
-templ Card(h tenet.Highlight, p tenet.Profile, a tenet.Article, url string) {
+templ Card(h tenet.Highlight, p tenet.Profile, a tenet.Article, articleUrl, highlightUrl string) {
 
     <div class="card-container">
 
@@ -49,14 +49,18 @@ templ Card(h tenet.Highlight, p tenet.Profile, a tenet.Article, url string) {
                 <b class="author-name">{ p.Name }</b>
 
                 <time datetime> { h.CreatedAt } </time>
-
             </div>
         </section>
 
         <div class="card-body">
 
             <h2>Content</h2>
-            <section>
+            <section class="card-section"
+                hx-get={ highlightUrl }
+                hx-push-url="true"
+                hx-target="main"
+                hx-swap="outerHTML">
+
                 { h.Content }
             </section>
 
@@ -72,7 +76,7 @@ templ Card(h tenet.Highlight, p tenet.Profile, a tenet.Article, url string) {
         <hr class="custom-divider"/>
 
         <b class="card-header"
-            hx-get={ url }
+            hx-get={ articleUrl }
             hx-push-url="true"
             hx-target="main"
             hx-swap="outerHTML">
@@ -104,6 +108,29 @@ templ Article(a tenet.Article, content string) {
             <section id="#content" class="content">
                 @templ.Raw(content)
             </section>
+
+        </article>
+    </div>
+}
+
+templ Highlight(h tenet.Highlight) {
+
+    <div class="article-container">
+
+        <article class="article">
+
+            <h1 class="content">Content</h1>
+
+            <section id="#content" class="content">
+                { h.Content }
+            </section>
+
+            if h.Context != "" {
+                <h2>Context</h2>
+                <section>
+                    { h.Context }
+                </section>
+            }
 
         </article>
     </div>

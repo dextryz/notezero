@@ -49,6 +49,7 @@ func main() {
 
 	mux.HandleFunc("/", h.View)
 	mux.HandleFunc("GET /highlights", h.Highlights)
+	mux.HandleFunc("GET /high/{nevent}", h.Highlight)
 	mux.HandleFunc("GET /articles/{naddr}", h.Article)
 
 	port := os.Getenv("PORT")

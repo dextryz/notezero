@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"fmt"
 	"log/slog"
 	"net/http"
 
@@ -13,6 +12,7 @@ import (
 
 type HighlighterService interface {
 	Request(ctx context.Context, naddr string) ([]*tenet.Highlight, error)
+	RequestByNevent(ctx context.Context, nevent string) (*tenet.Highlight, error)
 	ApplyToContent(ctx context.Context, a *tenet.Article) error
 }
 
@@ -46,6 +46,28 @@ func New(
 	}
 }
 
+func (s *Handler) Highlight(w http.ResponseWriter, r *http.Request) {
+
+	nevent := r.PathValue("nevent")
+
+	if nevent == "" {
+		s.Log.Error("nevent is empty")
+		http.Error(w, "failed to get counts", http.StatusInternalServerError)
+		return
+	}
+
+	s.Log.Info("pulling hightlight", "nevent", nevent)
+
+	h, err := s.HighlightService.RequestByNevent(r.Context(), nevent)
+	if err != nil {
+		s.Log.Error("failed to REQ highlights", slog.Any("error", err))
+		http.Error(w, "failed to get counts", http.StatusInternalServerError)
+		return
+	}
+
+	component.Highlight(*h).Render(r.Context(), w)
+}
+
 func (s *Handler) Highlights(w http.ResponseWriter, r *http.Request) {
 
 	naddr := r.URL.Query().Get("naddr")
@@ -72,8 +94,6 @@ func (s *Handler) Highlights(w http.ResponseWriter, r *http.Request) {
 	// TODO: Use TEMPL to view
 	for _, v := range highlights {
 
-		fmt.Println(v)
-
 		p, err := s.ProfileService.Request(r.Context(), v.PubKey)
 		if err != nil {
 			s.Log.Error("failed to REQ profile", slog.Any("error", err), "naddr", naddr)
@@ -81,9 +101,10 @@ func (s *Handler) Highlights(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		url := "articles/" + v.Naddr
+		articleUrl := "articles/" + v.Naddr
+		highlightUrl := "high/" + v.Id
 
-		component.Card(*v, p, a, url).Render(r.Context(), w)
+		component.Card(*v, p, a, articleUrl, highlightUrl).Render(r.Context(), w)
 	}
 }
 

@@ -30,6 +30,40 @@ func New(l *slog.Logger, d *db.EventStore, c *nos.Config) Service {
 	}
 }
 
+func (s Service) RequestByNevent(ctx context.Context, nevent string) (*tenet.Highlight, error) {
+
+	// TODO: udpate to nevent nip-19
+	filter := nostr.Filter{
+		IDs:   []string{nevent},
+		Kinds: []int{nos.KindHighlight},
+		Limit: 1,
+	}
+
+	//events := s.queryRelays(ctx, filter)
+
+	// 3. Convert the nostr events to current domain language (Highlights)
+
+	//s.Log.Info("highlights found", "count", len(events))
+
+	ch, err := s.db.QueryEvents(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+
+	s.Log.Info("highlights found", "count", len(ch))
+
+	h := []*tenet.Highlight{}
+	for e := range ch {
+		a, err := tenet.ParseHighlight(*e)
+		if err != nil {
+			return nil, err
+		}
+		h = append(h, &a)
+	}
+
+	return h[0], nil
+}
+
 func (s Service) Request(ctx context.Context, naddr string) ([]*tenet.Highlight, error) {
 
 	// 1. Create the REQ filters for relays.
