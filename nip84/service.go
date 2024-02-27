@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"strings"
 	"sync"
 
 	"github.com/dextryz/tenet"
@@ -17,16 +18,50 @@ import (
 
 type Service struct {
 	Log *slog.Logger
-	Db  *db.EventStore
+	db  *db.EventStore
 	cfg *nos.Config
 }
 
 func New(l *slog.Logger, d *db.EventStore, c *nos.Config) Service {
 	return Service{
 		Log: l,
-		Db:  d,
+		db:  d,
 		cfg: c,
 	}
+}
+
+func (s Service) RequestByNevent(ctx context.Context, nevent string) (*tenet.Highlight, error) {
+
+	// TODO: udpate to nevent nip-19
+	filter := nostr.Filter{
+		IDs:   []string{nevent},
+		Kinds: []int{nos.KindHighlight},
+		Limit: 1,
+	}
+
+	//events := s.queryRelays(ctx, filter)
+
+	// 3. Convert the nostr events to current domain language (Highlights)
+
+	//s.Log.Info("highlights found", "count", len(events))
+
+	ch, err := s.db.QueryEvents(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+
+	s.Log.Info("highlights found", "count", len(ch))
+
+	h := []*tenet.Highlight{}
+	for e := range ch {
+		a, err := tenet.ParseHighlight(*e)
+		if err != nil {
+			return nil, err
+		}
+		h = append(h, &a)
+	}
+
+	return h[0], nil
 }
 
 func (s Service) Request(ctx context.Context, naddr string) ([]*tenet.Highlight, error) {
@@ -49,6 +84,7 @@ func (s Service) Request(ctx context.Context, naddr string) ([]*tenet.Highlight,
 		Tags: nostr.TagMap{
 			"a": []string{tag},
 		},
+		Limit: 500,
 	}
 
 	// 2. Query the relays for events using filter
@@ -59,6 +95,13 @@ func (s Service) Request(ctx context.Context, naddr string) ([]*tenet.Highlight,
 
 	h := []*tenet.Highlight{}
 	for _, e := range events {
+
+		// Cache event
+		err := s.db.SaveEvent(ctx, e)
+		if err != nil {
+			return nil, err
+		}
+
 		a, err := tenet.ParseHighlight(*e)
 		if err != nil {
 			return nil, err
@@ -67,6 +110,72 @@ func (s Service) Request(ctx context.Context, naddr string) ([]*tenet.Highlight,
 	}
 
 	return h, nil
+}
+
+// 1. Pull article highlights from cache
+// 2. Update article content with highlights
+func (s Service) ApplyToContent(ctx context.Context, a *tenet.Article) error {
+
+	tag := fmt.Sprintf("%d:%s:%s", nostr.KindArticle, a.PubKey, a.Identifier)
+
+	s.Log.Info("applying highlights to article", "a-tag", tag)
+
+	filter := nostr.Filter{
+		Kinds: []int{nos.KindHighlight},
+		Tags: nostr.TagMap{
+			"a": []string{tag},
+		},
+		Limit: 500,
+	}
+
+	//events := s.queryRelays(ctx, filter)
+
+	// 3. Convert the nostr events to current domain language (Highlights)
+
+	//s.Log.Info("highlights found", "count", len(events))
+
+	ch, err := s.db.QueryEvents(ctx, filter)
+	if err != nil {
+		return err
+	}
+
+	s.Log.Info("highlights found", "count", len(ch))
+
+	for e := range ch {
+
+		a.Content = strings.ReplaceAll(
+			a.Content,
+			e.Content,
+			fmt.Sprintf("<span class='highlight'>%s</span>", e.Content),
+		)
+
+		// 		if strings.Contains(a.Content, e.Content) {
+		// 			a.Content = strings.ReplaceAll(
+		// 				a.Content,
+		// 				e.Content,
+		// 				fmt.Sprintf("<span class='highlight'>%s</span>", e.Content),
+		// 			)
+		// 		}
+	}
+
+	// 	ch, err := s.db.QueryEvents(ctx, filter)
+	// 	if err != nil {
+	// 		return err
+	// 	}
+	//
+	// 	s.Log.Info("highlights found", "count", len(ch))
+	//
+	// 	for e := range ch {
+	// 		if strings.Contains(a.Content, e.Content) {
+	// 			a.Content = strings.ReplaceAll(
+	// 				a.Content,
+	// 				e.Content,
+	// 				fmt.Sprintf("<span class='highlight'>%s</span>", e.Content),
+	// 			)
+	// 		}
+	// 	}
+
+	return nil
 }
 
 func (s *Service) queryRelays(ctx context.Context, filter nostr.Filter) (ev []*nostr.Event) {

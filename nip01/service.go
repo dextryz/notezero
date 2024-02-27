@@ -44,6 +44,7 @@ func (s Service) Request(ctx context.Context, pubkey string) (tenet.Profile, err
 	// Retrieve user profile from nostr relays
 	metadata := s.queryRelays(ctx, f)
 	if len(metadata) != 1 {
+		fmt.Println(metadata)
 		return profile, fmt.Errorf("cannot have more then one profile: %s", pubkey)
 	}
 

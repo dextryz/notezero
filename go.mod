@@ -6,6 +6,7 @@ require (
 	github.com/a-h/templ v0.2.543
 	github.com/dextryz/nostr v0.0.0-00010101000000-000000000000
 	github.com/fiatjaf/eventstore v0.3.12
+	github.com/gomarkdown/markdown v0.0.0-20231222211730-1d6d20845b47
 	github.com/mattn/go-sqlite3 v1.14.22
 	github.com/nbd-wtf/go-nostr v0.28.6
 )
