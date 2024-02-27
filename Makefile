@@ -1,6 +1,7 @@
 fmt:
-	go mod tidy -compat=1.17
-	gofmt -l -s -w .
+	templ generate
+	go mod tidy
+	go fmt ./...
 
 run:
-	go run .
+	go run ./cmd/server/

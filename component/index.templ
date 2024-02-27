@@ -1,0 +1,136 @@
+package component
+
+import (
+	"github.com/dextryz/tenet"
+)
+
+templ Index() {
+    <!doctype html>
+    <html>
+
+        <head>
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <link rel="stylesheet" href="/static/style.css" type="text/css"/>
+            <link href="https://fonts.cdnfonts.com/css/ibm-plex-sans" rel="stylesheet"/>
+            <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+        </head>
+
+        <body hx-boost="true">
+
+            <main>
+                <form class="search-container"
+                    hx-get="/highlights"
+                    hx-target="#cards"
+                    hx-swap="innerHTML">
+
+                    <input class="search-bar" name="naddr" type="search" placeholder="naddr"/>
+                </form>
+
+                <div id="cards" class="cards">
+                </div>
+
+                <footer>
+                    <p>Made with <i class="fas fa-heart"></i> by <a href="https://github.com/dextryz">dextryz</a></p>
+                </footer>
+            </main>
+
+        </body>
+    </html>
+}
+
+templ Card(h tenet.Highlight, p tenet.Profile, a tenet.Article, articleUrl, highlightUrl string) {
+
+    <div class="card-container">
+
+        <section class="card-profile">
+            <img src={ p.Picture } />
+            <div>
+                <b class="author-name">{ p.Name }</b>
+                <time datetime> { h.CreatedAt } </time>
+            </div>
+        </section>
+
+        <div class="card-body">
+
+            <h2>Content</h2>
+            <section class="card-section"
+                hx-get={ highlightUrl }
+                hx-push-url="true"
+                hx-target="main"
+                hx-swap="outerHTML">
+
+                { h.Content }
+            </section>
+
+            if h.Context != "" {
+                <h2>Context</h2>
+                <section>
+                    { h.Context }
+                </section>
+            }
+
+        </div>
+
+        <hr class="custom-divider"/>
+
+        <b class="card-header"
+            hx-get={ articleUrl }
+            hx-push-url="true"
+            hx-target="main"
+            hx-swap="outerHTML">
+
+            { a.Title }
+        </b>
+
+    </div>
+}
+
+templ Article(a tenet.Article, content string) {
+
+    <div class="article-container">
+
+        <article class="article">
+
+            <h1 class="content">
+                { a.Title }
+            </h1>
+
+            <div class="tags">
+                for _, tag := range a.Tags {
+                    <a class="tag" href="/tags/coding" target="_blank" style="text-decoration: none; color: white;">{ tag }</a>
+                }
+            </div>
+
+            <hr class="custom-divider"/>
+
+            <section id="#content" class="content">
+                @templ.Raw(content)
+            </section>
+
+        </article>
+    </div>
+}
+
+templ Highlight(h tenet.Highlight) {
+
+    <div class="article-container">
+
+        <article class="article">
+
+            <h1 class="content">Content</h1>
+
+            <section id="#content" class="content">
+                { h.Content }
+            </section>
+
+            if h.Context != "" {
+                <h2>Context</h2>
+                <section>
+                    { h.Context }
+                </section>
+            }
+
+        </article>
+    </div>
+}

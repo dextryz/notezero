@@ -24,23 +24,22 @@ p, h1, h2, h3, h4, h5, h6 {
 /* ---------------------------------------------------- */
 
 :root {
-    --bg: #0F172A;
+    --red: #f87171;
+    --bg: #121c23;
     --muted: #64748B;
-    --text: #FFFFFF;
-    --title: #FFFFFF;
-    --primary: #ABFF84;   /* green */
-    --sec: #475569;
-    --tetr: #B384FF;  /* purple */
-    --borders: #25334A;
-    --card: #1E293B; /* dark blue */
-}
-
-main {
-    display: block;
+    --text: #9fb9d0;
+    /*--p: #fb923c;   /* orange */
+    --p: #ff865b;
+    --s: #fd6f9c; /* purple */
+    --t: #b387fa;  /* red-pinkish */
+    --borders: #9fb9d0;
+    --bor: #2f3943;
+    --card: #1b252d; /* dark blue */
+    --search: #091319;
 }
 
 body {
-    font-family: 'Courier New';
+    font-family: 'IBM Plex Sans';
     font-size: 16px;
     color: var(--text);
     background: var(--bg);
@@ -48,18 +47,15 @@ body {
 
 main {
     display: flex;
-    justify-content: center;
     flex-flow: column nowrap; /* Wrap causes the footer to freak out. ? */
+    align-items: stretch;
     padding: 1rem;
     gap: 1rem;
 }
 
 .search-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    max-width: 800px;
-    margin: 0 auto; /* Center the container */
+    display: flex; /* Changed from 'box' to 'flex' */
+    flex-grow: 1; /* Allows the search bar to grow and take up available space */
     padding-top: 1rem;
     padding-bottom: 1rem;
 }
@@ -77,8 +73,8 @@ main {
 
 .search-bar:focus {
     background:
-        linear-gradient(to top, var(--card), var(--card)) padding-box,
-        linear-gradient(to top, var(--tetr), var(--tetr)) border-box;
+        linear-gradient(to right, var(--card), var(--card)) padding-box,
+        linear-gradient(to right, var(--p), var(--s)) border-box;
 }
 
 .small {
@@ -87,18 +83,50 @@ main {
 }
 
 .message.error {
-    color: var(--clr-red);
+    color: var(--red);
 }
 
 .message.success {
     color: var(--clr-green);
 }
 
+.article-container {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding: 1rem;
+}
+
+.article {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    padding: 2rem;
+    max-width: 60rem;
+}
+
+.content {
+    display: flex;
+    flex-grow: 1; /* Allows the search bar to grow and take up available space */
+    flex-direction: column;
+    justify-content: start;
+    color: var(--clr-text);
+    text-align: left;
+    gap: 1rem;
+}
+
 h1 {
-    color: var(--title);
+    color: var(--text);
     font-size: 1.3rem;
     font-weight: bold; /* bold is 700, normal is 400, this is semi-bold */
     max-width: 800px;
+}
+
+h2 {
+    color: var(--text);
+    font-size: large;
+    font-weight: bold;
 }
 
 ul {
@@ -113,14 +141,8 @@ section {
     max-width: 800px;
 }
 
-h2 {
-    color: var(--title);
-    font-size: large;
-    font-weight: bold;
-}
-
 .inline {
-    color: var(--clr-red);
+    color: var(--red);
     font-weight: normal;
     text-decoration: none;
 }
@@ -131,30 +153,108 @@ h2 {
 }
 
 a {
-    color: var(--clr-cyan);
+    color: var(--s);
     text-decoration: none; /* Removes the underline */
 }
 
 /* Changing the color when the link is hovered over */
 a:hover {
-    color: var(--clr-red); /* Set your desired hover color */
+    color: var(--t); /* Set your desired hover color */
 }
 
-.card {
-    color: var(--card);
-    background: var(--bg);
-    border-radius: 0.5rem;
-    border-width: 0px;
-    border-style: solid;
-    border-color: var(--border);
-    text-align: left;
+.cards {
+    display: flex;
+    flex-flow: column wrap;
+    align-items: stretch;
+    gap: 2rem;
+}
+
+.card-container {
+    display: flex;
+    flex-flow: column;
+    flex: 1;
+    position: relative;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--card);
+    border-radius: 1rem;
 }
 
 .card-body {
     display: flex;
     flex-flow: column;
     gap: 1rem;
-    padding: 1rem;
+}
+
+.card-profile {
+    -webkit-margin-before: auto;
+    margin-block-start: auto;
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 1rem;
+    align-items: center;
+    cursor: pointer;
+}
+
+.card-profile img {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    transition: border-radius 200ms ease-in-out;
+    border: 2px solid transparent;
+}
+
+.card-profile img:hover {
+    border: 2px solid var(--borders);
+}
+
+.highlight {
+    background-color: rgba(179, 135, 250, 0.5); /* Apply a pink background color as the highlight */
+    padding: 0 2px; /* Add some padding to the left and right of the text for better visibility */
+    border-radius: 0px; /* Optional: add rounded corners to the highlight */
+}
+
+.highlight:hover {
+    background-color: rgba(253, 111, 156, 0.5);
+}
+
+.card-profile {
+    -webkit-margin-before: auto;
+    margin-block-start: auto;
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 1rem;
+    align-items: center;
+    cursor: pointer;
+}
+
+.card-profile img {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    transition: border-radius 200ms ease-in-out;
+    border: 2px solid transparent;
+}
+
+.card-header {
+    color: var(--text);
+    font-weight: normal;
+    font-size: small;
+    cursor: pointer;
+}
+
+.card-header:hover {
+    background: linear-gradient(to right, var(--p), var(--s));
+    text-shadow: none;
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+.custom-divider {
+    border: 0; /* Removes the default border */
+    height: 1px; /* Sets the height of the divider */
+    background-color: #333; /* Sets the color of the divider */
 }
 
 .card-profile {
@@ -175,43 +275,6 @@ a:hover {
     border: 0px solid black;
 }
 
-.card-profile img:hover {
-    border-radius: 10px;
-}
-
-.cards {
-    display: flex;
-    flex-flow: column wrap;
-    gap: 1rem;
-}
-
-.card-container {
-    background: var(--card);
-    border-radius: 0.5rem;
-    border: 0px solid var(--borders); /* Updated for consistency */
-    text-align: left;
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for transform and shadow */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Initial subtle shadow for 3D effect */
-}
-
-.card-container:hover {
-    transform: scale(1.01); /* Slightly larger scale for lift effect */
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); /* Increased shadow for more pronounced 3D and lift effect */
-    border-color: #4c8fbd; /* Change to a more noticeable border color */
-}
-
-.highlight {
-    text-decoration: underline; /* Underline the text */
-    text-decoration-color: var(--clr-pink); /* Optional: specify the color of the underline */
-    text-decoration-thickness: 2px; /* Optional: specify the thickness of the underline */
-    text-decoration-style: solid; /* Optional: style of the underline (solid, double, dotted, dashed) */
-    text-underline-offset: 3px; /* Move the underline below the text */
-}
-
-.highlight:hover {
-    text-decoration-thickness: 4px; /* Optional: specify the thickness of the underline */
-}
-
 footer {
     display: flex;
     justify-content: center;
@@ -222,7 +285,21 @@ footer {
 }
 
 footer i {
-    color: var(--clr-red);
+    color: var(--red);
+}
+
+.tags {
+    display: flex;
+    justify-content: flex-start;
+    gap: 1rem;
+}
+
+.tag {
+    color: white;
+    font-size: small;
+    border-radius: 5px;
+    background-color: var(--p);
+    padding: 2px;
 }
 
 ::placeholder {
