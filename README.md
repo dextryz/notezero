@@ -1,5 +1,9 @@
 # Tenet
 
+```
+export NOSTR=config.json
+```
+
 A simple nostr DVM to title a long-form note
 
 Think about how to handle this diff

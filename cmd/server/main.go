@@ -7,7 +7,8 @@ import (
 	"os"
 	"time"
 
-	nos "github.com/dextryz/nostr"
+	"github.com/dextryz/tenet"
+
 	"github.com/dextryz/tenet/handler"
 	"github.com/dextryz/tenet/nip01"
 	"github.com/dextryz/tenet/nip23"
@@ -28,7 +29,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	cfg, err := nos.LoadConfig(os.Getenv("NOSTR"))
+	cfg, err := tenet.LoadConfig(os.Getenv("NOSTR"))
 	if err != nil {
 		panic(err)
 	}

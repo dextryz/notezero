@@ -6,7 +6,6 @@ import (
 	"log/slog"
 	"sync"
 
-	nos "github.com/dextryz/nostr"
 	"github.com/dextryz/tenet"
 	"github.com/dextryz/tenet/sqlite"
 	"github.com/nbd-wtf/go-nostr"
@@ -15,10 +14,10 @@ import (
 type Service struct {
 	log *slog.Logger
 	db  *sqlite.Db
-	cfg *nos.Config
+	cfg *tenet.Config
 }
 
-func New(log *slog.Logger, db *sqlite.Db, cfg *nos.Config) Service {
+func New(log *slog.Logger, db *sqlite.Db, cfg *tenet.Config) Service {
 	return Service{
 		log: log,
 		db:  db,

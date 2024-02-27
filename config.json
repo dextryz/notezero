@@ -1,0 +1,4 @@
+{
+    "relays": ["wss://relay.damus.io/", "wss://nostr-01.yakihonne.com", "wss://nostr-02.yakihonne.com", "wss://relay.highlighter.com/", "wss://purplepag.es", "wss://relay.f7z.io", "wss://nos.lol"],
+    "nsec": "nsec1ysq3v9ezlyemeu7r4vud6w4dvkvt2m5jcq80vke5qjgsdls0v2as9xkm0z"
+}

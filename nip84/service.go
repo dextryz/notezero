@@ -9,7 +9,6 @@ import (
 
 	"github.com/dextryz/tenet"
 
-	nos "github.com/dextryz/nostr"
 	"github.com/dextryz/tenet/slicedb"
 
 	"github.com/nbd-wtf/go-nostr"
@@ -19,10 +18,10 @@ import (
 type Service struct {
 	Log *slog.Logger
 	db  *slicedb.EventStore
-	cfg *nos.Config
+	cfg *tenet.Config
 }
 
-func New(l *slog.Logger, d *slicedb.EventStore, c *nos.Config) Service {
+func New(l *slog.Logger, d *slicedb.EventStore, c *tenet.Config) Service {
 	return Service{
 		Log: l,
 		db:  d,
@@ -35,7 +34,7 @@ func (s Service) RequestByNevent(ctx context.Context, nevent string) (*tenet.Hig
 	// TODO: udpate to nevent nip-19
 	filter := nostr.Filter{
 		IDs:   []string{nevent},
-		Kinds: []int{nos.KindHighlight},
+		Kinds: []int{tenet.KindHighlight},
 		Limit: 1,
 	}
 
@@ -80,7 +79,7 @@ func (s Service) Request(ctx context.Context, naddr string) ([]*tenet.Highlight,
 	tag := fmt.Sprintf("%d:%s:%s", ep.Kind, ep.PublicKey, ep.Identifier)
 
 	f := nostr.Filter{
-		Kinds: []int{nos.KindHighlight},
+		Kinds: []int{tenet.KindHighlight},
 		Tags: nostr.TagMap{
 			"a": []string{tag},
 		},
@@ -121,7 +120,7 @@ func (s Service) ApplyToContent(ctx context.Context, a *tenet.Article) error {
 	s.Log.Info("applying highlights to article", "a-tag", tag)
 
 	filter := nostr.Filter{
-		Kinds: []int{nos.KindHighlight},
+		Kinds: []int{tenet.KindHighlight},
 		Tags: nostr.TagMap{
 			"a": []string{tag},
 		},

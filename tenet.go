@@ -4,11 +4,37 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/nbd-wtf/go-nostr"
 	"github.com/nbd-wtf/go-nostr/nip19"
 )
+
+const (
+	KindHighlight       int = 9802
+	KindImageGeneration int = 5100
+)
+
+type Config struct {
+	Relays []string `json:"relays"`
+}
+
+func LoadConfig(path string) (*Config, error) {
+
+	data, err := os.ReadFile(path)
+	if err != nil {
+		log.Fatalf("Config file: %v", err)
+	}
+
+	var cfg Config
+	err = json.Unmarshal(data, &cfg)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return &cfg, nil
+}
 
 type Article struct {
 	PubKey      string   `json:"pubkey"` // Author who signed the highlight
