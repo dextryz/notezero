@@ -70,7 +70,7 @@ func main() {
 	}
 
 	server := &http.Server{
-		Addr:         ":" + port,
+		Addr:         "0.0.0.0:" + port,
 		Handler:      r,
 		ReadTimeout:  time.Second * 10,
 		WriteTimeout: time.Second * 10,
