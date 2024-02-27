@@ -29,9 +29,20 @@ func main() {
 		os.Exit(1)
 	}
 
-	cfg, err := tenet.LoadConfig(os.Getenv("NOSTR"))
-	if err != nil {
-		panic(err)
+	// 	cfg, err := tenet.LoadConfig(os.Getenv("NOSTR"))
+	// 	if err != nil {
+	// 		panic(err)
+	// 	}
+
+	cfg := &tenet.Config{
+		Relays: []string{
+			"wss://relay.damus.io/",
+			"wss://nostr-01.yakihonne.com",
+			"wss://nostr-02.yakihonne.com",
+			"wss://relay.highlighter.com/",
+			"wss://relay.f7z.io",
+			"wss://nos.lol",
+		},
 	}
 
 	dbProfile := sqlite.New("profile.db")
