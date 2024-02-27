@@ -4,12 +4,12 @@ go 1.21
 
 require (
 	github.com/a-h/templ v0.2.543
-	github.com/fiatjaf/eventstore v0.3.12
+	github.com/fiatjaf/eventstore v0.3.11
 	github.com/gomarkdown/markdown v0.0.0-20231222211730-1d6d20845b47
 	github.com/gorilla/mux v1.8.1
-	github.com/mattn/go-sqlite3 v1.14.22
-	github.com/nbd-wtf/go-nostr v0.28.6
-	golang.org/x/exp v0.0.0-20240222234643-814bf88cf225
+	github.com/mattn/go-sqlite3 v1.14.20
+	github.com/nbd-wtf/go-nostr v0.28.4
+	golang.org/x/exp v0.0.0-20231006140011-7918f672742d
 )
 
 require (
