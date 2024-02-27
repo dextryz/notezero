@@ -233,7 +233,7 @@ a:hover {
     height: 55px;
     border-radius: 50%;
     transition: border-radius 200ms ease-in-out;
-    border: 0px solid black;
+    border: 2px solid transparent;
 }
 
 .card-header {
@@ -255,6 +255,24 @@ a:hover {
     border: 0; /* Removes the default border */
     height: 1px; /* Sets the height of the divider */
     background-color: #333; /* Sets the color of the divider */
+}
+
+.card-profile {
+    -webkit-margin-before: auto;
+    margin-block-start: auto;
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 1rem;
+    align-items: center;
+    cursor: pointer;
+}
+
+.card-profile img {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    transition: border-radius 200ms ease-in-out;
+    border: 0px solid black;
 }
 
 footer {
