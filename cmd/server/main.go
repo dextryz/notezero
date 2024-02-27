@@ -8,11 +8,11 @@ import (
 	"time"
 
 	nos "github.com/dextryz/nostr"
-	"github.com/dextryz/tenet/db"
 	"github.com/dextryz/tenet/handler"
 	"github.com/dextryz/tenet/nip01"
 	"github.com/dextryz/tenet/nip23"
 	"github.com/dextryz/tenet/nip84"
+	"github.com/dextryz/tenet/slicedb"
 	"github.com/dextryz/tenet/sqlite"
 )
 
@@ -22,7 +22,7 @@ func main() {
 
 	log.Info("Starting")
 
-	dbEvents, err := db.New()
+	dbEvents, err := slicedb.New()
 	if err != nil {
 		log.Error("failed to create store", slog.Any("error", err))
 		os.Exit(1)

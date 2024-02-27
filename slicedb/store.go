@@ -1,4 +1,4 @@
-package db
+package slicedb
 
 import (
 	"github.com/fiatjaf/eventstore"

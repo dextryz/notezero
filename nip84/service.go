@@ -10,7 +10,7 @@ import (
 	"github.com/dextryz/tenet"
 
 	nos "github.com/dextryz/nostr"
-	"github.com/dextryz/tenet/db"
+	"github.com/dextryz/tenet/slicedb"
 
 	"github.com/nbd-wtf/go-nostr"
 	"github.com/nbd-wtf/go-nostr/nip19"
@@ -18,11 +18,11 @@ import (
 
 type Service struct {
 	Log *slog.Logger
-	db  *db.EventStore
+	db  *slicedb.EventStore
 	cfg *nos.Config
 }
 
-func New(l *slog.Logger, d *db.EventStore, c *nos.Config) Service {
+func New(l *slog.Logger, d *slicedb.EventStore, c *nos.Config) Service {
 	return Service{
 		Log: l,
 		db:  d,
