@@ -1,11 +1,12 @@
 module github.com/dextryz/tenet
 
-go 1.22.0
+go 1.21.6
 
 require (
 	github.com/a-h/templ v0.2.543
 	github.com/fiatjaf/eventstore v0.3.12
 	github.com/gomarkdown/markdown v0.0.0-20231222211730-1d6d20845b47
+	github.com/gorilla/mux v1.8.1
 	github.com/mattn/go-sqlite3 v1.14.22
 	github.com/nbd-wtf/go-nostr v0.28.6
 )

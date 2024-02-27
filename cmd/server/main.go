@@ -15,6 +15,7 @@ import (
 	"github.com/dextryz/tenet/nip84"
 	"github.com/dextryz/tenet/slicedb"
 	"github.com/dextryz/tenet/sqlite"
+	"github.com/gorilla/mux"
 )
 
 func main() {
@@ -54,15 +55,14 @@ func main() {
 
 	h := handler.New(log, hs, ps, as)
 
-	mux := http.NewServeMux()
+	r := mux.NewRouter()
 
-	fs := http.FileServer(http.Dir("./static"))
-	mux.Handle("/static/", http.StripPrefix("/static/", fs))
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 
-	mux.HandleFunc("/", h.View)
-	mux.HandleFunc("GET /highlights", h.Highlights)
-	mux.HandleFunc("GET /high/{nevent}", h.Highlight)
-	mux.HandleFunc("GET /articles/{naddr}", h.Article)
+	r.HandleFunc("/", h.View).Methods("GET")
+	r.HandleFunc("/highlights", h.Highlights).Methods("GET")
+	r.HandleFunc("/high/{nevent:[a-zA-Z0-9]+}", h.Highlight).Methods("GET")
+	r.HandleFunc("/articles/{naddr:[a-zA-Z0-9]+}", h.Article).Methods("GET")
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -71,7 +71,7 @@ func main() {
 
 	server := &http.Server{
 		Addr:         "127.0.0.1:" + port,
-		Handler:      mux,
+		Handler:      r,
 		ReadTimeout:  time.Second * 10,
 		WriteTimeout: time.Second * 10,
 	}

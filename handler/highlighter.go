@@ -8,6 +8,7 @@ import (
 	"github.com/dextryz/tenet"
 
 	"github.com/dextryz/tenet/component"
+	"github.com/gorilla/mux"
 )
 
 type HighlighterService interface {
@@ -48,7 +49,8 @@ func New(
 
 func (s *Handler) Highlight(w http.ResponseWriter, r *http.Request) {
 
-	nevent := r.PathValue("nevent")
+	vars := mux.Vars(r)
+	nevent := vars["nevent"]
 
 	if nevent == "" {
 		s.Log.Error("nevent is empty")
@@ -110,7 +112,8 @@ func (s *Handler) Highlights(w http.ResponseWriter, r *http.Request) {
 
 func (s *Handler) Article(w http.ResponseWriter, r *http.Request) {
 
-	naddr := r.PathValue("naddr")
+	vars := mux.Vars(r)
+	naddr := vars["naddr"]
 
 	s.Log.Info("retrieving article from cache", "naddr", naddr)
 
