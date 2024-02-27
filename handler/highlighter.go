@@ -2,7 +2,7 @@ package handler
 
 import (
 	"context"
-	"log/slog"
+	"golang.org/x/exp/slog"
 	"net/http"
 
 	"github.com/dextryz/tenet"

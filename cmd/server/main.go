@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"log/slog"
+	"golang.org/x/exp/slog"
 	"net/http"
 	"os"
 	"time"

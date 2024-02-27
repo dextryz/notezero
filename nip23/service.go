@@ -3,7 +3,7 @@ package nip23
 import (
 	"context"
 	"fmt"
-	"log/slog"
+	"golang.org/x/exp/slog"
 	"sync"
 
 	"github.com/dextryz/tenet"
