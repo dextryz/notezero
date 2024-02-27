@@ -62,11 +62,11 @@ func (s Service) Request(ctx context.Context, naddr string) ([]*tenet.Highlight,
 	h := []*tenet.Highlight{}
 	for _, e := range events {
 
-		//         // Cache event
-		//         err := s.db.SaveEvent(ctx, e)
-		// 		if err != nil {
-		// 			return nil, err
-		// 		}
+		// Cache event
+		err := s.db.SaveEvent(ctx, e)
+		if err != nil {
+			return nil, err
+		}
 
 		a, err := tenet.ParseHighlight(*e)
 		if err != nil {
@@ -94,13 +94,20 @@ func (s Service) ApplyToContent(ctx context.Context, a *tenet.Article) error {
 		Limit: 500,
 	}
 
-	events := s.queryRelays(ctx, filter)
+	//events := s.queryRelays(ctx, filter)
 
 	// 3. Convert the nostr events to current domain language (Highlights)
 
-	s.Log.Info("highlights found", "count", len(events))
+	//s.Log.Info("highlights found", "count", len(events))
 
-	for _, e := range events {
+	ch, err := s.db.QueryEvents(ctx, filter)
+	if err != nil {
+		return err
+	}
+
+	s.Log.Info("highlights found", "count", len(ch))
+
+	for e := range ch {
 
 		a.Content = strings.ReplaceAll(
 			a.Content,

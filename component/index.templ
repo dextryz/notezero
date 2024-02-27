@@ -93,6 +93,14 @@ templ Article(a tenet.Article, content string) {
                 { a.Title }
             </h1>
 
+            <div class="tags">
+                for _, tag := range a.Tags {
+                    <a class="tag" href="/tags/coding" target="_blank" style="text-decoration: none; color: white;">{ tag }</a>
+                }
+            </div>
+
+            <hr class="custom-divider"/>
+
             <section id="#content" class="content">
                 @templ.Raw(content)
             </section>
