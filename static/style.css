@@ -40,20 +40,34 @@ p, h1, h2, h3, h4, h5, h6 {
     --bg: #121c22;
     /* --b2: #0e171e */
     /* --b3: #091319 */
-    --muted: #64748B;
     --text: #9fb9d0;
-    --p: #ff865b;
+    --p: #ff865b; /* orange */
     --s: #fd6f9c; /* purple */
     --t: #b387fa;  /* red-pinkish */
     --borders: #9fb9d0;
     --bor: #2f3943;
     --card: #1b262c; /* dark blue (--nc) */
     --search: #091319;
+
+    --fs-h2: 1.5rem;
+    --fs-500: 1.25rem;
+    --fs-normal: 1rem; /* normal */
+    --fs-small: 0.875rem; /* small */
+}
+
+/* Target screens of below 40rem */
+@media screen and (max-width: 40em) {
+    :root {
+        --fs-h2: 1.25rem;
+        --fs-500: 1.125rem;
+        --fs-normal: 0.875rem;
+        --fs-small: 0.75rem; /* small */
+    }
 }
 
 body {
     font-family: 'Geist';
-    font-size: 16px;
+    font-size: var(--fs-normal);
     color: var(--text);
     background: var(--bg);
 }
@@ -81,7 +95,7 @@ main {
     border: 1px solid transparent; /* required to mock outline, so layout does not shift */
     padding: 8px;
     border-radius: 8px;
-    font-size: 16px;
+    font-size: var(--fs-normal);
 }
 
 .search-bar:focus {
@@ -127,28 +141,20 @@ main {
     gap: 1rem;
 }
 
-h1 {
-    color: var(--text);
-    font-size: 1.3rem;
-    font-weight: bold; /* bold is 700, normal is 400, this is semi-bold */
-    max-width: 800px;
-}
-
 h2 {
     color: var(--text);
-    font-size: large;
-    font-weight: bold;
+    font-size: var(--fs-h2);
 }
 
 ul {
-    font-size: normal;
+    font-size: var(--fs-normal);
     color: var(--text);
     max-width: 801px;
 }
 
 section {
     color: var(--text);
-    font-size: 1rem;
+    font-size: var(--fs-normal);
     max-width: 800px;
 }
 
@@ -166,6 +172,8 @@ section {
 a {
     color: var(--s);
     text-decoration: none; /* Removes the underline */
+    word-wrap: break-word; /* Standard property is overflow-wrap */
+    word-break: break-all;
 }
 
 /* Changing the color when the link is hovered over */
@@ -195,6 +203,14 @@ a:hover {
     display: flex;
     flex-flow: column;
     gap: 1rem;
+}
+
+/* Cut-off text after 3 lines */
+.card-section {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .card-profile {
@@ -250,7 +266,7 @@ a:hover {
 .card-header {
     color: var(--text);
     font-weight: normal;
-    font-size: small;
+    font-size: var(--fs-normal);
     cursor: pointer;
 }
 
@@ -301,7 +317,7 @@ footer i {
 
 .tag {
     color: var(--text);
-    font-size: 0.875rem; /* Example, adjust based on your design system */
+    font-size: var(--fs-small); /* Example, adjust based on your design system */
     font-weight: 550;
     border-radius: 12px;
     border: 1px solid var(--text); /* Consolidated border property */
@@ -318,6 +334,6 @@ footer i {
 /* Ensure your CSS variables (--text, --tag-background, etc.) are defined in a :root selector or within relevant parent selectors */
 
 ::placeholder {
-    font-size: 16px;
+    font-size: var(--fs-normal); /* Example, adjust based on your design system */
     color: var(--clr-text);
 }

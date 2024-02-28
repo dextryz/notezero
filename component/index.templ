@@ -81,9 +81,9 @@ templ Article(a tenet.Article, content string) {
 
         <article class="article">
 
-            <h1 class="content">
+            <h2>
                 { a.Title }
-            </h1>
+            </h2>
 
             <div class="tags">
                 for _, tag := range a.Tags {
@@ -113,7 +113,7 @@ templ Highlight(h tenet.Highlight) {
             </section>
 
             if h.Context != "" {
-                <h2>Context</h2>
+                <h3>Context</h3>
                 <section>
                     { h.Context }
                 </section>
