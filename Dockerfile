@@ -28,6 +28,7 @@ RUN CGO_ENABLED=1 GOOS=linux go build -tags 'osusergo netgo static_build' -ldfla
 FROM scratch
 
 # Copy Go binary
+COPY --from=builder /app/fonts ./fonts
 COPY --from=builder /app/static ./static
 COPY --from=builder /app/server .
 
