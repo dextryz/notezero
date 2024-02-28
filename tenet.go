@@ -37,6 +37,7 @@ func LoadConfig(path string) (*Config, error) {
 }
 
 type Article struct {
+	Naddr       string   `json:"naddr"`  // Event ID
 	PubKey      string   `json:"pubkey"` // Author who signed the highlight
 	Identifier  string   `json:"identifier"`
 	Title       string   `json:"title"`
@@ -73,6 +74,18 @@ func ParseArticle(e nostr.Event) (Article, error) {
 			a.Urls = append(a.Urls, t.Value())
 		}
 	}
+
+	naddr, err := nip19.EncodeEntity(
+		a.PubKey,
+		nostr.KindArticle,
+		a.Identifier,
+		[]string{}, // TODO: This worries me
+	)
+	if err != nil {
+		return a, nil
+	}
+
+	a.Naddr = naddr
 
 	return a, nil
 }

@@ -75,6 +75,44 @@ func (s Service) Request(ctx context.Context, naddr string) (tenet.Article, erro
 	return a, nil
 }
 
+func (s Service) RequestByNpub(ctx context.Context, npub string) ([]*tenet.Article, error) {
+
+	_, pk, err := nip19.Decode(npub)
+	if err != nil {
+		s.Log.Error("failed to query events", slog.Any("error", err))
+	}
+
+	filter := nostr.Filter{
+		Kinds:   []int{nostr.KindArticle},
+		Authors: []string{pk.(string)},
+		Limit:   500,
+	}
+
+	s.Log.Info("requesting articles from relays", "npub", npub)
+
+	events := s.queryRelays(ctx, filter)
+
+	s.Log.Info("events received from relays", "count", len(events))
+
+	articles := []*tenet.Article{}
+	for _, v := range events {
+
+		a, err := tenet.ParseArticle(*v)
+		if err != nil {
+			return nil, err
+		}
+
+		a, err = MdToHtml(&a)
+		if err != nil {
+			return nil, err
+		}
+
+		articles = append(articles, &a)
+	}
+
+	return articles, nil
+}
+
 func (s *Service) queryRelays(ctx context.Context, filter nostr.Filter) (ev []*nostr.Event) {
 
 	var m sync.Map

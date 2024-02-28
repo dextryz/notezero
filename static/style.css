@@ -56,6 +56,7 @@ p {
     --search: #091319;
 
     --fs-h2: 1.5rem;
+    --fs-h3: 1.25rem;
     --fs-normal: 1rem; /* normal */
     --fs-small: 0.875rem; /* small */
 }
@@ -64,6 +65,7 @@ p {
 @media screen and (max-width: 40em) {
     :root {
         --fs-h2: 1.125rem;
+        --fs-h3: 1rem;
         --fs-normal: 0.875rem;
         --fs-small: 0.75rem; /* small */
     }
@@ -185,7 +187,7 @@ a:hover {
     color: var(--t); /* Set your desired hover color */
 }
 
-.cards {
+.card-highlights {
     display: flex;
     flex-flow: column wrap;
     align-items: stretch;
@@ -275,7 +277,7 @@ a:hover {
 }
 
 .card-header:hover {
-    background: linear-gradient(to right, var(--p), var(--s));
+    background: var(--t);
     text-shadow: none;
     -webkit-text-fill-color: transparent;
     -webkit-background-clip: text;
@@ -316,6 +318,7 @@ footer i {
 .tags {
     display: flex;
     justify-content: flex-start;
+    flex-wrap: wrap;
     gap: 0.75rem;
 }
 
@@ -325,8 +328,8 @@ footer i {
     font-weight: 550;
     border-radius: 12px;
     border: 1px solid var(--text); /* Consolidated border property */
-    padding: 2px 6px;
-    background-color: var(--bg); /* Example, adjust or use a CSS variable */
+    padding: 3px 8px;
+    background-color: var(--card); /* Example, adjust or use a CSS variable */
 }
 
 .tag:hover, .tag:focus {
@@ -340,4 +343,42 @@ footer i {
 ::placeholder {
     font-size: var(--fs-normal); /* Example, adjust based on your design system */
     color: var(--clr-text);
+}
+
+/*-----------------------------------------------------------
+ * Article Cards
+ * ----------------------------------------------------------- */
+
+.article-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(20em, 1fr));
+    gap: 1rem;
+}
+
+.article-card-container {
+    border-radius: 0.5rem;
+    background-color: var(--card);
+    border-width: 0px;
+    border-style: solid;
+}
+
+.article-card-body {
+    display: flex;
+    flex-flow: column;
+    flex: 1;
+    position: relative;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.article-card-header {
+    color: var(--text);
+    font-weight: bold;
+    font-size: var(--fs-normal);
+    text-transform: capitalize;
+    cursor: pointer;
+}
+
+.article-card-header:hover {
+    color: var(--s);
 }

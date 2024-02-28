@@ -19,15 +19,14 @@ templ Index() {
 
             <main>
                 <form class="search-container"
-                    hx-get="/highlights"
+                    hx-get="/list"
                     hx-target="#cards"
-                    hx-swap="innerHTML">
+                    hx-swap="outerHTML">
 
-                    <input class="search-bar" name="naddr" type="search" placeholder="naddr"/>
+                    <input class="search-bar" name="search" type="search" placeholder="Paste naddr or npub and Enter"/>
                 </form>
 
-                <div id="cards" class="cards">
-                </div>
+                <div id="cards"></div>
 
                 <footer>
                     <p>Made with <i class="fas fa-heart"></i> by <a href="https://github.com/dextryz">dextryz</a></p>
@@ -38,42 +37,91 @@ templ Index() {
     </html>
 }
 
-templ Card(h tenet.Highlight, p tenet.Profile, a tenet.Article, articleUrl, highlightUrl string) {
+templ ArticleCard(articles []*tenet.Article) {
 
-    <div class="card-container">
+    <article class="article-cards">
+	for _, a := range articles {
 
-        <section class="card-profile">
-            <img src={ p.Picture } />
-            <div>
-                <b class="author-name">{ p.Name }</b>
-                <time datetime> { h.CreatedAt } </time>
+        <article class="article-card-container">
+
+            <div class="article-card-body">
+
+                <header class="article-card-header"
+                    hx-get={ a.Naddr }
+                    hx-push-url="true"
+                    hx-target="body"
+                    hx-swap="outerHTML">
+                    { a.Title }
+                </header>
+
+                <div class="tags">
+                    for _, v := range a.Tags {
+                        <h2 class="tag"
+                            hx-get="hashtag/{ v }"
+                            hx-push-url="true"
+                            hx-target="body"
+                            hx-swap="outerHTML">
+                            { v }
+                        </h2>
+                    }
+                </div>
+
+                <hr class="custom-divider"/>
+
+                <b class="card-header"
+                    hx-get="/highlights"
+                    hx-push-url="true"
+                    hx-target="main"
+                    hx-swap="outerHTML">
+
+                    View Highlights
+                </b>
+
             </div>
-        </section>
 
-        <div class="card-body">
+        </article>
+	}
+    </article>
+}
 
-            <section class="card-section"
-                hx-get={ highlightUrl }
+templ HighlightCard(h tenet.Highlight, p tenet.Profile, a tenet.Article, articleUrl, highlightUrl string) {
+
+    <div class="card-highlights">
+        <div class="card-container">
+
+            <section class="card-profile">
+                <img src={ p.Picture } />
+                <div>
+                    <b class="author-name">{ p.Name }</b>
+                    <time datetime> { h.CreatedAt } </time>
+                </div>
+            </section>
+
+            <div class="card-body">
+
+                <section class="card-section"
+                    hx-get={ highlightUrl }
+                    hx-push-url="true"
+                    hx-target="main"
+                    hx-swap="outerHTML">
+
+                    { h.Content }
+                </section>
+
+            </div>
+
+            <hr class="custom-divider"/>
+
+            <b class="card-header"
+                hx-get={ articleUrl }
                 hx-push-url="true"
                 hx-target="main"
                 hx-swap="outerHTML">
 
-                { h.Content }
-            </section>
+                { a.Title }
+            </b>
 
         </div>
-
-        <hr class="custom-divider"/>
-
-        <b class="card-header"
-            hx-get={ articleUrl }
-            hx-push-url="true"
-            hx-target="main"
-            hx-swap="outerHTML">
-
-            { a.Title }
-        </b>
-
     </div>
 }
 

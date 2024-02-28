@@ -2,10 +2,12 @@ package handler
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"net/http"
 
 	"github.com/dextryz/tenet"
+	"github.com/nbd-wtf/go-nostr/nip19"
 
 	"github.com/dextryz/tenet/component"
 )
@@ -22,6 +24,7 @@ type ProfileService interface {
 
 type ArticleService interface {
 	Request(ctx context.Context, naddr string) (tenet.Article, error)
+	RequestByNpub(ctx context.Context, npub string) ([]*tenet.Article, error)
 }
 
 type Handler struct {
@@ -68,9 +71,43 @@ func (s *Handler) Highlight(w http.ResponseWriter, r *http.Request) {
 	component.Highlight(*h).Render(r.Context(), w)
 }
 
-func (s *Handler) Highlights(w http.ResponseWriter, r *http.Request) {
+func (s *Handler) Nip19(w http.ResponseWriter, r *http.Request) {
+	s.Log.Info("NIP-19 handler")
+}
 
-	naddr := r.URL.Query().Get("naddr")
+func (s *Handler) ListArticles(w http.ResponseWriter, r *http.Request, npub string) {
+
+	articles, err := s.ArticleService.RequestByNpub(r.Context(), npub)
+	if err != nil {
+		s.Log.Error("failed to REQ articles", slog.Any("error", err))
+		http.Error(w, "failed to get counts", http.StatusInternalServerError)
+		return
+	}
+
+	s.Log.Info("articles pulled", "count", len(articles))
+
+	component.ArticleCard(articles).Render(r.Context(), w)
+}
+
+func (s *Handler) List(w http.ResponseWriter, r *http.Request) {
+
+	search := r.URL.Query().Get("search")
+
+	prefix, _, err := nip19.Decode(search)
+	if err != nil {
+		panic(err)
+	}
+
+	if prefix == "naddr" {
+		s.ListHighlights(w, r, search)
+	} else if prefix == "npub" {
+		s.ListArticles(w, r, search)
+	} else {
+		panic(fmt.Errorf("not a nostr URI: %s", search))
+	}
+}
+
+func (s *Handler) ListHighlights(w http.ResponseWriter, r *http.Request, naddr string) {
 
 	// TODO: cache
 	a, err := s.ArticleService.Request(r.Context(), naddr)
@@ -104,7 +141,7 @@ func (s *Handler) Highlights(w http.ResponseWriter, r *http.Request) {
 		articleUrl := "articles/" + v.Naddr
 		highlightUrl := "high/" + v.Id
 
-		component.Card(*v, p, a, articleUrl, highlightUrl).Render(r.Context(), w)
+		component.HighlightCard(*v, p, a, articleUrl, highlightUrl).Render(r.Context(), w)
 	}
 }
 
