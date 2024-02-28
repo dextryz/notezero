@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/dextryz/tenet"
+	"github.com/nbd-wtf/go-nostr"
 	"github.com/nbd-wtf/go-nostr/nip19"
 
 	"github.com/dextryz/tenet/component"
@@ -72,7 +73,25 @@ func (s *Handler) Highlight(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Handler) Nip19(w http.ResponseWriter, r *http.Request) {
-	s.Log.Info("NIP-19 handler")
+
+	nuri := r.PathValue("nuri")
+
+	prefix, data, err := nip19.Decode(nuri)
+	if err != nil {
+		panic(err)
+	}
+
+	if prefix == "naddr" {
+		ep := data.(nostr.EntityPointer)
+		switch ep.Kind {
+		case nostr.KindArticle:
+			s.articleHandler(w, r, nuri)
+		case tenet.KindHighlight:
+			s.Log.Error("not implemented")
+		}
+	} else {
+		panic(fmt.Errorf("not a nostr URI: %s", nuri))
+	}
 }
 
 func (s *Handler) ListArticles(w http.ResponseWriter, r *http.Request, npub string) {
@@ -146,8 +165,11 @@ func (s *Handler) ListHighlights(w http.ResponseWriter, r *http.Request, naddr s
 }
 
 func (s *Handler) Article(w http.ResponseWriter, r *http.Request) {
-
 	naddr := r.PathValue("naddr")
+	s.articleHandler(w, r, naddr)
+}
+
+func (s *Handler) articleHandler(w http.ResponseWriter, r *http.Request, naddr string) {
 
 	s.Log.Info("retrieving article from cache", "naddr", naddr)
 

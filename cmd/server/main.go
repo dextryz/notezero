@@ -68,7 +68,7 @@ func main() {
 	//mux.HandleFunc("GET /articles", h.ListArticles)
 	mux.HandleFunc("GET /high/{nevent}", h.Highlight)
 	mux.HandleFunc("GET /articles/{naddr}", h.Article)
-	mux.HandleFunc("GET /{nip19}", h.Nip19)
+	mux.HandleFunc("GET /{nuri}", h.Nip19)
 
 	port := os.Getenv("PORT")
 	if port == "" {
