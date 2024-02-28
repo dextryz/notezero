@@ -54,14 +54,15 @@ func (s Service) Request(ctx context.Context, naddr string) (tenet.Article, erro
 		},
 	}
 
-	//events := s.queryRelays(ctx, filter)
+	events := s.queryRelays(ctx, filter)
 
-	pool := nostr.NewSimplePool(ctx)
-	e := pool.QuerySingle(ctx, s.cfg.Relays, filter)
+	// 	pool := nostr.NewSimplePool(ctx)
+	//     s.Log.Info("querying relays", "count", len(s.cfg.Relays))
+	// 	e := pool.QuerySingle(ctx, s.cfg.Relays, filter)
 
-	//s.Log.Info("article found", "created_at", e.CreatedAt)
+	s.Log.Info("events received from relays", "count", len(events))
 
-	a, err = tenet.ParseArticle(*e.Event)
+	a, err = tenet.ParseArticle(*events[0])
 	if err != nil {
 		return a, err
 	}
