@@ -37,16 +37,17 @@ p, h1, h2, h3, h4, h5, h6 {
 
 :root {
     --red: #f87171;
-    --bg: #121c23;
+    --bg: #121c22;
+    /* --b2: #0e171e */
+    /* --b3: #091319 */
     --muted: #64748B;
     --text: #9fb9d0;
-    /*--p: #fb923c;   /* orange */
     --p: #ff865b;
     --s: #fd6f9c; /* purple */
     --t: #b387fa;  /* red-pinkish */
     --borders: #9fb9d0;
     --bor: #2f3943;
-    --card: #1b252d; /* dark blue */
+    --card: #1b262c; /* dark blue (--nc) */
     --search: #091319;
 }
 
@@ -267,6 +268,7 @@ a:hover {
     border: 0; /* Removes the default border */
     height: 1px; /* Sets the height of the divider */
     background-color: #333; /* Sets the color of the divider */
+    max-width: 60rem;
 }
 
 .card-profile {
@@ -307,12 +309,22 @@ footer i {
 }
 
 .tag {
-    color: white;
-    font-size: small;
-    border-radius: 5px;
-    background-color: var(--p);
-    padding: 2px;
+    color: var(--text);
+    font-size: 0.875rem; /* Example, adjust based on your design system */
+    font-weight: 550;
+    border-radius: 12px;
+    border: 1px solid var(--text); /* Consolidated border property */
+    padding: 2px 6px;
+    background-color: var(--bg); /* Example, adjust or use a CSS variable */
 }
+
+.tag:hover, .tag:focus {
+    color: var(--bg);
+    background-color: var(--text);
+    cursor: pointer;
+}
+
+/* Ensure your CSS variables (--text, --tag-background, etc.) are defined in a :root selector or within relevant parent selectors */
 
 ::placeholder {
     font-size: 16px;

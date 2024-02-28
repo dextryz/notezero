@@ -52,7 +52,6 @@ templ Card(h tenet.Highlight, p tenet.Profile, a tenet.Article, articleUrl, high
 
         <div class="card-body">
 
-            <h2>Content</h2>
             <section class="card-section"
                 hx-get={ highlightUrl }
                 hx-push-url="true"
@@ -61,13 +60,6 @@ templ Card(h tenet.Highlight, p tenet.Profile, a tenet.Article, articleUrl, high
 
                 { h.Content }
             </section>
-
-            if h.Context != "" {
-                <h2>Context</h2>
-                <section>
-                    { h.Context }
-                </section>
-            }
 
         </div>
 
@@ -97,7 +89,7 @@ templ Article(a tenet.Article, content string) {
 
             <div class="tags">
                 for _, tag := range a.Tags {
-                    <a class="tag" href="/tags/coding" target="_blank" style="text-decoration: none; color: white;">{ tag }</a>
+                    <a class="tag" href="/tags/coding">{ tag }</a>
                 }
             </div>
 
