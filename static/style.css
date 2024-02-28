@@ -10,15 +10,21 @@
 * {
     margin: 0;
     padding: 0;
-    line-height: 1.6;
+    line-height: 1.7;
 }
 
 input, button, textarea, select {
     font: inherit;
 }
 
-p, h1, h2, h3, h4, h5, h6 {
-    overflow-wrap: break-word;
+/* https://www.youtube.com/watch?v=snKm-VzJCOo */
+h1, h2, h3, h4 {
+    text-wrap: balance;
+}
+
+p {
+    max-width: 80ch;
+    text-wrap: pretty; /* Prevent any orphans from text wrapping */
 }
 
 /* ---------------------------------------------------- */
@@ -135,7 +141,6 @@ main {
     flex-grow: 1; /* Allows the search bar to grow and take up available space */
     flex-direction: column;
     justify-content: start;
-    color: var(--clr-text);
     gap: 1rem;
 }
 
@@ -186,7 +191,7 @@ a:hover {
     display: flex;
     flex-flow: column wrap;
     align-items: stretch;
-    gap: 2rem;
+    gap: 1rem;
 }
 
 .card-container {
