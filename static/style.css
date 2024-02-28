@@ -25,7 +25,7 @@ p, h1, h2, h3, h4, h5, h6 {
 
 @font-face {
     font-family: 'Geist';
-    src: url('../fonts/Geist/Geist-UltraLight.otf') format('truetype');
+    src: url('../fonts/Geist/Geist-Light.otf') format('truetype');
     font-weight: normal;
 }
 
