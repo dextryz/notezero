@@ -93,16 +93,16 @@ main {
 .article-container {
     display: flex;
     justify-content: center;
-    gap: 2rem;
     padding: 1rem;
 }
 
 .article {
     display: flex;
+    flex-grow: 1;
     flex-direction: column;
     align-items: stretch;
     gap: 1rem;
-    padding: 2rem;
+    padding: 1rem;
     max-width: 60rem;
 }
 
