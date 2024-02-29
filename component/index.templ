@@ -1,6 +1,7 @@
 package component
 
 import (
+    "fmt"
 	"github.com/dextryz/tenet"
 )
 
@@ -21,7 +22,7 @@ templ Index() {
                 <form class="search-container"
                     hx-get="/list"
                     hx-target="#cards"
-                    hx-swap="outerHTML">
+                    hx-swap="innerHTML">
 
                     <input class="search-bar" name="search" type="search" placeholder="Paste naddr or npub and Enter"/>
                 </form>
@@ -40,6 +41,7 @@ templ Index() {
 templ ArticleCard(articles []*tenet.Article) {
 
     <article class="article-cards">
+
 	for _, a := range articles {
 
         <article class="article-card-container">
@@ -47,7 +49,7 @@ templ ArticleCard(articles []*tenet.Article) {
             <div class="article-card-body">
 
                 <header class="article-card-header"
-                    hx-get={ a.Naddr }
+                    hx-get={ fmt.Sprintf("articles/%s", a.Naddr) }
                     hx-push-url="true"
                     hx-target="body"
                     hx-swap="outerHTML">
@@ -69,9 +71,9 @@ templ ArticleCard(articles []*tenet.Article) {
                 <hr class="custom-divider"/>
 
                 <b class="card-header"
-                    hx-get="/highlights"
+                    hx-get={ fmt.Sprintf("highlights/%s", a.Naddr) }
                     hx-push-url="true"
-                    hx-target="main"
+                    hx-target="#cards"
                     hx-swap="outerHTML">
 
                     View Highlights
@@ -84,44 +86,47 @@ templ ArticleCard(articles []*tenet.Article) {
     </article>
 }
 
-templ HighlightCard(h tenet.Highlight, p tenet.Profile, a tenet.Article, articleUrl, highlightUrl string) {
+templ HighlightCard(highlights []*tenet.Highlight) {
 
     <div class="card-highlights">
-        <div class="card-container">
+        for _, h := range highlights {
 
-            <section class="card-profile">
-                <img src={ p.Picture } />
-                <div>
-                    <b class="author-name">{ p.Name }</b>
-                    <time datetime> { h.CreatedAt } </time>
+            <div class="card-container">
+
+                <section class="card-profile">
+                    <img src={ h.Picture } />
+                    <div>
+                        <b class="author-name">{ h.Name }</b>
+                        <time datetime> { h.CreatedAt } </time>
+                    </div>
+                </section>
+
+                <div class="card-body">
+
+                    <section class="card-section"
+                        hx-get={ fmt.Sprintf("high/%s", h.Id) }
+                        hx-push-url="true"
+                        hx-target="main"
+                        hx-swap="outerHTML">
+
+                        { h.Content }
+                    </section>
+
                 </div>
-            </section>
 
-            <div class="card-body">
+                <hr class="custom-divider"/>
 
-                <section class="card-section"
-                    hx-get={ highlightUrl }
+                <b class="card-header"
+                    hx-get={ fmt.Sprintf("articles/%s", h.Naddr) }
                     hx-push-url="true"
                     hx-target="main"
                     hx-swap="outerHTML">
 
-                    { h.Content }
-                </section>
+                    { h.Title }
+                </b>
 
             </div>
-
-            <hr class="custom-divider"/>
-
-            <b class="card-header"
-                hx-get={ articleUrl }
-                hx-push-url="true"
-                hx-target="main"
-                hx-swap="outerHTML">
-
-                { a.Title }
-            </b>
-
-        </div>
+            }
     </div>
 }
 

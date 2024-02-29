@@ -91,6 +91,7 @@ func ParseArticle(e nostr.Event) (Article, error) {
 }
 
 type Highlight struct {
+	*Profile
 	Id         string `json:"id"`     // Event ID
 	Naddr      string `json:"naddr"`  // Event ID
 	PubKey     string `json:"pubkey"` // Author who signed the highlight
@@ -101,6 +102,7 @@ type Highlight struct {
 	Event      string `json:"event"`
 	Article    string `json:"article"`    // 30032:pub:identifier
 	Identifier string `json:"identifier"` // dentifier
+	Title      string `json:"title"`      // dentifier
 }
 
 func ParseHighlight(e nostr.Event) (Highlight, error) {

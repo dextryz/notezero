@@ -39,7 +39,7 @@ func main() {
 			"wss://relay.damus.io/",
 			"wss://nostr-01.yakihonne.com",
 			"wss://nostr-02.yakihonne.com",
-			"wss://relay.highlighter.com/",
+			//			"wss://relay.highlighter.com/",
 			"wss://relay.f7z.io",
 			"wss://nos.lol",
 		},
@@ -64,11 +64,11 @@ func main() {
 
 	mux.HandleFunc("/", h.View)
 	mux.HandleFunc("GET /list", h.List)
-	//mux.HandleFunc("GET /highlights", h.Highlights)
-	//mux.HandleFunc("GET /articles", h.ListArticles)
 	mux.HandleFunc("GET /high/{nevent}", h.Highlight)
 	mux.HandleFunc("GET /articles/{naddr}", h.Article)
-	mux.HandleFunc("GET /{nuri}", h.Nip19)
+	mux.HandleFunc("GET /highlights/{naddr}", h.ListHighlights)
+	//mux.HandleFunc("GET /highlights", h.Highlights)
+	//mux.HandleFunc("GET /articles", h.ListArticles)
 
 	port := os.Getenv("PORT")
 	if port == "" {

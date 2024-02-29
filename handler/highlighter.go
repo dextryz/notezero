@@ -94,7 +94,7 @@ func (s *Handler) Nip19(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s *Handler) ListArticles(w http.ResponseWriter, r *http.Request, npub string) {
+func (s *Handler) listArticles(w http.ResponseWriter, r *http.Request, npub string) {
 
 	articles, err := s.ArticleService.RequestByNpub(r.Context(), npub)
 	if err != nil {
@@ -110,6 +110,8 @@ func (s *Handler) ListArticles(w http.ResponseWriter, r *http.Request, npub stri
 
 func (s *Handler) List(w http.ResponseWriter, r *http.Request) {
 
+	fmt.Println("Call to List")
+
 	search := r.URL.Query().Get("search")
 
 	prefix, _, err := nip19.Decode(search)
@@ -117,16 +119,22 @@ func (s *Handler) List(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	if prefix == "naddr" {
-		s.ListHighlights(w, r, search)
-	} else if prefix == "npub" {
-		s.ListArticles(w, r, search)
-	} else {
+	switch prefix {
+	case "naddr":
+		s.highlightsHandler(w, r, search)
+	case "npub":
+		s.listArticles(w, r, search)
+	default:
 		panic(fmt.Errorf("not a nostr URI: %s", search))
 	}
 }
 
-func (s *Handler) ListHighlights(w http.ResponseWriter, r *http.Request, naddr string) {
+func (s *Handler) ListHighlights(w http.ResponseWriter, r *http.Request) {
+	naddr := r.PathValue("naddr")
+	s.highlightsHandler(w, r, naddr)
+}
+
+func (s *Handler) highlightsHandler(w http.ResponseWriter, r *http.Request, naddr string) {
 
 	// TODO: cache
 	a, err := s.ArticleService.Request(r.Context(), naddr)
@@ -147,7 +155,7 @@ func (s *Handler) ListHighlights(w http.ResponseWriter, r *http.Request, naddr s
 
 	s.Log.Info("highlights pulled", "count", len(highlights))
 
-	// TODO: Use TEMPL to view
+	newHighs := []*tenet.Highlight{}
 	for _, v := range highlights {
 
 		p, err := s.ProfileService.Request(r.Context(), v.PubKey)
@@ -157,11 +165,29 @@ func (s *Handler) ListHighlights(w http.ResponseWriter, r *http.Request, naddr s
 			return
 		}
 
-		articleUrl := "articles/" + v.Naddr
-		highlightUrl := "high/" + v.Id
+		v.Profile = &p
+		v.Title = a.Title
 
-		component.HighlightCard(*v, p, a, articleUrl, highlightUrl).Render(r.Context(), w)
+		newHighs = append(newHighs, v)
 	}
+
+	component.HighlightCard(newHighs).Render(r.Context(), w)
+
+	// // TODO: Use TEMPL to view
+	// for _, v := range highlights {
+	//
+	//		p, err := s.ProfileService.Request(r.Context(), v.PubKey)
+	//		if err != nil {
+	//			s.Log.Error("failed to REQ profile", slog.Any("error", err), "naddr", naddr)
+	//			http.Error(w, "failed to get counts", http.StatusInternalServerError)
+	//			return
+	//		}
+	//
+	//		articleUrl := "articles/" + v.Naddr
+	//		highlightUrl := "high/" + v.Id
+	//
+	//		component.HighlightCard(highlights, p).Render(r.Context(), w)
+	//	}
 }
 
 func (s *Handler) Article(w http.ResponseWriter, r *http.Request) {
