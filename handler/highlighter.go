@@ -64,7 +64,7 @@ func (s *Handler) Highlight(w http.ResponseWriter, r *http.Request) {
 
 	h, err := s.HighlightService.RequestByNevent(r.Context(), nevent)
 	if err != nil {
-		s.Log.Error("failed to REQ highlights", slog.Any("error", err))
+		s.Log.Error("failed to REQ highlights by nevent", slog.Any("error", err))
 		http.Error(w, "failed to get counts", http.StatusInternalServerError)
 		return
 	}
@@ -104,6 +104,23 @@ func (s *Handler) listArticles(w http.ResponseWriter, r *http.Request, npub stri
 	}
 
 	s.Log.Info("articles pulled", "count", len(articles))
+
+	for _, a := range articles {
+
+		highlights, err := s.HighlightService.Request(r.Context(), a.Naddr)
+
+		if err == tenet.ErrEmptyIdentifier {
+			a.HighlightCount = "-1"
+		} else if err == tenet.ErrEmptyPubKey {
+			a.HighlightCount = "-1"
+		} else if err != nil {
+			s.Log.Error("failed to REQ highlights for article", slog.Any("error", err), "identifier", a.Identifier)
+			http.Error(w, "failed to get counts", http.StatusInternalServerError)
+			return
+		} else {
+			a.HighlightCount = fmt.Sprintln(len(highlights))
+		}
+	}
 
 	component.ArticleCard(articles).Render(r.Context(), w)
 }

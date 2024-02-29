@@ -42,7 +42,7 @@ func (s Service) Request(ctx context.Context, pubkey string) (tenet.Profile, err
 
 	// Retrieve user profile from nostr relays
 	metadata := s.queryRelays(ctx, f)
-    // Pablso have more than 1 wtf
+	// Pablso have more than 1 wtf
 	if len(metadata) != 1 {
 		fmt.Println(metadata)
 	}

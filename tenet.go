@@ -37,23 +37,27 @@ func LoadConfig(path string) (*Config, error) {
 }
 
 type Article struct {
-	Naddr       string   `json:"naddr"`  // Event ID
-	PubKey      string   `json:"pubkey"` // Author who signed the highlight
-	Identifier  string   `json:"identifier"`
-	Title       string   `json:"title"`
-	Content     string   `json:"content"`
-	PublishedAt string   `json:"published_at"`
-	Tags        []string `json:"tags"`
-	Urls        []string `json:"urls"`
-	Events      []string `json:"events"`
+	Naddr          string   `json:"naddr"`  // Event ID
+	PubKey         string   `json:"pubkey"` // Author who signed the highlight
+	Identifier     string   `json:"identifier"`
+	Title          string   `json:"title"`
+	Content        string   `json:"content"`
+	PublishedAt    string   `json:"published_at"`
+	Tags           []string `json:"tags"`
+	Urls           []string `json:"urls"`
+	Events         []string `json:"events"`
+	HighlightCount string   `json:"highlight_count"`
+	HighlightAuthors string   `json:"highlight_authors"`
 }
 
 func ParseArticle(e nostr.Event) (Article, error) {
 
 	a := Article{
-		PubKey:      e.PubKey,
-		Content:     e.Content,
-		PublishedAt: e.CreatedAt.Time().String(),
+		PubKey:         e.PubKey,
+		Content:        e.Content,
+		PublishedAt:    e.CreatedAt.Time().String(),
+		HighlightCount: "0",
+		HighlightAuthors: "0",
 	}
 
 	for _, t := range e.Tags {

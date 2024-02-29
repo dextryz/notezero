@@ -85,7 +85,7 @@ func (s Service) RequestByNpub(ctx context.Context, npub string) ([]*tenet.Artic
 	filter := nostr.Filter{
 		Kinds:   []int{nostr.KindArticle},
 		Authors: []string{pk.(string)},
-		Limit:   500,
+		Limit:   1,
 	}
 
 	s.Log.Info("requesting articles from relays", "npub", npub)

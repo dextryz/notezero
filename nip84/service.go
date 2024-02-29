@@ -69,7 +69,22 @@ func (s Service) Request(ctx context.Context, naddr string) ([]*tenet.Highlight,
 
 	prefix, data, err := nip19.Decode(naddr)
 	if err != nil {
-		return nil, err
+		if err.Error() == "incomplete naddr" {
+			ep := data.(nostr.EntityPointer)
+			if ep.Kind == 0 {
+				fmt.Println("CCCC")
+			}
+			if ep.Identifier == "" {
+				fmt.Println("AAAA")
+				return nil, tenet.ErrEmptyIdentifier
+			}
+			if ep.PublicKey == "" {
+				fmt.Println("BBBB")
+				return nil, tenet.ErrEmptyPubKey
+			}
+		} else {
+			return nil, err
+		}
 	}
 	if prefix != "naddr" {
 		return nil, fmt.Errorf("not a naddr URI: %s", naddr)
