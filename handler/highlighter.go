@@ -14,7 +14,7 @@ import (
 )
 
 type HighlighterService interface {
-	Request(ctx context.Context, naddr string) ([]*tenet.Highlight, error)
+	RequestByNaddr(ctx context.Context, naddr string) (tenet.HighlightMap, error)
 	RequestByNevent(ctx context.Context, nevent string) (*tenet.Highlight, error)
 	ApplyToContent(ctx context.Context, a *tenet.Article) error
 }
@@ -107,7 +107,7 @@ func (s *Handler) listArticles(w http.ResponseWriter, r *http.Request, npub stri
 
 	for _, a := range articles {
 
-		highlights, err := s.HighlightService.Request(r.Context(), a.Naddr)
+		hmap, err := s.HighlightService.RequestByNaddr(r.Context(), a.Naddr)
 
 		if err == tenet.ErrEmptyIdentifier {
 			a.HighlightCount = "-1"
@@ -118,7 +118,14 @@ func (s *Handler) listArticles(w http.ResponseWriter, r *http.Request, npub stri
 			http.Error(w, "failed to get counts", http.StatusInternalServerError)
 			return
 		} else {
-			a.HighlightCount = fmt.Sprintln(len(highlights))
+
+			var count int
+			for _, hls := range hmap {
+				count += len(hls)
+			}
+
+			a.HighlightCount = fmt.Sprintln(count)
+			a.HighlightAuthors = fmt.Sprintln(len(hmap))
 		}
 	}
 
@@ -163,32 +170,30 @@ func (s *Handler) highlightsHandler(w http.ResponseWriter, r *http.Request, nadd
 
 	s.Log.Info("pulling article hightlights", "naddr", naddr)
 
-	highlights, err := s.HighlightService.Request(r.Context(), naddr)
+	hmap, err := s.HighlightService.RequestByNaddr(r.Context(), naddr)
 	if err != nil {
 		s.Log.Error("failed to REQ highlights", slog.Any("error", err))
 		http.Error(w, "failed to get counts", http.StatusInternalServerError)
 		return
 	}
 
-	s.Log.Info("highlights pulled", "count", len(highlights))
+	s.Log.Info("highlights pulled", "count", len(hmap))
 
-	newHighs := []*tenet.Highlight{}
-	for _, v := range highlights {
+	highlights := hmap.ToList()
+	for _, h := range highlights {
 
-		p, err := s.ProfileService.Request(r.Context(), v.PubKey)
+		p, err := s.ProfileService.Request(r.Context(), h.PubKey)
 		if err != nil {
 			s.Log.Error("failed to REQ profile", slog.Any("error", err), "naddr", naddr)
 			http.Error(w, "failed to get counts", http.StatusInternalServerError)
 			return
 		}
 
-		v.Profile = &p
-		v.Title = a.Title
-
-		newHighs = append(newHighs, v)
+		h.Profile = &p
+		h.Title = a.Title
 	}
 
-	component.HighlightCard(newHighs).Render(r.Context(), w)
+	component.HighlightCard(highlights).Render(r.Context(), w)
 
 	// // TODO: Use TEMPL to view
 	// for _, v := range highlights {

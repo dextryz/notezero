@@ -63,7 +63,7 @@ func (s Service) RequestByNevent(ctx context.Context, nevent string) (*tenet.Hig
 	return h[0], nil
 }
 
-func (s Service) Request(ctx context.Context, naddr string) ([]*tenet.Highlight, error) {
+func (s Service) RequestByNaddr(ctx context.Context, naddr string) (tenet.HighlightMap, error) {
 
 	// 1. Create the REQ filters for relays.
 
@@ -107,7 +107,7 @@ func (s Service) Request(ctx context.Context, naddr string) ([]*tenet.Highlight,
 
 	// 3. Convert the nostr events to current domain language (Highlights)
 
-	h := []*tenet.Highlight{}
+	h := make(tenet.HighlightMap)
 	for _, e := range events {
 
 		// Cache event
@@ -120,7 +120,8 @@ func (s Service) Request(ctx context.Context, naddr string) ([]*tenet.Highlight,
 		if err != nil {
 			return nil, err
 		}
-		h = append(h, &a)
+
+		h[e.PubKey] = append(h[e.PubKey], &a)
 	}
 
 	return h, nil

@@ -37,26 +37,26 @@ func LoadConfig(path string) (*Config, error) {
 }
 
 type Article struct {
-	Naddr          string   `json:"naddr"`  // Event ID
-	PubKey         string   `json:"pubkey"` // Author who signed the highlight
-	Identifier     string   `json:"identifier"`
-	Title          string   `json:"title"`
-	Content        string   `json:"content"`
-	PublishedAt    string   `json:"published_at"`
-	Tags           []string `json:"tags"`
-	Urls           []string `json:"urls"`
-	Events         []string `json:"events"`
-	HighlightCount string   `json:"highlight_count"`
+	Naddr            string   `json:"naddr"`  // Event ID
+	PubKey           string   `json:"pubkey"` // Author who signed the highlight
+	Identifier       string   `json:"identifier"`
+	Title            string   `json:"title"`
+	Content          string   `json:"content"`
+	PublishedAt      string   `json:"published_at"`
+	Tags             []string `json:"tags"`
+	Urls             []string `json:"urls"`
+	Events           []string `json:"events"`
+	HighlightCount   string   `json:"highlight_count"`
 	HighlightAuthors string   `json:"highlight_authors"`
 }
 
 func ParseArticle(e nostr.Event) (Article, error) {
 
 	a := Article{
-		PubKey:         e.PubKey,
-		Content:        e.Content,
-		PublishedAt:    e.CreatedAt.Time().String(),
-		HighlightCount: "0",
+		PubKey:           e.PubKey,
+		Content:          e.Content,
+		PublishedAt:      e.CreatedAt.Time().String(),
+		HighlightCount:   "0",
 		HighlightAuthors: "0",
 	}
 
@@ -107,6 +107,17 @@ type Highlight struct {
 	Article    string `json:"article"`    // 30032:pub:identifier
 	Identifier string `json:"identifier"` // dentifier
 	Title      string `json:"title"`      // dentifier
+}
+
+// A map that contains the highlights as value for each author as key.
+type HighlightMap map[string][]*Highlight
+
+func (s HighlightMap) ToList() []*Highlight {
+	h := []*Highlight{}
+	for _, highlights := range s {
+		h = append(h, highlights...)
+	}
+	return h
 }
 
 func ParseHighlight(e nostr.Event) (Highlight, error) {
