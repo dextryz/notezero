@@ -1,5 +1,24 @@
 # Tenet
 
+- Pull author profile
+```
+nprofile
+
+If npub is types instead of nprofile it should give the below options
+```
+
+- Pull author articles:
+```
+30023:npub
+```
+
+- Pull author highlights
+```
+9802:npub
+```
+
+## Usage
+
 ```
 export NOSTR=config.json
 ```

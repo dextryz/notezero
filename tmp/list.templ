@@ -1,0 +1,52 @@
+package tmp
+
+import (
+    "fmt"
+    "github.com/dextryz/tenet"
+)
+
+templ ListArticleTemplate(params tenet.ListArticleParams) {
+
+    <article class="article-cards">
+
+	for _, note := range params.Notes {
+
+        <article class="article-card-container">
+
+            <div class="article-card-body">
+
+                <header class="article-card-header"
+                    hx-get={ fmt.Sprintf("articles/%s", note.Naddr()) }
+                    hx-push-url="true"
+                    hx-target="body"
+                    hx-swap="outerHTML">
+                    { note.Title() }
+                </header>
+
+                <div class="tags">
+                    for _, v := range note.HashTags() {
+                        <h2 class="tag"
+                            hx-get="hashtag/{ v }"
+                            hx-push-url="true"
+                            hx-target="body"
+                            hx-swap="outerHTML">
+                            { v }
+                        </h2>
+                    }
+                </div>
+
+                <hr class="custom-divider"/>
+
+                <b class="card-header"
+                    hx-get={ fmt.Sprintf("highlights/%s", note.Naddr()) }
+                    hx-push-url="true"
+                    hx-target="#cards"
+                    hx-swap="outerHTML">
+                </b>
+
+            </div>
+
+        </article>
+	}
+    </article>
+}

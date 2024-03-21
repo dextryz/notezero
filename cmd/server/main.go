@@ -7,15 +7,10 @@ import (
 	"os"
 	"time"
 
-	"github.com/dextryz/tenet"
-
+	"github.com/dextryz/tenet/badger"
+	"github.com/dextryz/tenet/event"
 	"github.com/dextryz/tenet/handler"
-	"github.com/dextryz/tenet/nip01"
-	"github.com/dextryz/tenet/nip23"
-	"github.com/dextryz/tenet/nip84"
-	"github.com/dextryz/tenet/slicedb"
-	"github.com/dextryz/tenet/sqlite"
-	"github.com/gorilla/mux"
+	eventstore_badger "github.com/fiatjaf/eventstore/badger"
 )
 
 func main() {
@@ -24,45 +19,46 @@ func main() {
 
 	log.Info("Starting")
 
-	dbEvents, err := slicedb.New()
+	relays := []string{
+		"wss://relay.damus.io/",
+		"wss://nostr-01.yakihonne.com",
+		// "wss://nostr-02.yakihonne.com",
+		// "wss://relay.highlighter.com/",
+		"wss://relay.f7z.io",
+		"wss://nos.lol",
+	}
+
+	db := &eventstore_badger.BadgerBackend{
+		Path: "nostr.db",
+	}
+	err := db.Init()
+	if err != nil {
+		panic(err)
+	}
+
+	cache, err := badger.New(db.DB)
 	if err != nil {
 		log.Error("failed to create store", slog.Any("error", err))
 		os.Exit(1)
 	}
 
-	// 	cfg, err := tenet.LoadConfig(os.Getenv("NOSTR"))
-	// 	if err != nil {
-	// 		panic(err)
-	// 	}
+	// Event service is responsible to communicating with relays and populating the cache.
+	service := event.New(log, db, cache, relays)
 
-	cfg := &tenet.Config{
-		Relays: []string{
-			"wss://relay.damus.io/",
-			"wss://nostr-01.yakihonne.com",
-			"wss://nostr-02.yakihonne.com",
-			"wss://relay.highlighter.com/",
-			"wss://relay.f7z.io",
-			"wss://nos.lol",
-		},
-	}
+	// Handle the templates and view model
+	h := handler.New(log, service)
 
-	dbProfile := sqlite.New("profile.db")
-	defer dbProfile.Close()
+	mux := http.NewServeMux()
 
-	ps := nip01.New(log, dbProfile, cfg)
-	hs := nip84.New(log, dbEvents, cfg)
-	as := nip23.New(log, dbEvents, cfg)
+	fs := http.FileServer(http.Dir("./static"))
+	mux.Handle("/static/", http.StripPrefix("/static/", fs))
 
-	h := handler.New(log, hs, ps, as)
+	fs = http.FileServer(http.Dir("./fonts"))
+	mux.Handle("/fonts/", http.StripPrefix("/fonts/", fs))
 
-	r := mux.NewRouter()
-
-	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
-
-	r.HandleFunc("/", h.View).Methods("GET")
-	r.HandleFunc("/highlights", h.Highlights).Methods("GET")
-	r.HandleFunc("/high/{nevent:[a-zA-Z0-9]+}", h.Highlight).Methods("GET")
-	r.HandleFunc("/articles/{naddr:[a-zA-Z0-9]+}", h.Article).Methods("GET")
+	mux.HandleFunc("/", h.Homepage)
+	mux.HandleFunc("GET /list", h.ListHandler)
+	mux.HandleFunc("GET /articles/{naddr}", h.ArticleHandler)
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -70,8 +66,8 @@ func main() {
 	}
 
 	server := &http.Server{
-		Addr:         "127.0.0.1:" + port,
-		Handler:      r,
+		Addr:         "0.0.0.0:" + port,
+		Handler:      mux,
 		ReadTimeout:  time.Second * 10,
 		WriteTimeout: time.Second * 10,
 	}

@@ -1,10 +1,8 @@
-package nip23
+package handler
 
 import (
 	"log"
 	"regexp"
-
-	"github.com/dextryz/tenet"
 
 	"github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/html"
@@ -12,10 +10,11 @@ import (
 )
 
 // TODO: Maybe move this to core DL
+// TODO make links/reference optional: mdToHtml(conent string, skipLinks bool)
 
-func MdToHtml(a *tenet.Article) (tenet.Article, error) {
+func mdToHtml(content string) string {
 
-	text, err := ReplaceReferences(a.Content)
+	text, err := ReplaceReferences(content)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -30,17 +29,9 @@ func MdToHtml(a *tenet.Article) (tenet.Article, error) {
 	opts := html.RendererOptions{Flags: htmlFlags}
 	renderer := html.NewRenderer(opts)
 
-	c := markdown.Render(doc, renderer)
+	res := markdown.Render(doc, renderer)
 
-	return tenet.Article{
-		PubKey:     a.PubKey,
-		Identifier: a.Identifier,
-		Title:      a.Title,
-		Content:    string(c),
-		Tags:       a.Tags,
-		Events:     a.Events,
-		Urls:       a.Urls,
-	}, nil
+	return string(res)
 }
 
 // text := "Click [me](nostr:nevent17915d512457e4bc461b54ba95351719c150946ed4aa00b1d83a263deca69dae) to"

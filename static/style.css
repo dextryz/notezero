@@ -10,37 +10,70 @@
 * {
     margin: 0;
     padding: 0;
-    line-height: 1.5;
+    line-height: 1.7;
 }
 
 input, button, textarea, select {
     font: inherit;
 }
 
-p, h1, h2, h3, h4, h5, h6 {
-    overflow-wrap: break-word;
+/* https://www.youtube.com/watch?v=snKm-VzJCOo */
+h1, h2, h3, h4 {
+    text-wrap: balance;
+}
+
+p {
+    max-width: 80ch;
+    text-wrap: pretty; /* Prevent any orphans from text wrapping */
 }
 
 /* ---------------------------------------------------- */
 
+@font-face {
+    font-family: 'Geist';
+    src: url('../fonts/Geist/Geist-Light.otf') format('truetype');
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: 'Geist';
+    src: url('../fonts/Geist/Geist-Bold.otf') format('truetype');
+    font-weight: bold;
+}
+
 :root {
     --red: #f87171;
-    --bg: #121c23;
-    --muted: #64748B;
+    --bg: #121c22;
+    /* --b2: #0e171e */
+    /* --b3: #091319 */
     --text: #9fb9d0;
-    /*--p: #fb923c;   /* orange */
-    --p: #ff865b;
+    --p: #ff865b; /* orange */
     --s: #fd6f9c; /* purple */
     --t: #b387fa;  /* red-pinkish */
     --borders: #9fb9d0;
     --bor: #2f3943;
-    --card: #1b252d; /* dark blue */
+    --card: #1b262c; /* dark blue (--nc) */
     --search: #091319;
+
+    --fs-h2: 1.25rem;
+    --fs-h3: 1rem;
+    --fs-normal: 1rem; /* normal */
+    --fs-small: 0.875rem; /* small */
+}
+
+/* Target screens of below 40rem */
+@media screen and (max-width: 40em) {
+    :root {
+        --fs-h2: 1.125rem;
+        --fs-h3: 1rem;
+        --fs-normal: 0.875rem;
+        --fs-small: 0.75rem; /* small */
+    }
 }
 
 body {
-    font-family: 'IBM Plex Sans';
-    font-size: 16px;
+    font-family: 'Geist';
+    font-size: var(--fs-normal);
     color: var(--text);
     background: var(--bg);
 }
@@ -49,15 +82,13 @@ main {
     display: flex;
     flex-flow: column nowrap; /* Wrap causes the footer to freak out. ? */
     align-items: stretch;
-    padding: 1rem;
     gap: 1rem;
+    padding: 1rem;
 }
 
 .search-container {
     display: flex; /* Changed from 'box' to 'flex' */
     flex-grow: 1; /* Allows the search bar to grow and take up available space */
-    padding-top: 1rem;
-    padding-bottom: 1rem;
 }
 
 .search-bar {
@@ -68,7 +99,7 @@ main {
     border: 1px solid transparent; /* required to mock outline, so layout does not shift */
     padding: 8px;
     border-radius: 8px;
-    font-size: 16px;
+    font-size: var(--fs-normal);
 }
 
 .search-bar:focus {
@@ -90,20 +121,19 @@ main {
     color: var(--clr-green);
 }
 
-.article-container {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    padding: 1rem;
-}
-
 .article {
     display: flex;
     flex-direction: column;
-    align-items: stretch;
     gap: 1rem;
-    padding: 2rem;
-    max-width: 60rem;
+    padding: 2rem 1rem;
+    width: min(90%, 60rem)
+    margin: 0 auto;  /* center text */
+}
+
+.custom-divider {
+    border: 0; /* Removes the default border */
+    height: 1px; /* Sets the height of the divider */
+    background-color: var(--bor); /* Sets the color of the divider */
 }
 
 .content {
@@ -111,33 +141,43 @@ main {
     flex-grow: 1; /* Allows the search bar to grow and take up available space */
     flex-direction: column;
     justify-content: start;
-    color: var(--clr-text);
-    text-align: left;
     gap: 1rem;
-}
-
-h1 {
-    color: var(--text);
-    font-size: 1.3rem;
-    font-weight: bold; /* bold is 700, normal is 400, this is semi-bold */
-    max-width: 800px;
 }
 
 h2 {
     color: var(--text);
-    font-size: large;
-    font-weight: bold;
+    font-size: var(--fs-h2);
+    line-height: 1.1;
+    text-transform: capitalize;
 }
 
-ul {
-    font-size: normal;
+ul, ol {
+    font-size: var(--fs-normal);
     color: var(--text);
     max-width: 801px;
+    padding-left: 1rem;
+}
+
+code {
+    background: var(--card);
+    border: 1px solid var(--bor);
+    border-radius: 1rem;
+    color: var(--text);
+    page-break-inside: avoid;
+    font-family: 'Fira Code', monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    margin-bottom: 1.6em;
+    max-width: 100%;
+    overflow: auto;
+    padding: 1em 1.5em;
+    display: block;
+    word-wrap: break-word;
 }
 
 section {
     color: var(--text);
-    font-size: 1rem;
+    font-size: var(--fs-normal);
     max-width: 800px;
 }
 
@@ -152,9 +192,12 @@ section {
     font-weight: normal;
 }
 
+/* Force link to break to newline */
 a {
     color: var(--s);
     text-decoration: none; /* Removes the underline */
+    word-wrap: break-word; /* Standard property is overflow-wrap */
+    word-break: break-all;
 }
 
 /* Changing the color when the link is hovered over */
@@ -162,11 +205,11 @@ a:hover {
     color: var(--t); /* Set your desired hover color */
 }
 
-.cards {
+.card-highlights {
     display: flex;
     flex-flow: column wrap;
     align-items: stretch;
-    gap: 2rem;
+    gap: 1rem;
 }
 
 .card-container {
@@ -183,7 +226,14 @@ a:hover {
 .card-body {
     display: flex;
     flex-flow: column;
-    gap: 1rem;
+}
+
+/* Cut-off text after 3 lines */
+.card-section {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .card-profile {
@@ -239,22 +289,17 @@ a:hover {
 .card-header {
     color: var(--text);
     font-weight: normal;
-    font-size: small;
+    font-size: var(--fs-small);
+    text-transform: capitalize;
     cursor: pointer;
 }
 
 .card-header:hover {
-    background: linear-gradient(to right, var(--p), var(--s));
+    background: var(--t);
     text-shadow: none;
     -webkit-text-fill-color: transparent;
     -webkit-background-clip: text;
     background-clip: text;
-}
-
-.custom-divider {
-    border: 0; /* Removes the default border */
-    height: 1px; /* Sets the height of the divider */
-    background-color: #333; /* Sets the color of the divider */
 }
 
 .card-profile {
@@ -291,18 +336,67 @@ footer i {
 .tags {
     display: flex;
     justify-content: flex-start;
-    gap: 1rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
 }
 
 .tag {
-    color: white;
-    font-size: small;
-    border-radius: 5px;
-    background-color: var(--p);
-    padding: 2px;
+    color: var(--text);
+    font-size: var(--fs-small); /* Example, adjust based on your design system */
+    font-weight: 550;
+    border-radius: 12px;
+    border: 1px solid var(--text); /* Consolidated border property */
+    padding: 3px 8px;
+    background-color: var(--card); /* Example, adjust or use a CSS variable */
 }
 
+.tag:hover, .tag:focus {
+    color: var(--bg);
+    background-color: var(--text);
+    cursor: pointer;
+}
+
+/* Ensure your CSS variables (--text, --tag-background, etc.) are defined in a :root selector or within relevant parent selectors */
+
 ::placeholder {
-    font-size: 16px;
+    font-size: var(--fs-normal); /* Example, adjust based on your design system */
     color: var(--clr-text);
+}
+
+/*-----------------------------------------------------------
+ * Article Cards
+ * ----------------------------------------------------------- */
+
+.article-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(20em, 1fr));
+    gap: 1rem;
+}
+
+.article-card-container {
+    border-radius: 0.5rem;
+    background-color: var(--card);
+    border-width: 0px;
+    border-style: solid;
+}
+
+.article-card-body {
+    display: flex;
+    flex-flow: column;
+    flex: 1;
+    position: relative;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.article-card-header {
+    color: var(--text);
+    font-weight: bold;
+    font-size: var(--fs-normal);
+    text-transform: capitalize;
+    cursor: pointer;
+}
+
+.article-card-header:hover {
+    color: var(--s);
 }
