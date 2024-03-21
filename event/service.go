@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
-	"os"
 	"slices"
 	"sync"
 	"time"
@@ -174,6 +173,7 @@ func (s EventService) ArticleHighlights(ctx context.Context, kind int, pubkey, i
 				}
 				notes = append(notes, ie.Event)
 				s.db.SaveEvent(ctx, ie.Event)
+				s.cache.Set(identifier, []byte{})
 			case <-ctx.Done():
 				return
 			}
@@ -181,34 +181,34 @@ func (s EventService) ArticleHighlights(ctx context.Context, kind int, pubkey, i
 	}()
 
 	// fetch from local store if available
-	lastNotes, _ = wdb.QuerySync(ctx, filter)
-
-	if len(lastNotes) == 0 {
+	if _, found := s.cache.Get(identifier); found {
+		lastNotes, _ = wdb.QuerySync(ctx, filter)
+	} else {
 		// if we didn't get enough notes (or if we didn't even query the local store), wait for the external relays
-		fmt.Println("AAA")
-
 		lastNotes = <-external
+		s.cache.Set(identifier, []byte{})
+		s.Log.Info("dummy highlight cached for article", "identifier", identifier)
 
-		tags := nostr.Tags{
-			{"a", tag},
-		}
-
-		e := nostr.Event{
-			Kind:      9802,
-			PubKey:    pubkey,
-			Content:   "",
-			CreatedAt: nostr.Now(),
-			Tags:      tags,
-		}
-
-		// USe the server secret key, makes it easy to filer using pubkey
-		sk := os.Getenv("NOSTR_SK")
-		_ = e.Sign(sk)
-
-		s.db.SaveEvent(ctx, &e)
-
-		// Add a dummy
-		lastNotes = append(lastNotes, &e)
+		// 		tags := nostr.Tags{
+		// 			{"a", tag},
+		// 		}
+		//
+		// 		e := nostr.Event{
+		// 			Kind:      9802,
+		// 			PubKey:    pubkey,
+		// 			Content:   "",
+		// 			CreatedAt: nostr.Now(),
+		// 			Tags:      tags,
+		// 		}
+		//
+		// 		// USe the server secret key, makes it easy to filer using pubkey
+		// 		sk := os.Getenv("NOSTR_SK")
+		// 		_ = e.Sign(sk)
+		//
+		// 		s.db.SaveEvent(ctx, &e)
+		//
+		// 		// Add a dummy
+		// 		lastNotes = append(lastNotes, &e)
 	}
 
 	return lastNotes, nil
