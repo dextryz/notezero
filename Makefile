@@ -1,5 +1,5 @@
 # Define binary output name
-BINARY_NAME=tenet
+BINARY_NAME=notezero
 
 # run: Runs the Go application
 run:

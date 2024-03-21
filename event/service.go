@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/dextryz/tenet/badger"
+	"github.com/dextryz/notezero/badger"
 	"github.com/fiatjaf/eventstore"
 	"github.com/nbd-wtf/go-nostr"
 	"github.com/nbd-wtf/go-nostr/nip19"

@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/a-h/templ"
-	"github.com/dextryz/tenet"
-	"github.com/dextryz/tenet/tmp"
+	"github.com/dextryz/notezero"
+	"github.com/dextryz/notezero/tmp"
 )
 
 // Poplated the data.Notes field with a list of requested notes based on the search field.
@@ -29,8 +29,8 @@ func (s *Handler) ArticleHandler(w http.ResponseWriter, r *http.Request) {
 	var component templ.Component
 
 	switch data.TemplateId {
-	case tenet.Article:
-		component = tmp.ArticleTemplate(tenet.ArticleParams{
+	case notezero.Article:
+		component = tmp.ArticleTemplate(notezero.ArticleParams{
 			Event:   data.Event,
 			Content: template.HTML(data.Content), // data.Content is converted from Md to Html in data service.
 		})

@@ -4,11 +4,11 @@ import (
 	"context"
 	"time"
 
-	"github.com/dextryz/tenet"
+	"github.com/dextryz/notezero"
 	"github.com/nbd-wtf/go-nostr/nip19"
 )
 
-func (s *Handler) requestData(ctx context.Context, code string) (*tenet.Data, error) {
+func (s *Handler) requestData(ctx context.Context, code string) (*notezero.Data, error) {
 
 	// 1. Request parent event
 	rootEvent, err := s.service.RequestEvent(ctx, code)
@@ -16,8 +16,8 @@ func (s *Handler) requestData(ctx context.Context, code string) (*tenet.Data, er
 		return nil, err
 	}
 
-	data := &tenet.Data{
-		Event: tenet.EnhancedEvent{
+	data := &notezero.Data{
+		Event: notezero.EnhancedEvent{
 			Event:  rootEvent,
 			Relays: []string{},
 		},
@@ -42,7 +42,7 @@ func (s *Handler) requestData(ctx context.Context, code string) (*tenet.Data, er
 	// 3. Populate the children
 	switch rootEvent.Kind {
 	case 0:
-		data.TemplateId = tenet.ListArticle
+		data.TemplateId = notezero.ListArticle
 		events, err := s.service.AuthorArticles(ctx, npub)
 		if err != nil {
 			return nil, err
@@ -51,11 +51,11 @@ func (s *Handler) requestData(ctx context.Context, code string) (*tenet.Data, er
 		// TODO: Populate data.Notes with the list of requested articles.
 		// This will be rendered using the ListArticle template.
 		for _, e := range events {
-			data.Notes = append(data.Notes, tenet.EnhancedEvent{Event: e})
+			data.Notes = append(data.Notes, notezero.EnhancedEvent{Event: e})
 		}
 	case 30023:
 
-		data.TemplateId = tenet.Article
+		data.TemplateId = notezero.Article
 		data.Content = mdToHtml(rootEvent.Content)
 
 		// 1. Process a list of kind 9082
@@ -74,7 +74,7 @@ func (s *Handler) requestData(ctx context.Context, code string) (*tenet.Data, er
 		// TODO add highlights to content string
 
 	default:
-		data.TemplateId = tenet.Unkown
+		data.TemplateId = notezero.Unkown
 	}
 
 	return data, nil

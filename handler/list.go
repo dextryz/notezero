@@ -6,16 +6,16 @@ import (
 	"net/http"
 
 	"github.com/a-h/templ"
-	"github.com/dextryz/tenet"
-	"github.com/dextryz/tenet/tmp"
+	"github.com/dextryz/notezero"
+	"github.com/dextryz/notezero/tmp"
 )
 
 type Handler struct {
 	log     *slog.Logger
-	service tenet.EventService
+	service notezero.EventService
 }
 
-func New(log *slog.Logger, es tenet.EventService) *Handler {
+func New(log *slog.Logger, es notezero.EventService) *Handler {
 	return &Handler{
 		log:     log,
 		service: es,
@@ -45,8 +45,8 @@ func (s *Handler) ListHandler(w http.ResponseWriter, r *http.Request) {
 	// 1. A list of articles are returned is the search field was npub
 	// 2. A list of highlights are returned is the search field was nevent of kind 30023
 	switch data.TemplateId {
-	case tenet.ListArticle:
-		component = tmp.ListArticleTemplate(tenet.ListArticleParams{
+	case notezero.ListArticle:
+		component = tmp.ListArticleTemplate(notezero.ListArticleParams{
 			Notes: data.Notes,
 		})
 		fmt.Println("Component")

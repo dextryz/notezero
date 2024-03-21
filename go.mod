@@ -1,4 +1,4 @@
-module github.com/dextryz/tenet
+module github.com/dextryz/notezero
 
 go 1.22.0
 

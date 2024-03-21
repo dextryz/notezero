@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
-	"golang.org/x/exp/slog"
+	"log/slog"
 	"net/http"
 	"os"
 	"time"
 
-	"github.com/dextryz/tenet/badger"
-	"github.com/dextryz/tenet/event"
-	"github.com/dextryz/tenet/handler"
+	"github.com/dextryz/notezero/badger"
+	"github.com/dextryz/notezero/event"
+	"github.com/dextryz/notezero/handler"
 	eventstore_badger "github.com/fiatjaf/eventstore/badger"
 )
 
