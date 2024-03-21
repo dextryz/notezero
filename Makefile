@@ -3,11 +3,11 @@ BINARY_NAME=tenet
 
 # run: Runs the Go application
 run:
-	go run ./cmd/main.go
+	go run ./cmd/server/main.go
 
 # build: Builds the Go application binary
 build:
-	go build -o $(BINARY_NAME) ./cmd/main.go
+	go build -o $(BINARY_NAME) ./cmd/server/main.go
 
 # clean: Cleans up the binary
 clean:
