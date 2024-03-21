@@ -55,8 +55,8 @@ p {
     --card: #1b262c; /* dark blue (--nc) */
     --search: #091319;
 
-    --fs-h2: 1.5rem;
-    --fs-h3: 1.25rem;
+    --fs-h2: 1.25rem;
+    --fs-h3: 1rem;
     --fs-normal: 1rem; /* normal */
     --fs-small: 0.875rem; /* small */
 }
@@ -151,10 +151,28 @@ h2 {
     text-transform: capitalize;
 }
 
-ul {
+ul, ol {
     font-size: var(--fs-normal);
     color: var(--text);
     max-width: 801px;
+    padding-left: 1rem;
+}
+
+code {
+    background: var(--card);
+    border: 1px solid var(--bor);
+    border-radius: 1rem;
+    color: var(--text);
+    page-break-inside: avoid;
+    font-family: 'Fira Code', monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    margin-bottom: 1.6em;
+    max-width: 100%;
+    overflow: auto;
+    padding: 1em 1.5em;
+    display: block;
+    word-wrap: break-word;
 }
 
 section {

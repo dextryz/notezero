@@ -1,0 +1,28 @@
+package tmp
+
+import (
+    "github.com/dextryz/tenet"
+)
+
+templ ArticleTemplate(params tenet.ArticleParams) {
+
+    <article class="article">
+
+        <h2>
+            { params.Event.Title() }
+        </h2>
+
+        <div class="tags">
+            for _, tag := range params.Event.HashTags() {
+                <a class="tag" href="/tags/coding">{ tag }</a>
+            }
+        </div>
+
+        <hr class="custom-divider"/>
+
+        <section id="#content" class="content">
+            @templ.Raw(params.Content)
+        </section>
+
+    </article>
+}

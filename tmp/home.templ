@@ -1,0 +1,36 @@
+package tmp
+
+templ Index() {
+    <!doctype html>
+    <html>
+
+        <head>
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+            <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet" />
+            <link rel="stylesheet" href="/static/style.css" type="text/css" />
+            <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+        </head>
+
+        <body hx-boost="true">
+
+            <main>
+                <form class="search-container"
+                    hx-get="/list"
+                    hx-target="#cards"
+                    hx-swap="innerHTML">
+
+                    <input class="search-bar" name="search" type="search" placeholder="Paste naddr or npub and Enter"/>
+                </form>
+
+                <div id="cards"></div>
+
+                <footer>
+                    <p>Made with <i class="fas fa-heart"></i> by <a href="https://github.com/dextryz">dextryz</a></p>
+                </footer>
+            </main>
+
+        </body>
+    </html>
+}
