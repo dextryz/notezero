@@ -4,10 +4,10 @@ type TemplateID int
 
 const (
 	Profile TemplateID = iota
-	Article
 	ListArticle
-	Highlight
 	ListHighlight
+	Article
+	Highlight
 	Unkown
 )
 

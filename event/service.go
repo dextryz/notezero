@@ -134,7 +134,6 @@ func (s EventService) AuthorArticles(ctx context.Context, npub string) ([]*nostr
 	return events, nil
 }
 
-// TODO merge this into RequestData
 func (s EventService) ArticleHighlights(ctx context.Context, kind int, pubkey, identifier string) ([]*nostr.Event, error) {
 
 	wdb := eventstore.RelayWrapper{Store: s.db}
