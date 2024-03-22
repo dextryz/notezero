@@ -56,6 +56,9 @@ func main() {
 	fs = http.FileServer(http.Dir("./fonts"))
 	mux.Handle("/fonts/", http.StripPrefix("/fonts/", fs))
 
+	fs = http.FileServer(http.Dir("./img"))
+	mux.Handle("/img/", http.StripPrefix("/img/", fs))
+
 	mux.HandleFunc("/", h.Homepage)
 	mux.HandleFunc("GET /list", h.ListHandler)
 	mux.HandleFunc("GET /articles/{naddr}", h.ArticleHandler)

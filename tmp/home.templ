@@ -19,12 +19,19 @@ templ Index() {
                 <form class="search-container"
                     hx-get="/list"
                     hx-target="#cards"
+                    hx-indicator="#spinner"
                     hx-swap="innerHTML">
 
                     <input class="search-bar" name="search" type="search" placeholder="Paste naddr or npub and Enter"/>
                 </form>
 
-                <div id="cards"></div>
+                <div id="cards">
+
+                <div id="spinner" class="loading-container">
+                    <img class="htmx-indicator" src="/img/bars.svg"/>
+                    <p>Requesting Notes...</p>
+                </div>
+                </div>
 
                 <footer>
                     <p>Made with <i class="fas fa-heart"></i> by <a href="https://github.com/dextryz">dextryz</a></p>
