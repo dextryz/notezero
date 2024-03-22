@@ -159,18 +159,27 @@ ul, ol {
 }
 
 code {
+    font-size: 13px;
+    background: var(--card);
+    color: var(--text);
+    padding: 0.2rem;
+    border-radius: 4px;
+    font-family: 'Fira Code', monospace;
+}
+
+pre {
     background: var(--card);
     border: 1px solid var(--bor);
     border-radius: 1rem;
     color: var(--text);
     page-break-inside: avoid;
     font-family: 'Fira Code', monospace;
-    font-size: 12px;
+    font-size: 13px;
     line-height: 1.6;
     margin-bottom: 1.6em;
     max-width: 100%;
     overflow: auto;
-    padding: 1em 1.5em;
+    padding: 1rem;
     display: block;
     word-wrap: break-word;
 }
