@@ -62,6 +62,7 @@ func main() {
 	mux.HandleFunc("/", h.Homepage)
 	mux.HandleFunc("GET /list", h.ListHandler)
 	mux.HandleFunc("GET /articles/{naddr}", h.ArticleHandler)
+	mux.HandleFunc("GET /content/{naddr}", h.ContentHandler)
 
 	port := os.Getenv("PORT")
 	if port == "" {

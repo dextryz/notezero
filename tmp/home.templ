@@ -18,6 +18,7 @@ templ Index() {
             <main>
                 <form class="search-container"
                     hx-get="/list"
+                    hx-push-url="true"
                     hx-target="#cards"
                     hx-indicator="#spinner"
                     hx-swap="innerHTML">
@@ -26,11 +27,9 @@ templ Index() {
                 </form>
 
                 <div id="cards">
-
-                <div id="spinner" class="loading-container">
-                    <img class="htmx-indicator" src="/img/bars.svg"/>
-                    <p>Requesting Notes...</p>
-                </div>
+                    <div id="spinner" class="htmx-indicator">
+                        <div class="ripple"></div>
+                    </div>
                 </div>
 
                 <footer>

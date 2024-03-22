@@ -27,6 +27,10 @@ type ListArticleParams struct {
 	Notes []EnhancedEvent
 }
 
+type SpinnerParams struct {
+	Id string
+}
+
 type ArticleParams struct {
 	Event    EnhancedEvent
 	Metadata ProfileMetadata

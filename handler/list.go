@@ -31,7 +31,7 @@ func (s *Handler) ListHandler(w http.ResponseWriter, r *http.Request) {
 
 	code := r.URL.Query().Get("search")
 
-	data, err := s.requestData(r.Context(), code)
+	data, err := s.requestData(r.Context(), code, false)
 	if err != nil {
 		s.log.Error("failed to get events", slog.Any("error", err))
 		http.Error(w, "failed to get counts", http.StatusInternalServerError)

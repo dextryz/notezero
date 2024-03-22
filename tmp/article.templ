@@ -1,6 +1,7 @@
 package tmp
 
 import (
+    "fmt"
     nz "github.com/dextryz/notezero"
 )
 
@@ -20,9 +21,14 @@ templ ArticleTemplate(params nz.ArticleParams) {
 
         <hr class="custom-divider"/>
 
-        <section id="#content" class="content">
-            @templ.Raw(params.Content)
-        </section>
+        <div id="content-spinner" class="spinner-container"
+            hx-get={ fmt.Sprintf("/content/%s", params.Event.Naddr()) }
+            hx-target="#content-spinner"
+            hx-swap="outerHTML"
+            hx-trigger="load delay:200ms changed">
+
+            <div class="ripple"></div>
+        </div>
 
     </article>
 }

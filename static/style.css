@@ -124,6 +124,7 @@ main {
 .article {
     display: flex;
     flex-direction: column;
+    justify-content: space-evenly;
     gap: 1rem;
     padding: 2rem 1rem;
     width: min(90%, 60rem)
@@ -393,6 +394,7 @@ footer i {
     display: flex;
     flex-flow: column;
     flex: 1;
+    justify-content: center;
     position: relative;
     gap: 1rem;
     padding: 1rem;
@@ -427,4 +429,56 @@ footer i {
 }
 .htmx-request.htmx-indicator{
     opacity:1
+}
+
+.spinner-container {
+    display: flex;
+    flex-grow: 1; /* Allows the search bar to grow and take up available space */
+    justify-content: center;
+    align-items: center;
+    height: 100%; /* Take up full height of the parent */
+    padding-top: 4rem;
+}
+
+.ripple {
+    text-decoration: none;
+    color: #fff;
+    width: 6px;
+    height: 6px;
+    background-color: #00E7FF;
+    margin: 0 auto;
+    border-radius: 100px;
+    -webkit-animation: ripple 0.7s linear infinite;
+    animation: ripple 0.7s linear infinite;
+}
+@-webkit-keyframes ripple {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 231, 255, 0.3), 0 0 0 5px rgba(0, 231, 255, 0.3), 0 0 0 15px rgba(0, 231, 255, 0.3), 0 0 0 30px rgba(0, 231, 255, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 0 5px rgba(0, 231, 255, 0.3), 0 0 0 15px rgba(0, 231, 255, 0.3), 0 0 0 30px rgba(0, 231, 255, 0.3), 0 0 0 45px rgba(0, 231, 255, 0);
+  }
+}
+@keyframes ripple {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 231, 255, 0.3), 0 0 0 5px rgba(0, 231, 255, 0.3), 0 0 0 15px rgba(0, 231, 255, 0.3), 0 0 0 30px rgba(0, 231, 255, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 0 5px rgba(0, 231, 255, 0.3), 0 0 0 15px rgba(0, 231, 255, 0.3), 0 0 0 30px rgba(0, 231, 255, 0.3), 0 0 0 45px rgba(0, 231, 255, 0);
+  }
+}
+
+.htmx-indicator{
+    flex-grow: 1; /* Allows the search bar to grow and take up available space */
+    padding-top: 2rem;
+    height: 60px;
+    margin: 0 auto;  /* center text */
+    opacity: 0;
+    transition: opacity 500ms ease-in;
+}
+.htmx-request .htmx-indicator{
+    opacity: 1;
+}
+.htmx-request.htmx-indicator{
+    opacity: 1;
 }

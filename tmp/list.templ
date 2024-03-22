@@ -11,15 +11,16 @@ templ ListArticleTemplate(params nz.ListArticleParams) {
 
 	for _, note := range params.Notes {
 
-        <article class="article-card-container">
+        <article id={ fmt.Sprintf("%s", note.Naddr()) } class="article-card-container">
 
-            <div class="article-card-body">
+            <div id="content-area" class="article-card-body">
 
                 <header class="article-card-header"
-                    hx-get={ fmt.Sprintf("articles/%s", note.Naddr()) }
+                    hx-get={ fmt.Sprintf("/articles/%s", note.Naddr()) }
                     hx-push-url="true"
                     hx-target="body"
                     hx-swap="outerHTML">
+
                     { note.Title() }
                 </header>
 
@@ -45,7 +46,6 @@ templ ListArticleTemplate(params nz.ListArticleParams) {
                 </b>
 
             </div>
-
         </article>
 	}
     </article>
