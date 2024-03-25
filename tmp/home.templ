@@ -15,21 +15,25 @@ templ Index() {
 
         <body hx-boost="true">
 
-            <main>
                 <form class="search-container"
-                    hx-get="/list"
+                    hx-get="/search"
+                    hx-push-url="true"
                     hx-target="#cards"
-                    hx-swap="innerHTML">
+                    hx-indicator="#spinner"
+                    hx-swap="outerHTML">
 
                     <input class="search-bar" name="search" type="search" placeholder="Paste naddr or npub and Enter"/>
                 </form>
 
-                <div id="cards"></div>
+                <div id="cards">
+                    <div id="spinner" class="htmx-indicator">
+                        <div class="ripple"></div>
+                    </div>
+                </div>
 
                 <footer>
                     <p>Made with <i class="fas fa-heart"></i> by <a href="https://github.com/dextryz">dextryz</a></p>
                 </footer>
-            </main>
 
         </body>
     </html>

@@ -8,7 +8,8 @@ import (
 	"github.com/nbd-wtf/go-nostr/nip19"
 )
 
-func (s *Handler) requestData(ctx context.Context, code string) (*notezero.Data, error) {
+// FIXME: Remove the content bool hack
+func (s *Handler) requestData(ctx context.Context, code string, content bool) (*notezero.Data, error) {
 
 	// 1. Request parent event
 	rootEvent, err := s.service.RequestEvent(ctx, code)
@@ -24,6 +25,7 @@ func (s *Handler) requestData(ctx context.Context, code string) (*notezero.Data,
 	}
 
 	npub, _ := nip19.EncodePublicKey(rootEvent.PubKey)
+	data.CreatedAt = rootEvent.CreatedAt.Time().String()
 	data.Npub = npub // hopefully will be replaced later
 	data.Naddr = ""
 	data.NaddrNaked = ""
@@ -58,20 +60,24 @@ func (s *Handler) requestData(ctx context.Context, code string) (*notezero.Data,
 		data.TemplateId = notezero.Article
 		data.Content = mdToHtml(rootEvent.Content)
 
-		// 1. Process a list of kind 9082
-		// 2. Use the first identifier of the article to request highlight data
-		// 3. Add the highlights to the data.Notes list
-		if d := rootEvent.Tags.GetFirst([]string{"d", ""}); d != nil {
+		if content {
 
-			highlights, err := s.service.ArticleHighlights(ctx, rootEvent.Kind, rootEvent.PubKey, d.Value())
-			if err != nil {
-				return nil, err
+			// 1. Process a list of kind 9082
+			// 2. Use the first identifier of the article to request highlight data
+			// 3. Add the highlights to the data.Notes list
+			if d := rootEvent.Tags.GetFirst([]string{"d", ""}); d != nil {
+
+				highlights, err := s.service.ArticleHighlights(ctx, rootEvent.Kind, rootEvent.PubKey, d.Value())
+				if err != nil {
+					return nil, err
+				}
+
+				s.log.Info("articles pulled as children", "count", len(highlights))
 			}
 
-			s.log.Info("articles pulled as children", "count", len(highlights))
-		}
+			// TODO add highlights to content string
 
-		// TODO add highlights to content string
+		}
 
 	default:
 		data.TemplateId = notezero.Unkown

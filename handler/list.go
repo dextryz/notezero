@@ -27,11 +27,13 @@ func (s *Handler) Homepage(w http.ResponseWriter, r *http.Request) {
 }
 
 // Poplated the data.Notes field with a list of requested notes based on the search field.
-func (s *Handler) ListHandler(w http.ResponseWriter, r *http.Request) {
+func (s *Handler) CodeHandler(w http.ResponseWriter, r *http.Request) {
 
-	code := r.URL.Query().Get("search")
+	code := r.PathValue("code")
 
-	data, err := s.requestData(r.Context(), code)
+	fmt.Printf("Handler: %s\n", code)
+
+	data, err := s.requestData(r.Context(), code, false)
 	if err != nil {
 		s.log.Error("failed to get events", slog.Any("error", err))
 		http.Error(w, "failed to get counts", http.StatusInternalServerError)

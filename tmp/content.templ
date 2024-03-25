@@ -1,0 +1,13 @@
+package tmp
+
+import (
+    nz "github.com/dextryz/notezero"
+)
+
+templ ContentTemplate(params nz.ArticleParams) {
+
+    <section id="#content" class="content">
+        @templ.Raw(params.Content)
+    </section>
+}
+
