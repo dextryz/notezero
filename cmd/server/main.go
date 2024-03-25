@@ -53,9 +53,6 @@ func main() {
 	fs := http.FileServer(http.Dir("./static"))
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
 
-	fs = http.FileServer(http.Dir("./img"))
-	mux.Handle("/img/", http.StripPrefix("/img/", fs))
-
 	mux.HandleFunc("/", h.Homepage)
 	mux.HandleFunc("GET /search", h.RedirectSearch)
 	mux.HandleFunc("GET /nz/{code}", h.CodeHandler)

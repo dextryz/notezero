@@ -2,6 +2,7 @@ package notezero
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/nbd-wtf/go-nostr/nip19"
@@ -94,16 +95,28 @@ func (s *Handler) requestData(ctx context.Context, code string, content bool) (*
 			// 3. Add the highlights to the data.Notes list
 			if d := rootEvent.Tags.GetFirst([]string{"d", ""}); d != nil {
 
-				highlights, err := s.service.ArticleHighlights(ctx, rootEvent.Kind, rootEvent.PubKey, d.Value())
+				events, err := s.service.ArticleHighlights(ctx, rootEvent.Kind, rootEvent.PubKey, d.Value())
 				if err != nil {
 					return nil, err
 				}
 
-				s.log.Info("articles pulled as children", "count", len(highlights))
+				// Add highlight notes to article data structure after applying to content
+				for _, v := range events {
+					data.Notes = append(data.Notes, EnhancedEvent{Event: v})
+				}
+
+				highlights := []string{}
+				for _, v := range events {
+					highlights = append(highlights, v.Content)
+					fmt.Println(v.Content)
+				}
+
+				intervals := highlightIntervals(data.Content, highlights)
+				fmt.Println(intervals)
+				merged := mergeIntervals(intervals)
+				fmt.Println(merged)
+				data.Content = highlight(data.Content, merged)
 			}
-
-			// TODO add highlights to content string
-
 		}
 
 	default:

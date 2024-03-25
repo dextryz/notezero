@@ -9,6 +9,8 @@ import (
 	"github.com/a-h/templ"
 )
 
+// 1. Highlights are encoded into data.Notes
+// 2. Process the highlights into the data.Content string
 func (s *Handler) ContentHandler(w http.ResponseWriter, r *http.Request) {
 
 	code := r.PathValue("naddr")
@@ -21,7 +23,7 @@ func (s *Handler) ContentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.log.Info("rendering article view", "author", data.Npub)
+	s.log.Info("rendering content view", "author", data.Npub, "highlightCount", len(data.Notes))
 
 	var component templ.Component
 
