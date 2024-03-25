@@ -1,4 +1,4 @@
-package handler
+package notezero
 
 import (
 	"fmt"
@@ -7,8 +7,6 @@ import (
 	"net/http"
 
 	"github.com/a-h/templ"
-	"github.com/dextryz/notezero"
-	"github.com/dextryz/notezero/tmp"
 )
 
 func (s *Handler) ContentHandler(w http.ResponseWriter, r *http.Request) {
@@ -28,8 +26,8 @@ func (s *Handler) ContentHandler(w http.ResponseWriter, r *http.Request) {
 	var component templ.Component
 
 	switch data.TemplateId {
-	case notezero.Article:
-		component = tmp.ContentTemplate(notezero.ArticleParams{
+	case Article:
+		component = ContentTemplate(ArticleParams{
 			Event:   data.Event,
 			Content: template.HTML(data.Content), // data.Content is converted from Md to Html in data service.
 		})
@@ -65,8 +63,8 @@ func (s *Handler) ArticleHandler(w http.ResponseWriter, r *http.Request) {
 	var component templ.Component
 
 	switch data.TemplateId {
-	case notezero.Article:
-		component = tmp.ArticleTemplate(notezero.ArticleParams{
+	case Article:
+		component = ArticleTemplate(ArticleParams{
 			Event:   data.Event,
 			Content: template.HTML(data.Content), // data.Content is converted from Md to Html in data service.
 		})

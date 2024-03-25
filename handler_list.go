@@ -1,4 +1,4 @@
-package handler
+package notezero
 
 import (
 	"fmt"
@@ -6,16 +6,14 @@ import (
 	"net/http"
 
 	"github.com/a-h/templ"
-	"github.com/dextryz/notezero"
-	"github.com/dextryz/notezero/tmp"
 )
 
 type Handler struct {
 	log     *slog.Logger
-	service notezero.EventService
+	service EventService
 }
 
-func New(log *slog.Logger, es notezero.EventService) *Handler {
+func NewHandler(log *slog.Logger, es EventService) *Handler {
 	return &Handler{
 		log:     log,
 		service: es,
@@ -23,7 +21,7 @@ func New(log *slog.Logger, es notezero.EventService) *Handler {
 }
 
 func (s *Handler) Homepage(w http.ResponseWriter, r *http.Request) {
-	tmp.Index().Render(r.Context(), w)
+	IndexTemplate().Render(r.Context(), w)
 }
 
 // Poplated the data.Notes field with a list of requested notes based on the search field.
@@ -47,8 +45,8 @@ func (s *Handler) CodeHandler(w http.ResponseWriter, r *http.Request) {
 	// 1. A list of articles are returned is the search field was npub
 	// 2. A list of highlights are returned is the search field was nevent of kind 30023
 	switch data.TemplateId {
-	case notezero.ListArticle:
-		component = tmp.ListArticleTemplate(notezero.ListArticleParams{
+	case ListArticle:
+		component = ListArticleTemplate(ListArticleParams{
 			Notes: data.Notes,
 		})
 		fmt.Println("Component")

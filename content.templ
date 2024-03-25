@@ -1,0 +1,9 @@
+package notezero
+
+templ ContentTemplate(params ArticleParams) {
+
+    <section id="#content" class="content">
+        @templ.Raw(params.Content)
+    </section>
+}
+
