@@ -89,6 +89,7 @@ main {
 .search-container {
     display: flex; /* Changed from 'box' to 'flex' */
     flex-grow: 1; /* Allows the search bar to grow and take up available space */
+    padding: 1rem 1rem 0rem 1rem;
 }
 
 .search-bar {
@@ -126,7 +127,6 @@ main {
     flex-direction: column;
     justify-content: space-evenly;
     gap: 1rem;
-    padding: 2rem 1rem;
     width: min(90%, 60rem)
     margin: 0 auto;  /* center text */
 }
