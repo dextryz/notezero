@@ -23,7 +23,7 @@ func main() {
 		"wss://relay.damus.io/",
 		"wss://nostr-01.yakihonne.com",
 		// "wss://nostr-02.yakihonne.com",
-		// "wss://relay.highlighter.com/",
+		"wss://relay.highlighter.com/",
 		"wss://relay.f7z.io",
 		"wss://nos.lol",
 	}
@@ -60,9 +60,10 @@ func main() {
 	mux.Handle("/img/", http.StripPrefix("/img/", fs))
 
 	mux.HandleFunc("/", h.Homepage)
-	mux.HandleFunc("GET /list", h.ListHandler)
-	mux.HandleFunc("GET /articles/{naddr}", h.ArticleHandler)
-	mux.HandleFunc("GET /content/{naddr}", h.ContentHandler)
+	mux.HandleFunc("GET /search", h.RedirectSearch)
+	mux.HandleFunc("GET /nz/{code}", h.CodeHandler)
+	mux.HandleFunc("GET /nz/{npub}/{naddr}", h.ArticleHandler)
+	mux.HandleFunc("GET /nz/content/{naddr}", h.ContentHandler)
 
 	port := os.Getenv("PORT")
 	if port == "" {

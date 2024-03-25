@@ -49,8 +49,9 @@ func (s *Handler) ContentHandler(w http.ResponseWriter, r *http.Request) {
 func (s *Handler) ArticleHandler(w http.ResponseWriter, r *http.Request) {
 
 	code := r.PathValue("naddr")
+	npub := r.PathValue("npub")
 
-	s.log.Info("handler for article", "naddr", code)
+	s.log.Info("handler for article", "naddr", code, "npub", npub)
 
 	data, err := s.requestData(r.Context(), code, false)
 	if err != nil {

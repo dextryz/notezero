@@ -28,7 +28,7 @@ func ListArticleTemplate(params nz.ListArticleParams) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<article class=\"article-cards\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css\"><link href=\"https://fonts.googleapis.com/css2?family=Fira+Code&amp;display=swap\" rel=\"stylesheet\"><link rel=\"stylesheet\" href=\"/static/style.css\" type=\"text/css\"><script src=\"https://unpkg.com/htmx.org@1.9.2\"></script></head><body hx-boost=\"true\"><main><article class=\"article-cards\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -45,7 +45,7 @@ func ListArticleTemplate(params nz.ListArticleParams) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(fmt.Sprintf("/articles/%s", note.Naddr())))
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(fmt.Sprintf("/nz/%s/%s", note.Npub(), note.Naddr())))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -56,7 +56,7 @@ func ListArticleTemplate(params nz.ListArticleParams) templ.Component {
 			var templ_7745c5c3_Var2 string
 			templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(note.Title())
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `tmp/list.templ`, Line: 23, Col: 34}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `tmp/list.templ`, Line: 38, Col: 46}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 			if templ_7745c5c3_Err != nil {
@@ -74,7 +74,7 @@ func ListArticleTemplate(params nz.ListArticleParams) templ.Component {
 				var templ_7745c5c3_Var3 string
 				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(v)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `tmp/list.templ`, Line: 33, Col: 31}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `tmp/list.templ`, Line: 48, Col: 43}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 				if templ_7745c5c3_Err != nil {
@@ -92,7 +92,7 @@ func ListArticleTemplate(params nz.ListArticleParams) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(note.CreatedAtStr())
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `tmp/list.templ`, Line: 41, Col: 41}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `tmp/list.templ`, Line: 56, Col: 53}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
@@ -103,7 +103,7 @@ func ListArticleTemplate(params nz.ListArticleParams) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</article>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</article></main></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

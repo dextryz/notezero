@@ -7,43 +7,61 @@ import (
 
 templ ListArticleTemplate(params nz.ListArticleParams) {
 
-    <article class="article-cards">
+    <!doctype html>
+    <html>
 
-	for _, note := range params.Notes {
+        <head>
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+            <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet" />
+            <link rel="stylesheet" href="/static/style.css" type="text/css" />
+            <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+        </head>
 
-        <article id={ fmt.Sprintf("%s", note.Naddr()) } class="article-card-container">
+        <body hx-boost="true">
 
-            <div id="content-area" class="article-card-body">
+            <main>
+                <article class="article-cards">
 
-                <header class="article-card-header"
-                    hx-get={ fmt.Sprintf("/articles/%s", note.Naddr()) }
-                    hx-push-url="true"
-                    hx-target="body"
-                    hx-swap="outerHTML">
+                for _, note := range params.Notes {
 
-                    { note.Title() }
-                </header>
+                    <article id={ fmt.Sprintf("%s", note.Naddr()) } class="article-card-container">
 
-                <div class="tags">
-                    for _, v := range note.HashTags() {
-                        <h2 class="tag"
-                            hx-get="hashtag/{ v }"
-                            hx-push-url="true"
-                            hx-target="body"
-                            hx-swap="outerHTML">
-                            { v }
-                        </h2>
-                    }
-                </div>
+                        <div id="content-area" class="article-card-body">
 
-                <hr class="custom-divider"/>
+                            <header class="article-card-header"
+                                hx-get={ fmt.Sprintf("/nz/%s/%s", note.Npub(), note.Naddr()) }
+                                hx-push-url="true"
+                                hx-target="body"
+                                hx-swap="outerHTML">
 
-                <b class="card-date">
-                    { note.CreatedAtStr() }
-                </b>
+                                { note.Title() }
+                            </header>
 
-            </div>
-        </article>
-	}
-    </article>
+                            <div class="tags">
+                                for _, v := range note.HashTags() {
+                                    <h2 class="tag"
+                                        hx-get="hashtag/{ v }"
+                                        hx-push-url="true"
+                                        hx-target="body"
+                                        hx-swap="outerHTML">
+                                        { v }
+                                    </h2>
+                                }
+                            </div>
+
+                            <hr class="custom-divider"/>
+
+                            <b class="card-date">
+                                { note.CreatedAtStr() }
+                            </b>
+
+                        </div>
+                    </article>
+                }
+                </article>
+            </main>
+        </body>
+    </html>
 }
