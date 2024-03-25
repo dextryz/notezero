@@ -38,11 +38,8 @@ templ ListArticleTemplate(params nz.ListArticleParams) {
 
                 <hr class="custom-divider"/>
 
-                <b class="card-header"
-                    hx-get={ fmt.Sprintf("highlights/%s", note.Naddr()) }
-                    hx-push-url="true"
-                    hx-target="#cards"
-                    hx-swap="outerHTML">
+                <b class="card-date">
+                    { note.CreatedAtStr() }
                 </b>
 
             </div>

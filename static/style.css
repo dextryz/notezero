@@ -482,3 +482,8 @@ footer i {
 .htmx-request.htmx-indicator{
     opacity: 1;
 }
+
+b {
+    font-size: var(--fs-small);
+    font-weight: normal;
+}

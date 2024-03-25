@@ -25,6 +25,7 @@ func (s *Handler) requestData(ctx context.Context, code string, content bool) (*
 	}
 
 	npub, _ := nip19.EncodePublicKey(rootEvent.PubKey)
+	data.CreatedAt = rootEvent.CreatedAt.Time().String()
 	data.Npub = npub // hopefully will be replaced later
 	data.Naddr = ""
 	data.NaddrNaked = ""
