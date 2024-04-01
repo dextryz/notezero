@@ -28,6 +28,8 @@ RUN CGO_ENABLED=1 GOOS=linux go build -tags 'osusergo netgo static_build' -ldfla
 FROM scratch
 
 # Copy Go binary
+COPY --from=builder /app/server ./
+
 COPY --from=builder /app/static ./static
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
