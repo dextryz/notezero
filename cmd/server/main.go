@@ -24,7 +24,7 @@ func main() {
 		"wss://nostr-01.yakihonne.com",
 		// "wss://nostr-02.yakihonne.com",
 		"wss://relay.highlighter.com/",
-		"wss://relay.f7z.io",
+		//"wss://relay.f7z.io",
 		"wss://nos.lol",
 	}
 
@@ -42,11 +42,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Event service is responsible to communicating with relays and populating the cache.
-	service := nz.NewEventService(log, db, cache, relays)
-
-	// Handle the templates and view model
-	h := nz.NewHandler(log, service)
+	s := nz.NewEventService(db, cache, relays)
+	l := nz.NewLogging(log, s)
+	h := nz.NewHandler(log, l)
 
 	mux := http.NewServeMux()
 

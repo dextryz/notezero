@@ -35,7 +35,7 @@ func highlightIntervals(content string, highlights []string) [][]int {
 
 func mergeIntervals(intervals [][]int) [][]int {
 
-	if len(intervals) == 1 {
+	if len(intervals) == 0 {
 		return intervals
 	}
 
@@ -58,6 +58,11 @@ func mergeIntervals(intervals [][]int) [][]int {
 }
 
 func highlight(content string, intervals [][]int) string {
+
+	if len(intervals) == 0 {
+		return content
+	}
+
 	var res string
 	lastIndex := 0
 	for _, v := range intervals {
