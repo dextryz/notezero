@@ -1,4 +1,4 @@
-package handler
+package notezero
 
 import (
 	"fmt"
@@ -7,10 +7,10 @@ import (
 	"net/http"
 
 	"github.com/a-h/templ"
-	"github.com/dextryz/notezero"
-	"github.com/dextryz/notezero/tmp"
 )
 
+// 1. Highlights are encoded into data.Notes
+// 2. Process the highlights into the data.Content string
 func (s *Handler) ContentHandler(w http.ResponseWriter, r *http.Request) {
 
 	code := r.PathValue("naddr")
@@ -23,13 +23,13 @@ func (s *Handler) ContentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.log.Info("rendering article view", "author", data.Npub)
+	s.log.Info("rendering content view", "author", data.Npub, "highlightCount", len(data.Notes))
 
 	var component templ.Component
 
 	switch data.TemplateId {
-	case notezero.Article:
-		component = tmp.ContentTemplate(notezero.ArticleParams{
+	case Article:
+		component = ContentTemplate(ArticleParams{
 			Event:   data.Event,
 			Content: template.HTML(data.Content), // data.Content is converted from Md to Html in data service.
 		})
@@ -65,8 +65,8 @@ func (s *Handler) ArticleHandler(w http.ResponseWriter, r *http.Request) {
 	var component templ.Component
 
 	switch data.TemplateId {
-	case notezero.Article:
-		component = tmp.ArticleTemplate(notezero.ArticleParams{
+	case Article:
+		component = ArticleTemplate(ArticleParams{
 			Event:   data.Event,
 			Content: template.HTML(data.Content), // data.Content is converted from Md to Html in data service.
 		})

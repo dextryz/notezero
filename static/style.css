@@ -31,13 +31,13 @@ p {
 
 @font-face {
     font-family: 'Geist';
-    src: url('../fonts/Geist/Geist-Light.otf') format('truetype');
+    src: url('./fonts/Geist/Geist-Light.otf') format('truetype');
     font-weight: normal;
 }
 
 @font-face {
     font-family: 'Geist';
-    src: url('../fonts/Geist/Geist-Bold.otf') format('truetype');
+    src: url('./fonts/Geist/Geist-Bold.otf') format('truetype');
     font-weight: bold;
 }
 
@@ -487,3 +487,14 @@ b {
     font-size: var(--fs-small);
     font-weight: normal;
 }
+
+.highlight {
+    background-color: rgba(179, 135, 250, 0.5); /* Apply a pink background color as the highlight */
+    padding: 0 2px; /* Add some padding to the left and right of the text for better visibility */
+    border-radius: 0px; /* Optional: add rounded corners to the highlight */
+}
+
+.highlight:hover {
+    background-color: rgba(253, 111, 156, 0.5);
+}
+

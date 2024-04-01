@@ -35,5 +35,5 @@ type ArticleParams struct {
 	Event    EnhancedEvent
 	Metadata ProfileMetadata
 	Details  DetailsParams
-	Content  template.HTML
+	Content  template.HTML // Highlights are encoded into the content
 }

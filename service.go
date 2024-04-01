@@ -1,9 +1,8 @@
-package event
+package notezero
 
 import (
 	"context"
 	"fmt"
-	"log/slog"
 	"slices"
 	"sync"
 	"time"
@@ -14,16 +13,14 @@ import (
 	"github.com/nbd-wtf/go-nostr/nip19"
 )
 
-type EventService struct {
-	Log    *slog.Logger
+type eventService struct {
 	db     eventstore.Store
 	cache  *badger.Cache
 	relays []string
 }
 
-func New(log *slog.Logger, db eventstore.Store, cache *badger.Cache, relays []string) EventService {
-	return EventService{
-		Log:    log,
+func NewEventService(db eventstore.Store, cache *badger.Cache, relays []string) eventService {
+	return eventService{
 		db:     db,
 		cache:  cache,
 		relays: relays,
@@ -32,9 +29,7 @@ func New(log *slog.Logger, db eventstore.Store, cache *badger.Cache, relays []st
 
 // 1. Check if the event is in the cache
 // 2. If not, request event from the set of relays
-func (s EventService) RequestEvent(ctx context.Context, code string) (*nostr.Event, error) {
-
-	s.Log.Info("requesting events", "service", "EventService")
+func (s eventService) RequestEvent(ctx context.Context, code string) (*nostr.Event, error) {
 
 	// Wrap the cache db to be used with a relay interface
 	wdb := eventstore.RelayWrapper{Store: s.db}
@@ -62,7 +57,7 @@ func (s EventService) RequestEvent(ctx context.Context, code string) (*nostr.Eve
 			filter.Kinds = []int{0}
 		}
 	default:
-		s.Log.Error("code type not supported", "code", code)
+		return nil, fmt.Errorf("code type not supported: %s", code)
 	}
 
 	// Try to fetch in our internal eventstore (cache) first
@@ -71,7 +66,6 @@ func (s EventService) RequestEvent(ctx context.Context, code string) (*nostr.Eve
 		return nil, err
 	}
 	if len(events) != 0 {
-		s.Log.Info("event retrieved from internal cache", "code", code)
 		return events[0], nil
 	}
 
@@ -84,16 +78,14 @@ func (s EventService) RequestEvent(ctx context.Context, code string) (*nostr.Eve
 		}
 	}
 
-	s.Log.Info("event retrieved from relays", "code", code)
-
 	return events[0], nil
 }
 
-func (s EventService) AuthorArticles(ctx context.Context, npub string) ([]*nostr.Event, error) {
+func (s eventService) AuthorArticles(ctx context.Context, npub string) ([]*nostr.Event, error) {
 
 	_, pk, err := nip19.Decode(npub)
 	if err != nil {
-		s.Log.Error("failed to query events", slog.Any("error", err))
+		return nil, err
 	}
 
 	filter := nostr.Filter{
@@ -101,8 +93,6 @@ func (s EventService) AuthorArticles(ctx context.Context, npub string) ([]*nostr
 		Authors: []string{pk.(string)},
 		Limit:   500,
 	}
-
-	s.Log.Info("requesting articles from relays", "npub", npub)
 
 	// fetch from local store if available
 	wdb := eventstore.RelayWrapper{Store: s.db}
@@ -113,7 +103,6 @@ func (s EventService) AuthorArticles(ctx context.Context, npub string) ([]*nostr
 		return nil, err
 	}
 	if len(events) != 0 {
-		s.Log.Info("event retrieved from internal cache", "npub", npub)
 		return events, nil
 	}
 
@@ -126,15 +115,13 @@ func (s EventService) AuthorArticles(ctx context.Context, npub string) ([]*nostr
 		}
 	}
 
-	s.Log.Info("event retrieved from relays", "npub", npub)
-
 	// sort before returning
 	slices.SortFunc(events, func(a, b *nostr.Event) int { return int(b.CreatedAt - a.CreatedAt) })
 
 	return events, nil
 }
 
-func (s EventService) ArticleHighlights(ctx context.Context, kind int, pubkey, identifier string) ([]*nostr.Event, error) {
+func (s eventService) ArticleHighlights(ctx context.Context, kind int, pubkey, identifier string) ([]*nostr.Event, error) {
 
 	wdb := eventstore.RelayWrapper{Store: s.db}
 
@@ -186,7 +173,6 @@ func (s EventService) ArticleHighlights(ctx context.Context, kind int, pubkey, i
 		// if we didn't get enough notes (or if we didn't even query the local store), wait for the external relays
 		lastNotes = <-external
 		s.cache.Set(identifier, []byte{})
-		s.Log.Info("dummy highlight cached for article", "identifier", identifier)
 
 		// 		tags := nostr.Tags{
 		// 			{"a", tag},
@@ -213,7 +199,7 @@ func (s EventService) ArticleHighlights(ctx context.Context, kind int, pubkey, i
 	return lastNotes, nil
 }
 
-func (s *EventService) queryRelays(ctx context.Context, filter nostr.Filter) (ev []*nostr.Event) {
+func (s *eventService) queryRelays(ctx context.Context, filter nostr.Filter) (ev []*nostr.Event) {
 
 	var m sync.Map
 	var wg sync.WaitGroup
@@ -230,7 +216,8 @@ func (s *EventService) queryRelays(ctx context.Context, filter nostr.Filter) (ev
 
 			events, err := r.QuerySync(ctx, filter)
 			if err != nil {
-				s.Log.Error("failed to query events", slog.Any("error", err))
+				// TODO
+				return
 			}
 
 			for _, e := range events {

@@ -7,10 +7,12 @@ require (
 	github.com/dgraph-io/badger/v4 v4.2.0
 	github.com/fiatjaf/eventstore v0.3.12
 	github.com/gomarkdown/markdown v0.0.0-20231222211730-1d6d20845b47
+	github.com/microcosm-cc/bluemonday v1.0.26
 	github.com/nbd-wtf/go-nostr v0.29.3
 )
 
 require (
+	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.3.2 // indirect
 	github.com/btcsuite/btcd/btcutil v1.1.3 // indirect
 	github.com/btcsuite/btcd/chaincfg/chainhash v1.0.2 // indirect
@@ -28,6 +30,7 @@ require (
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/flatbuffers v23.5.26+incompatible // indirect
+	github.com/gorilla/css v1.0.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/klauspost/compress v1.17.2 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect

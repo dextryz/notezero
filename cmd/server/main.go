@@ -7,9 +7,9 @@ import (
 	"os"
 	"time"
 
+	nz "github.com/dextryz/notezero"
+
 	"github.com/dextryz/notezero/badger"
-	"github.com/dextryz/notezero/event"
-	"github.com/dextryz/notezero/handler"
 	eventstore_badger "github.com/fiatjaf/eventstore/badger"
 )
 
@@ -24,7 +24,7 @@ func main() {
 		"wss://nostr-01.yakihonne.com",
 		// "wss://nostr-02.yakihonne.com",
 		"wss://relay.highlighter.com/",
-		"wss://relay.f7z.io",
+		//"wss://relay.f7z.io",
 		"wss://nos.lol",
 	}
 
@@ -42,22 +42,14 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Event service is responsible to communicating with relays and populating the cache.
-	service := event.New(log, db, cache, relays)
-
-	// Handle the templates and view model
-	h := handler.New(log, service)
+	s := nz.NewEventService(db, cache, relays)
+	l := nz.NewLogging(log, s)
+	h := nz.NewHandler(log, l)
 
 	mux := http.NewServeMux()
 
 	fs := http.FileServer(http.Dir("./static"))
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
-
-	fs = http.FileServer(http.Dir("./fonts"))
-	mux.Handle("/fonts/", http.StripPrefix("/fonts/", fs))
-
-	fs = http.FileServer(http.Dir("./img"))
-	mux.Handle("/img/", http.StripPrefix("/img/", fs))
 
 	mux.HandleFunc("/", h.Homepage)
 	mux.HandleFunc("GET /search", h.RedirectSearch)
