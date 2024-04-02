@@ -1,13 +1,17 @@
 # Define binary output name
-BINARY_NAME=notezero
+SERVER_NAME=server
+CLI_NAME=nz
 
 # run: Runs the Go application
 run:
 	go run ./cmd/server/main.go
 
 # build: Builds the Go application binary
-build:
+build-server:
 	go build -o $(BINARY_NAME) ./cmd/server/main.go
+
+build-cli:
+	go build -o $(CLI_NAME) ./cmd/nz/main.go
 
 # clean: Cleans up the binary
 clean:
