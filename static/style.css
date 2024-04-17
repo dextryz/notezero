@@ -523,3 +523,12 @@ b {
 .author-name {
     padding-right: 1rem;
 }
+
+img.card-thumbnail {
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+    border-width: 0px;
+    height: 10rem;
+    object-fit: cover;
+    width: 100%;
+}

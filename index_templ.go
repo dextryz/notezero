@@ -25,7 +25,7 @@ func IndexTemplate(params ListArticleParams) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css\"><link href=\"https://fonts.googleapis.com/css2?family=Fira+Code&amp;display=swap\" rel=\"stylesheet\"><link rel=\"stylesheet\" href=\"/static/style.css\" type=\"text/css\"><script src=\"https://unpkg.com/htmx.org@1.9.2\"></script></head><body hx-boost=\"true\"><form class=\"search-container\" hx-get=\"/search\" hx-push-url=\"true\" hx-target=\"#cards\" hx-indicator=\"#spinner\" hx-swap=\"outerHTML\"><input class=\"search-bar\" name=\"search\" type=\"search\" placeholder=\"Paste naddr or npub and Enter\"></form><main id=\"cards\"><article class=\"article-cards\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css\"><link href=\"https://fonts.googleapis.com/css2?family=Fira+Code&amp;display=swap\" rel=\"stylesheet\"><link rel=\"stylesheet\" href=\"/static/style.css\" type=\"text/css\"><script src=\"https://unpkg.com/htmx.org@1.9.2\"></script></head><body hx-boost=\"true\"><form class=\"search-container\" hx-get=\"/search\" hx-push-url=\"true\" hx-target=\"body\" hx-indicator=\"#spinner\" hx-swap=\"innerHTML\"><input class=\"search-bar\" name=\"search\" type=\"search\" placeholder=\"Paste naddr or npub and Enter\"></form><main id=\"cards\"><article class=\"article-cards\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -38,7 +38,30 @@ func IndexTemplate(params ListArticleParams) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"article-card-container\"><div id=\"content-area\" class=\"article-card-body\"><header class=\"article-card-header\" hx-get=\"")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"article-card-container\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			if note.Image() != "" {
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<img class=\"card-thumbnail\" src=\"")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(fmt.Sprintf("%s", note.Image())))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\">")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			} else {
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<img class=\"card-thumbnail\" src=\"https://pfp.nostr.build/dfc3716d64302de9edff417fb561aae1ee90fc109acb8fc82839e580868cf34d.jpg\">")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"content-area\" class=\"article-card-body\"><header class=\"article-card-header\" hx-get=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -53,7 +76,7 @@ func IndexTemplate(params ListArticleParams) templ.Component {
 			var templ_7745c5c3_Var2 string
 			templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(note.Title())
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `index.templ`, Line: 44, Col: 46}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `index.templ`, Line: 50, Col: 46}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 			if templ_7745c5c3_Err != nil {
@@ -71,7 +94,7 @@ func IndexTemplate(params ListArticleParams) templ.Component {
 				var templ_7745c5c3_Var3 string
 				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(v)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `index.templ`, Line: 54, Col: 43}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `index.templ`, Line: 60, Col: 43}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 				if templ_7745c5c3_Err != nil {
@@ -82,16 +105,37 @@ func IndexTemplate(params ListArticleParams) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><hr class=\"custom-divider\"><section class=\"card-profile\"><img src=\"https://pfp.nostr.build/dfc3716d64302de9edff417fb561aae1ee90fc109acb8fc82839e580868cf34d.jpg\"><div><b class=\"author-name\">Author Name | </b> <b class=\"card-date\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><hr class=\"custom-divider\"><section class=\"card-profile\"><img src=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(fmt.Sprintf("%s", note.Picture)))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><div><b class=\"author-name\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var4 string
-			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(note.CreatedAtStr())
+			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(note.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `index.templ`, Line: 65, Col: 78}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `index.templ`, Line: 70, Col: 70}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</b> <b class=\"card-date\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var5 string
+			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(note.CreatedAtStr())
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `index.templ`, Line: 71, Col: 78}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

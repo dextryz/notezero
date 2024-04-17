@@ -9,17 +9,28 @@ import (
 
 type EnhancedEvent struct {
 	*nostr.Event
+	*ProfileMetadata
 	Relays []string
 }
 
-func (s EnhancedEvent) Title() string {
-	var title string
+func (s EnhancedEvent) Image() string {
+	var res string
 	for _, t := range s.Tags {
-		if t.Key() == "title" {
-			title = t.Value()
+		if t.Key() == "image" {
+			res = t.Value()
 		}
 	}
-	return title
+	return res
+}
+
+func (s EnhancedEvent) Title() string {
+	var res string
+	for _, t := range s.Tags {
+		if t.Key() == "title" {
+			res = t.Value()
+		}
+	}
+	return res
 }
 
 func (s EnhancedEvent) HashTags() []string {

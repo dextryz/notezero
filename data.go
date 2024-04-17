@@ -3,6 +3,7 @@ package notezero
 import (
 	"context"
 	"fmt"
+	"sort"
 	"time"
 
 	"github.com/nbd-wtf/go-nostr/nip19"
@@ -46,14 +47,15 @@ func (s *Handler) requestData(ctx context.Context, code string, content bool) (*
 			TemplateId: ListArticle,
 		}
 
-		events, err := s.service.RequestEventFromCuratedAuthors(ctx, code)
-		if err != nil {
-			return nil, err
+		for _, npub := range CURATED_LIST {
+			d, err := s.requestData(ctx, npub, false)
+			if err != nil {
+				return nil, err
+			}
+			data.Notes = append(data.Notes, d.Notes...)
 		}
 
-		for _, e := range events {
-			data.Notes = append(data.Notes, EnhancedEvent{Event: e})
-		}
+		sort.Slice(data.Notes, func(i, j int) bool { return data.Notes[i].CreatedAt > data.Notes[j].CreatedAt })
 
 		return &data, nil
 	}
@@ -81,8 +83,10 @@ func (s *Handler) requestData(ctx context.Context, code string, content bool) (*
 
 	if rootEvent.Kind >= 30000 && rootEvent.Kind < 40000 {
 		if d := rootEvent.Tags.GetFirst([]string{"d", ""}); d != nil {
-			//data.Naddr, _ = nip19.EncodeEntity(rootEvent.PubKey, rootEvent.Kind, d.Value(), relaysForNip19)
-			data.NaddrNaked, _ = nip19.EncodeEntity(rootEvent.PubKey, rootEvent.Kind, d.Value(), nil)
+			data.NaddrNaked, err = nip19.EncodeEntity(rootEvent.PubKey, rootEvent.Kind, d.Value(), nil)
+			if err != nil {
+				return nil, err
+			}
 		}
 	}
 
@@ -91,17 +95,30 @@ func (s *Handler) requestData(ctx context.Context, code string, content bool) (*
 	// 3. Populate the children
 	switch rootEvent.Kind {
 	case 0:
-		data.TemplateId = ListArticle
+
+		profileEvent, err := s.service.Profile(ctx, npub)
+		if err != nil {
+			return nil, err
+		}
+
+		metadata, err := ParseMetadata(*profileEvent)
+		if err != nil {
+			return nil, err
+		}
+
 		events, err := s.service.AuthorArticles(ctx, npub)
 		if err != nil {
 			return nil, err
 		}
-		s.log.Info("articles pulled as children", "count", len(events))
-		// TODO: Populate data.Notes with the list of requested articles.
-		// This will be rendered using the ListArticle template.
+
+		// FIXME: Maybe dont encode metadata into Notes
 		for _, e := range events {
-			data.Notes = append(data.Notes, EnhancedEvent{Event: e})
+			data.Notes = append(data.Notes, EnhancedEvent{Event: e, ProfileMetadata: metadata})
 		}
+
+		data.Metadata = *metadata
+		data.TemplateId = ListArticle
+
 	case 30023:
 
 		data.TemplateId = Article

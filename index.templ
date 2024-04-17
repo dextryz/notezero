@@ -20,9 +20,9 @@ templ IndexTemplate(params ListArticleParams) {
                 <form class="search-container"
                     hx-get="/search"
                     hx-push-url="true"
-                    hx-target="#cards"
+                    hx-target="body"
                     hx-indicator="#spinner"
-                    hx-swap="outerHTML">
+                    hx-swap="innerHTML">
 
                     <input class="search-bar" name="search" type="search" placeholder="Paste naddr or npub and Enter"/>
                 </form>
@@ -33,6 +33,12 @@ templ IndexTemplate(params ListArticleParams) {
                 for _, note := range params.Notes {
 
                     <article id={ fmt.Sprintf("%s", note.Naddr()) } class="article-card-container">
+
+                        if note.Image() != "" {
+                            <img class="card-thumbnail" src={ fmt.Sprintf("%s", note.Image()) } />
+                        } else {
+                            <img class="card-thumbnail" src="https://pfp.nostr.build/dfc3716d64302de9edff417fb561aae1ee90fc109acb8fc82839e580868cf34d.jpg" />
+                        }
 
                         <div id="content-area" class="article-card-body">
 
@@ -60,9 +66,9 @@ templ IndexTemplate(params ListArticleParams) {
                             <hr class="custom-divider"/>
 
                             <section class="card-profile">
-                                <img src="https://pfp.nostr.build/dfc3716d64302de9edff417fb561aae1ee90fc109acb8fc82839e580868cf34d.jpg" />
+                                <img src={ fmt.Sprintf("%s", note.Picture) } />
                                 <div>
-                                    <b class="author-name">Author Name</b>
+                                    <b class="author-name">{ note.Name }</b>
                                     <b class="card-date">{ note.CreatedAtStr() }</b>
                                 </div>
                             </section>

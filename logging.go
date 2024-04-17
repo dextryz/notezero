@@ -20,20 +20,19 @@ func NewLogging(log *slog.Logger, next EventService) logging {
 	}
 }
 
-func (s logging) RequestEventFromCuratedAuthors(ctx context.Context, code string) ([]*nostr.Event, error) {
+func (s logging) Profile(ctx context.Context, npub string) (*nostr.Event, error) {
 
-	s.log.Info("requesting events", "service", "EventService")
+	s.log.Info("requesting author profile", "service", "EventService")
 
 	defer func(start time.Time) {
 		s.log.Info(
-			"RequestCuratedList",
-			"code", code,
+			"Profile",
+			"npub", npub,
 			"took", time.Since(start),
 		)
 	}(time.Now())
 
-	return s.next.RequestEventFromCuratedAuthors(ctx, code)
-
+	return s.next.Profile(ctx, npub)
 }
 
 // 1. Check if the event is in the cache

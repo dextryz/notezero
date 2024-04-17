@@ -6,11 +6,9 @@ import (
 	"log"
 
 	"github.com/nbd-wtf/go-nostr"
-	"github.com/nbd-wtf/go-nostr/nip19"
 )
 
 type ProfileMetadata struct {
-	PubKey     string `json:"pubkey,omitempty"`
 	Name       string `json:"name,omitempty"`
 	About      string `json:"about,omitempty"`
 	Website    string `json:"website,omitempty"`
@@ -25,11 +23,6 @@ func (s ProfileMetadata) String() string {
 		log.Fatalln("Unable to convert event to string")
 	}
 	return string(bytes)
-}
-
-func (s ProfileMetadata) Npub() string {
-	npub, _ := nip19.EncodePublicKey(s.PubKey)
-	return npub
 }
 
 func ParseMetadata(e nostr.Event) (*ProfileMetadata, error) {

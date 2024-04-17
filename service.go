@@ -29,28 +29,30 @@ func NewEventService(db eventstore.Store, cache *badger.Cache, relays []string) 
 }
 
 var CURATED_LIST = []string{
+	"npub1m4ny6hjqzepn4rxknuq94c2gpqzr29ufkkw7ttcxyak7v43n6vvsajc2jl", // Laeserin
+	"npub1mu2tx4ue4yt7n7pymcql3agslnx0zeyt34zmmfex2g07k6ymtksq7hansc", // CYB3RX
+	"npub18jvyjwpmm65g8v9azmlvu8knd5m7xlxau08y8vt75n53jtkpz2ys6mqqu3", // onigirl
 	"npub180cvv07tjdrrgpa0j7j7tmnyl2yr6yr7l8j4s3evf6u64th6gkwsyjh6w6", // fiatjaf
 	"npub1l2vyh47mk2p0qlsku7hg0vn29faehy9hy34ygaclpn66ukqp3afqutajft", // pablo
 	"npub1r0rs5q2gk0e3dk3nlc7gnu378ec6cnlenqp8a3cjhyzu6f8k5sgs4sq9ac", // karnage
+	"npub1xtscya34g58tk0z605fvr788k263gsu6cy9x0mhnm87echrgufzsevkk5s", // Will
+	"npub18ams6ewn5aj2n3wt2qawzglx9mr4nzksxhvrdc4gzrecw7n5tvjqctp424", // Derek Ros
+	"npub12262qa4uhw7u8gdwlgmntqtv7aye8vdcmvszkqwgs0zchel6mz7s6cgrkj", // semisol
+	"npub1h8nk2346qezka5cpm8jjh3yl5j88pf4ly2ptu7s6uu55wcfqy0wq36rpev", // Dan Swann
+	"npub1mygerccwqpzyh9pvp6pv44rskv40zutkfs38t0hqhkvnwlhagp6s3psn5p", // gsoverienty
+	"npub1utx00neqgqln72j22kej3ux7803c2k986henvvha4thuwfkper4s7r50e8", // utxo
 }
 
-// 1. Check if the event is in the cache
-// 2. If not, request event from the set of relays
-func (s eventService) RequestEventFromCuratedAuthors(ctx context.Context, code string) ([]*nostr.Event, error) {
+func (s eventService) Profile(ctx context.Context, npub string) (*nostr.Event, error) {
 
-	var authors []string
-	for _, npub := range CURATED_LIST {
-		_, pk, err := nip19.Decode(npub)
-		if err != nil {
-			return nil, err
-		}
-		authors = append(authors, pk.(string))
+	_, pk, err := nip19.Decode(npub)
+	if err != nil {
+		return nil, err
 	}
 
 	filter := nostr.Filter{
-		Kinds:   []int{nostr.KindArticle},
-		Authors: authors,
-		Limit:   500,
+		Kinds:   []int{nostr.KindProfileMetadata},
+		Authors: []string{pk.(string)},
 	}
 
 	wdb := eventstore.RelayWrapper{Store: s.db}
@@ -61,7 +63,7 @@ func (s eventService) RequestEventFromCuratedAuthors(ctx context.Context, code s
 		return nil, err
 	}
 	if len(events) != 0 {
-		return events, nil
+		return events[0], nil
 	}
 
 	// No events found in cache, request relays and publish to cache
@@ -73,15 +75,10 @@ func (s eventService) RequestEventFromCuratedAuthors(ctx context.Context, code s
 		}
 	}
 
-	return events, nil
+	return events[0], nil
 }
 
-// 1. Check if the event is in the cache
-// 2. If not, request event from the set of relays
 func (s eventService) RequestEvent(ctx context.Context, code string) (*nostr.Event, error) {
-
-	// Wrap the cache db to be used with a relay interface
-	wdb := eventstore.RelayWrapper{Store: s.db}
 
 	// Create a nostr filter from the NIP-19 code
 	prefix, data, err := nip19.Decode(code)
@@ -108,6 +105,9 @@ func (s eventService) RequestEvent(ctx context.Context, code string) (*nostr.Eve
 	default:
 		return nil, fmt.Errorf("code type not supported: %s", code)
 	}
+
+	// Wrap the cache db to be used with a relay interface
+	wdb := eventstore.RelayWrapper{Store: s.db}
 
 	// Try to fetch in our internal eventstore (cache) first
 	events, err := wdb.QuerySync(ctx, filter)
