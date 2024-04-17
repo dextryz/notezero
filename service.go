@@ -27,6 +27,44 @@ func NewEventService(db eventstore.Store, cache *badger.Cache, relays []string) 
 	}
 }
 
+var CURATED_LIST = []string{
+	//"npub180cvv07tjdrrgpa0j7j7tmnyl2yr6yr7l8j4s3evf6u64th6gkwsyjh6w6", // fiatjaf
+	"3bf0c63fcb93463407af97a5e5ee64fa883d107ef9e558472c4eb9aaaefa459d",
+}
+
+// 1. Check if the event is in the cache
+// 2. If not, request event from the set of relays
+func (s eventService) RequestEventFromCuratedAuthors(ctx context.Context, code string) ([]*nostr.Event, error) {
+
+	filter := nostr.Filter{
+		Kinds:   []int{nostr.KindArticle},
+		Authors: CURATED_LIST,
+		Limit:   500,
+	}
+
+	wdb := eventstore.RelayWrapper{Store: s.db}
+
+	// Try to fetch in our internal eventstore (cache) first
+	events, err := wdb.QuerySync(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+	if len(events) != 0 {
+		return events, nil
+	}
+
+	// No events found in cache, request relays and publish to cache
+	events = s.queryRelays(ctx, filter)
+	for _, e := range events {
+		err := wdb.Publish(ctx, *e)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return events, nil
+}
+
 // 1. Check if the event is in the cache
 // 2. If not, request event from the set of relays
 func (s eventService) RequestEvent(ctx context.Context, code string) (*nostr.Event, error) {

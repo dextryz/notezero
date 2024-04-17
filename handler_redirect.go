@@ -10,7 +10,7 @@ import (
 func (s *Handler) RedirectSearch(w http.ResponseWriter, r *http.Request) {
 	code := r.URL.Query().Get("search")
 	fmt.Printf("Search: %s\n", code)
-	http.Redirect(w, r, "/nz/"+code, http.StatusFound)
+	http.Redirect(w, r, "/"+code, http.StatusFound)
 }
 
 func (s *Handler) RedirectFromPSlash(w http.ResponseWriter, r *http.Request) {

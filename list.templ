@@ -30,7 +30,7 @@ templ ListArticleTemplate(params ListArticleParams) {
                         <div id="content-area" class="article-card-body">
 
                             <header class="article-card-header"
-                                hx-get={ fmt.Sprintf("/nz/%s/%s", note.Npub(), note.Naddr()) }
+                                hx-get={ fmt.Sprintf("/%s/%s", note.Npub(), note.Naddr()) }
                                 hx-push-url="true"
                                 hx-target="body"
                                 hx-swap="outerHTML">

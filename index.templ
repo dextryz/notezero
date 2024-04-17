@@ -1,6 +1,8 @@
 package notezero
 
-templ IndexTemplate() {
+import "fmt"
+
+templ IndexTemplate(params ListArticleParams) {
     <!doctype html>
     <html>
 
@@ -25,11 +27,47 @@ templ IndexTemplate() {
                     <input class="search-bar" name="search" type="search" placeholder="Paste naddr or npub and Enter"/>
                 </form>
 
-                <div id="cards">
-                    <div id="spinner" class="htmx-indicator">
-                        <div class="ripple"></div>
-                    </div>
-                </div>
+            <main id="cards">
+                <article class="article-cards">
+
+                for _, note := range params.Notes {
+
+                    <article id={ fmt.Sprintf("%s", note.Naddr()) } class="article-card-container">
+
+                        <div id="content-area" class="article-card-body">
+
+                            <header class="article-card-header"
+                                hx-get={ fmt.Sprintf("/%s", note.Naddr()) }
+                                hx-push-url="true"
+                                hx-target="body"
+                                hx-swap="outerHTML">
+
+                                { note.Title() }
+                            </header>
+
+                            <div class="tags">
+                                for _, v := range note.HashTags() {
+                                    <h2 class="tag"
+                                        hx-get="hashtag/{ v }"
+                                        hx-push-url="true"
+                                        hx-target="body"
+                                        hx-swap="outerHTML">
+                                        { v }
+                                    </h2>
+                                }
+                            </div>
+
+                            <hr class="custom-divider"/>
+
+                            <b class="card-date">
+                                { note.CreatedAtStr() }
+                            </b>
+
+                        </div>
+                    </article>
+                }
+                </article>
+            </main>
 
                 <footer>
                     <p>Made with <i class="fas fa-heart"></i> by <a href="https://github.com/dextryz">dextryz</a></p>

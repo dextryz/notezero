@@ -20,6 +20,22 @@ func NewLogging(log *slog.Logger, next EventService) logging {
 	}
 }
 
+func (s logging) RequestEventFromCuratedAuthors(ctx context.Context, code string) ([]*nostr.Event, error) {
+
+	s.log.Info("requesting events", "service", "EventService")
+
+	defer func(start time.Time) {
+		s.log.Info(
+			"RequestCuratedList",
+			"code", code,
+			"took", time.Since(start),
+		)
+	}(time.Now())
+
+	return s.next.RequestEventFromCuratedAuthors(ctx, code)
+
+}
+
 // 1. Check if the event is in the cache
 // 2. If not, request event from the set of relays
 func (s logging) RequestEvent(ctx context.Context, code string) (evt *nostr.Event, err error) {

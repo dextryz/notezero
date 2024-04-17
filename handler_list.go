@@ -1,7 +1,7 @@
 package notezero
 
 import (
-	"fmt"
+	"html/template"
 	"log/slog"
 	"net/http"
 
@@ -20,16 +20,10 @@ func NewHandler(log *slog.Logger, es EventService) *Handler {
 	}
 }
 
-func (s *Handler) Homepage(w http.ResponseWriter, r *http.Request) {
-	IndexTemplate().Render(r.Context(), w)
-}
-
 // Poplated the data.Notes field with a list of requested notes based on the search field.
 func (s *Handler) CodeHandler(w http.ResponseWriter, r *http.Request) {
 
 	code := r.PathValue("code")
-
-	fmt.Printf("Handler: %s\n", code)
 
 	data, err := s.requestData(r.Context(), code, false)
 	if err != nil {
@@ -38,19 +32,18 @@ func (s *Handler) CodeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.log.Info("requested data from nostr relays", "author", data.Npub, "noteCount", len(data.Notes))
-
 	var component templ.Component
 
-	// 1. A list of articles are returned is the search field was npub
-	// 2. A list of highlights are returned is the search field was nevent of kind 30023
 	switch data.TemplateId {
 	case ListArticle:
-		component = ListArticleTemplate(ListArticleParams{
+		component = IndexTemplate(ListArticleParams{
 			Notes: data.Notes,
 		})
-		fmt.Println("Component")
-		fmt.Println(len(data.Notes))
+	case Article:
+		component = ArticleTemplate(ArticleParams{
+			Event:   data.Event,
+			Content: template.HTML(data.Content), // data.Content is converted from Md to Html in data service.
+		})
 	default:
 		s.log.Error("unable to render template", "templateId", data.TemplateId)
 		http.Error(w, "tried to render an unsupported template", 500)

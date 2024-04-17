@@ -39,6 +39,25 @@ type Data struct {
 // FIXME: Remove the content bool hack
 func (s *Handler) requestData(ctx context.Context, code string, content bool) (*Data, error) {
 
+	if code == "" {
+
+		// 1. Request parent event
+		data := Data{
+			TemplateId: ListArticle,
+		}
+
+		events, err := s.service.RequestEventFromCuratedAuthors(ctx, code)
+		if err != nil {
+			return nil, err
+		}
+
+		for _, e := range events {
+			data.Notes = append(data.Notes, EnhancedEvent{Event: e})
+		}
+
+		return &data, nil
+	}
+
 	// 1. Request parent event
 	rootEvent, err := s.service.RequestEvent(ctx, code)
 	if err != nil {
@@ -112,9 +131,7 @@ func (s *Handler) requestData(ctx context.Context, code string, content bool) (*
 				}
 
 				intervals := highlightIntervals(data.Content, highlights)
-				fmt.Println(intervals)
 				merged := mergeIntervals(intervals)
-				fmt.Println(merged)
 				data.Content = highlight(data.Content, merged)
 			}
 		}

@@ -20,7 +20,7 @@ func main() {
 	log.Info("Starting")
 
 	relays := []string{
-		"wss://relay.damus.io/",
+		//"wss://relay.damus.io/",
 		"wss://nostr-01.yakihonne.com",
 		// "wss://nostr-02.yakihonne.com",
 		"wss://relay.highlighter.com/",
@@ -51,11 +51,10 @@ func main() {
 	fs := http.FileServer(http.Dir("./static"))
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
 
-	mux.HandleFunc("/", h.Homepage)
+	mux.HandleFunc("/", h.CodeHandler)
 	mux.HandleFunc("GET /search", h.RedirectSearch)
-	mux.HandleFunc("GET /nz/{code}", h.CodeHandler)
-	mux.HandleFunc("GET /nz/{npub}/{naddr}", h.ArticleHandler)
-	mux.HandleFunc("GET /nz/content/{naddr}", h.ContentHandler)
+	mux.HandleFunc("GET /{code}", h.CodeHandler)
+	mux.HandleFunc("GET /content/{naddr}", h.ContentHandler)
 
 	port := os.Getenv("PORT")
 	if port == "" {
