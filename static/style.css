@@ -498,3 +498,28 @@ b {
     background-color: rgba(253, 111, 156, 0.5);
 }
 
+.card-profile {
+    -webkit-margin-before: auto;
+    margin-block-start: auto;
+    display: grid;
+    grid-template-columns: 30px 1fr;
+    gap: 1rem;
+    align-items: center;
+    cursor: pointer;
+}
+
+.card-profile img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    transition: border-radius 200ms ease-in-out;
+    border: 0px solid black;
+}
+
+.card-profile img:hover {
+    border-radius: 10px;
+}
+
+.author-name {
+    padding-right: 1rem;
+}

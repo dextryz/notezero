@@ -59,9 +59,13 @@ templ IndexTemplate(params ListArticleParams) {
 
                             <hr class="custom-divider"/>
 
-                            <b class="card-date">
-                                { note.CreatedAtStr() }
-                            </b>
+                            <section class="card-profile">
+                                <img src="https://pfp.nostr.build/dfc3716d64302de9edff417fb561aae1ee90fc109acb8fc82839e580868cf34d.jpg" />
+                                <div>
+                                    <b class="author-name">Author Name</b>
+                                    <b class="card-date">{ note.CreatedAtStr() }</b>
+                                </div>
+                            </section>
 
                         </div>
                     </article>
