@@ -46,7 +46,6 @@ func (s logging) RequestEvent(ctx context.Context, code string) (evt *nostr.Even
 		s.log.Info(
 			"RequestEvent",
 			"code", code,
-			"id", evt.ID,
 			"err", err,
 			"took", time.Since(start),
 		)

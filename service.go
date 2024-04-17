@@ -3,6 +3,7 @@ package notezero
 import (
 	"context"
 	"fmt"
+	"log"
 	"slices"
 	"sync"
 	"time"
@@ -28,17 +29,27 @@ func NewEventService(db eventstore.Store, cache *badger.Cache, relays []string) 
 }
 
 var CURATED_LIST = []string{
-	//"npub180cvv07tjdrrgpa0j7j7tmnyl2yr6yr7l8j4s3evf6u64th6gkwsyjh6w6", // fiatjaf
-	"3bf0c63fcb93463407af97a5e5ee64fa883d107ef9e558472c4eb9aaaefa459d",
+	"npub180cvv07tjdrrgpa0j7j7tmnyl2yr6yr7l8j4s3evf6u64th6gkwsyjh6w6", // fiatjaf
+	"npub1l2vyh47mk2p0qlsku7hg0vn29faehy9hy34ygaclpn66ukqp3afqutajft", // pablo
+	"npub1r0rs5q2gk0e3dk3nlc7gnu378ec6cnlenqp8a3cjhyzu6f8k5sgs4sq9ac", // karnage
 }
 
 // 1. Check if the event is in the cache
 // 2. If not, request event from the set of relays
 func (s eventService) RequestEventFromCuratedAuthors(ctx context.Context, code string) ([]*nostr.Event, error) {
 
+	var authors []string
+	for _, npub := range CURATED_LIST {
+		_, pk, err := nip19.Decode(npub)
+		if err != nil {
+			return nil, err
+		}
+		authors = append(authors, pk.(string))
+	}
+
 	filter := nostr.Filter{
 		Kinds:   []int{nostr.KindArticle},
-		Authors: CURATED_LIST,
+		Authors: authors,
 		Limit:   500,
 	}
 
@@ -249,6 +260,7 @@ func (s *eventService) queryRelays(ctx context.Context, filter nostr.Filter) (ev
 
 			r, err := nostr.RelayConnect(ctx, url)
 			if err != nil {
+				log.Fatalf("panicing to query relays: %v", err)
 				panic(err)
 			}
 
