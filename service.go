@@ -29,7 +29,7 @@ func NewEventService(db eventstore.Store, cache *badger.Cache, relays []string) 
 }
 
 var CURATED_LIST = []string{
-    "npub14ge829c4pvgx24c35qts3sv82wc2xwcmgng93tzp6d52k9de2xgqq0y4jk", // dextryz
+	"npub14ge829c4pvgx24c35qts3sv82wc2xwcmgng93tzp6d52k9de2xgqq0y4jk", // dextryz
 	"npub1m4ny6hjqzepn4rxknuq94c2gpqzr29ufkkw7ttcxyak7v43n6vvsajc2jl", // Laeserin
 	"npub1mu2tx4ue4yt7n7pymcql3agslnx0zeyt34zmmfex2g07k6ymtksq7hansc", // CYB3RX
 	"npub18jvyjwpmm65g8v9azmlvu8knd5m7xlxau08y8vt75n53jtkpz2ys6mqqu3", // onigirl

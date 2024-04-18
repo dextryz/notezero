@@ -21,8 +21,6 @@ func (s *Handler) ContentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.log.Info("rendering content view", "author", data.Npub, "highlightCount", len(data.Notes))
-
 	var component templ.Component
 
 	switch data.TemplateId {

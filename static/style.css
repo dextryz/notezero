@@ -134,7 +134,7 @@ main {
     border-radius: 2rem;
     object-fit: cover; /* prevent image from being strectched */
     object-position: center;
-    margin-bottom: 2rem;
+    margin: 1rem 0rem;
 }
 
 .article-container {
@@ -159,11 +159,11 @@ main {
     gap: 1rem;
 }
 
-img {
+.content img {
     width: 100%;
     object-fit: cover; /* prevent image from being strectched */
     object-position: center;
-    padding: 0.5rem;
+    padding: 0.5rem 0rem; /* top-bot, left-right */
     border-radius: 2rem;
 }
 
@@ -406,7 +406,7 @@ footer i {
 }
 
 .article-card-container {
-    border-radius: 0.5rem;
+    border-radius: 1rem;
     background-color: var(--card);
     border-width: 0px;
     border-style: solid;
@@ -531,26 +531,34 @@ b {
 }
 
 .card-profile img {
-    width: 30px;
-    height: 30px;
+    width: 2rem;
+    height: 2rem;
     border-radius: 50%;
     transition: border-radius 200ms ease-in-out;
     border: 0px solid black;
 }
 
 .card-profile img:hover {
-    border-radius: 10px;
+    color: var(--p);
+    border-radius: 5px;
 }
 
 .author-name {
-    padding-right: 1rem;
+    padding-right: 0.5rem;
+    color: var(--text);
+    font-size: var(--fs-normal);
 }
 
-img.card-thumbnail {
-    border-top-left-radius: 1rem;
-    border-top-right-radius: 1rem;
+.card-date {
+    color: var(--text);
+    font-size: var(--fs-small);
+}
+
+.card-thumbnail {
+    width: 100%;
+    border-radius: 1rem 1rem 0rem 0rem;
     border-width: 0px;
     height: 10rem;
     object-fit: cover;
-    width: 100%;
+    object-position: center;
 }
