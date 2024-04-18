@@ -20,8 +20,10 @@ templ ArticleTemplate(params ArticleParams) {
 
         <body hx-boost="true">
 
-            <main>
+            <div class="article-container">
                 <article class="article">
+
+                    <img class="article-img" src={ fmt.Sprintf("%s", params.Event.Image()) } />
 
                     <h2>
                         { params.Event.Title() }
@@ -45,7 +47,7 @@ templ ArticleTemplate(params ArticleParams) {
                     </div>
 
                 </article>
-            </main>
+            </div>
         </body>
     </html>
 }
