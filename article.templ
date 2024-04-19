@@ -22,7 +22,7 @@ templ ArticleTemplate(params ArticleParams) {
 					<h2>
 						{ params.Event.Title() }
 					</h2>
-					<div class="tags">
+					<div class="tag-container">
 						for _, tag := range params.Event.HashTags() {
 							<a class="tag" href="/tags/coding">{ tag }</a>
 						}
