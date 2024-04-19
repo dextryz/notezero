@@ -3,7 +3,7 @@ module github.com/dextryz/notezero
 go 1.22.0
 
 require (
-	github.com/a-h/templ v0.2.590
+	github.com/a-h/templ v0.2.663
 	github.com/dgraph-io/badger/v4 v4.2.0
 	github.com/fiatjaf/eventstore v0.3.12
 	github.com/gomarkdown/markdown v0.0.0-20231222211730-1d6d20845b47

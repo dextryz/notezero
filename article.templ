@@ -1,53 +1,45 @@
 package notezero
 
 import (
-    "fmt"
+	"fmt"
 )
 
 templ ArticleTemplate(params ArticleParams) {
-
-    <!doctype html>
-    <html>
-
-        <head>
-            <meta charset="utf-8" />
-            <meta name="viewport" content="width=device-width, initial-scale=1" />
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-            <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet" />
-            <link rel="stylesheet" href="/static/style.css" type="text/css" />
-            <script src="https://unpkg.com/htmx.org@1.9.2"></script>
-        </head>
-
-        <body hx-boost="true">
-
-            <div class="article-container">
-                <article class="article">
-
-                    <img class="article-img" src={ fmt.Sprintf("%s", params.Event.Image()) } />
-
-                    <h2>
-                        { params.Event.Title() }
-                    </h2>
-
-                    <div class="tags">
-                        for _, tag := range params.Event.HashTags() {
-                            <a class="tag" href="/tags/coding">{ tag }</a>
-                        }
-                    </div>
-
-                    <hr class="custom-divider"/>
-
-                    <div id="content-spinner" class="spinner-container"
-                        hx-get={ fmt.Sprintf("/content/%s", params.Event.Naddr()) }
-                        hx-target="#content-spinner"
-                        hx-swap="outerHTML"
-                        hx-trigger="load delay:200ms changed">
-
-                        <div class="ripple"></div>
-                    </div>
-
-                </article>
-            </div>
-        </body>
-    </html>
+	<!DOCTYPE html>
+	<html>
+		<head>
+			<meta charset="utf-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1"/>
+			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+			<link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet"/>
+			<link rel="stylesheet" href="/static/style.css" type="text/css"/>
+			<script src="https://unpkg.com/htmx.org@1.9.2"></script>
+		</head>
+		<body hx-boost="true">
+			<div class="article-container">
+				<article class="article">
+					<img class="article-img" src={ fmt.Sprintf("%s", params.Event.Image()) }/>
+					<h2>
+						{ params.Event.Title() }
+					</h2>
+					<div class="tags">
+						for _, tag := range params.Event.HashTags() {
+							<a class="tag" href="/tags/coding">{ tag }</a>
+						}
+					</div>
+					<hr class="custom-divider"/>
+					<div
+						id="content-spinner"
+						class="spinner-container"
+						hx-get={ fmt.Sprintf("/content/%s", params.Event.Naddr()) }
+						hx-target="#content-spinner"
+						hx-swap="outerHTML"
+						hx-trigger="load delay:200ms changed"
+					>
+						<div class="ripple"></div>
+					</div>
+				</article>
+			</div>
+		</body>
+	</html>
 }

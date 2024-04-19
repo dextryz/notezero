@@ -365,27 +365,29 @@ footer i {
     color: var(--red);
 }
 
-.tags {
+.tag-container {
     display: flex;
-    justify-content: flex-start;
-    flex-wrap: wrap;
     gap: 0.75rem;
-}
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
 
-.tag {
-    color: var(--text);
-    font-size: var(--fs-small); /* Example, adjust based on your design system */
-    font-weight: 550;
-    border-radius: 10px;
-    border: 1px solid var(--text); /* Consolidated border property */
-    padding: 1px 5px;
-    background-color: var(--card); /* Example, adjust or use a CSS variable */
-}
+    .tag {
+        flex: 0 0 auto; /* don't wrap a tag to newline */
+        color: var(--text);
+        font-size: var(--fs-small); /* Example, adjust based on your design system */
+        font-weight: 550;
+        border-radius: 10px;
+        border: 1px solid var(--text); /* Consolidated border property */
+        padding: 1px 5px;
+        background-color: var(--card); /* Example, adjust or use a CSS variable */
+    }
 
-.tag:hover, .tag:focus {
-    color: var(--bg);
-    background-color: var(--text);
-    cursor: pointer;
+    .tag:hover, .tag:focus {
+        color: var(--bg);
+        background-color: var(--text);
+        cursor: pointer;
+    }
 }
 
 /* Ensure your CSS variables (--text, --tag-background, etc.) are defined in a :root selector or within relevant parent selectors */
