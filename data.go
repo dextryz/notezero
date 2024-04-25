@@ -3,9 +3,9 @@ package notezero
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
-	"github.com/nbd-wtf/go-nostr"
 	"github.com/nbd-wtf/go-nostr/nip19"
 )
 
@@ -40,51 +40,54 @@ type Data struct {
 var profiles = make(map[string]*ProfileMetadata)
 
 // FIXME: Remove the content bool hack
-func (s *Handler) requestData(ctx context.Context, code string, page int, content bool) (*Data, error) {
+func (s *Handler) processPrompt(ctx context.Context, code string, page int, content bool) (*Data, error) {
 
 	if code == "" {
-
-		fmt.Println("PAGE NUMBER")
-		fmt.Println(page)
 
 		data := Data{
 			TemplateId: ListArticle,
 		}
 
+		// 1. Pull profiles from curated list
+
 		for _, npub := range CURATED_LIST {
-			e, err := s.service.Profile(ctx, npub)
+			d, err := s.processPrompt(ctx, "profile:"+npub, page, false)
 			if err != nil {
 				return nil, err
 			}
-			metadata, err := ParseMetadata(*e)
+			_, pk, err := nip19.Decode(npub)
 			if err != nil {
 				return nil, err
 			}
-			profiles[e.PubKey] = metadata
+			profiles[pk.(string)] = &d.Metadata
 		}
 
 		events, err := s.service.PullLatest(ctx, CURATED_LIST)
 		if err != nil {
-			fmt.Println("welkfjefwjwekjfwefk")
 			return nil, err
 		}
 
 		for _, v := range events {
-			if v.Kind == nostr.KindArticle {
-				p, ok := profiles[v.PubKey]
-				if !ok {
-					return nil, nil
-					//return nil, fmt.Errorf("cannot find profile metadata for pubkey: %s", v.PubKey)
-				}
-				note := EnhancedEvent{
-					Event:   v,
-					Profile: p,
-				}
-				data.Notes = append(data.Notes, note)
+			p, ok := profiles[v.PubKey]
+			if !ok {
+				return nil, fmt.Errorf("cannot find profile metadata for pubkey: %s", v.PubKey)
 			}
+			note := EnhancedEvent{
+				Event:   v,
+				Profile: p,
+			}
+			data.Notes = append(data.Notes, note)
 		}
 
 		return &data, nil
+	}
+
+	codes := strings.Split(code, ":")
+
+	var prefix string
+	if len(codes) > 1 {
+		prefix = codes[0]
+		code = codes[1]
 	}
 
 	// 1. Request parent event
@@ -117,8 +120,6 @@ func (s *Handler) requestData(ctx context.Context, code string, page int, conten
 		}
 	}
 
-	// 2. If not NPUB, then get the author profile
-
 	// 3. Populate the children
 	switch rootEvent.Kind {
 	case 0:
@@ -127,24 +128,31 @@ func (s *Handler) requestData(ctx context.Context, code string, page int, conten
 		if err != nil {
 			return nil, err
 		}
-
 		metadata, err := ParseMetadata(*profileEvent)
 		if err != nil {
 			return nil, err
 		}
-
-		events, err := s.service.AuthorArticles(ctx, npub)
-		if err != nil {
-			return nil, err
-		}
-
-		// FIXME: Maybe dont encode metadata into Notes
-		for _, e := range events {
-			data.Notes = append(data.Notes, EnhancedEvent{Event: e, Profile: metadata})
-		}
-
 		data.Metadata = *metadata
-		data.TemplateId = ListArticle
+		data.TemplateId = Profile
+
+		// If prompt is not profile:npub.., but only npub, then pull articles too
+		if prefix == "" {
+
+			events, err := s.service.AuthorArticles(ctx, npub)
+			if err != nil {
+				return nil, err
+			}
+
+			for _, e := range events {
+				note := EnhancedEvent{
+					Event:   e,
+					Profile: metadata,
+				}
+				data.Notes = append(data.Notes, note)
+			}
+
+			data.TemplateId = ListArticle
+		}
 
 	case 30023:
 

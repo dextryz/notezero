@@ -22,7 +22,6 @@ func main() {
 	relays := []string{
 		"wss://relay.damus.io/",
 		"wss://nostr-01.yakihonne.com",
-		// "wss://nostr-02.yakihonne.com",
 		"wss://relay.highlighter.com/",
 		"wss://relay.f7z.io",
 		"wss://nos.lol",

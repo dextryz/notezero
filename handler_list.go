@@ -1,7 +1,6 @@
 package notezero
 
 import (
-	"fmt"
 	"html/template"
 	"log/slog"
 	"net/http"
@@ -37,7 +36,7 @@ func (s *Handler) CodeHandler(w http.ResponseWriter, r *http.Request) {
 		page += 1
 	}
 
-	data, err := s.requestData(r.Context(), code, page, false)
+	data, err := s.processPrompt(r.Context(), code, page, false)
 	if err != nil {
 		s.log.Error("failed to get events", slog.Any("error", err))
 		http.Error(w, "failed to get counts", http.StatusInternalServerError)
@@ -62,8 +61,6 @@ func (s *Handler) CodeHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "tried to render an unsupported template", 500)
 		return
 	}
-
-	fmt.Println("ready to render")
 
 	err = component.Render(r.Context(), w)
 	if err != nil {

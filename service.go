@@ -202,7 +202,7 @@ func (s eventService) PullLatest(ctx context.Context, npubs []string) ([]*nostr.
 		fmt.Printf("pageUntil: %v\n", time.Unix(int64(v.CreatedAt), 0).Format("2006-01-02 15:04:05"))
 	}
 
-	pageUntil = lastNotes[len(lastNotes)-1].CreatedAt
+	pageUntil = lastNotes[len(lastNotes)-1].CreatedAt - 1
 	fmt.Printf("last pageUntil: %v\n", time.Unix(int64(pageUntil), 0).Format("2006-01-02 15:04:05"))
 
 	return lastNotes, nil
