@@ -14,7 +14,7 @@ func (s *Handler) ContentHandler(w http.ResponseWriter, r *http.Request) {
 
 	code := r.PathValue("naddr")
 
-	data, err := s.requestData(r.Context(), code, true)
+	data, err := s.requestData(r.Context(), code, 0, true)
 	if err != nil {
 		s.log.Error("failed to get events", slog.Any("error", err))
 		http.Error(w, "failed to get counts", http.StatusInternalServerError)

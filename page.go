@@ -25,6 +25,7 @@ type BaseEventPageParams struct {
 
 type ListArticleParams struct {
 	Notes []EnhancedEvent
+	Page  int
 }
 
 type SpinnerParams struct {

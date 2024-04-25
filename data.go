@@ -37,37 +37,44 @@ type Data struct {
 	Content    string
 }
 
+var profiles = make(map[string]*ProfileMetadata)
+
 // FIXME: Remove the content bool hack
-func (s *Handler) requestData(ctx context.Context, code string, content bool) (*Data, error) {
+func (s *Handler) requestData(ctx context.Context, code string, page int, content bool) (*Data, error) {
 
 	if code == "" {
+
+		fmt.Println("PAGE NUMBER")
+		fmt.Println(page)
 
 		data := Data{
 			TemplateId: ListArticle,
 		}
 
-		events, err := s.service.PullLatest(ctx, CURATED_LIST)
-		if err != nil {
-			return nil, err
+		for _, npub := range CURATED_LIST {
+			e, err := s.service.Profile(ctx, npub)
+			if err != nil {
+				return nil, err
+			}
+			metadata, err := ParseMetadata(*e)
+			if err != nil {
+				return nil, err
+			}
+			profiles[e.PubKey] = metadata
 		}
 
-		profiles := make(map[string]*ProfileMetadata)
-
-		for _, v := range events {
-			if v.Kind == nostr.KindProfileMetadata {
-				metadata, err := ParseMetadata(*v)
-				if err != nil {
-					return nil, err
-				}
-				profiles[v.PubKey] = metadata
-			}
+		events, err := s.service.PullLatest(ctx, CURATED_LIST)
+		if err != nil {
+			fmt.Println("welkfjefwjwekjfwefk")
+			return nil, err
 		}
 
 		for _, v := range events {
 			if v.Kind == nostr.KindArticle {
 				p, ok := profiles[v.PubKey]
 				if !ok {
-					return nil, fmt.Errorf("cannot find profile metadata for pubkey: %s", v.PubKey)
+					return nil, nil
+					//return nil, fmt.Errorf("cannot find profile metadata for pubkey: %s", v.PubKey)
 				}
 				note := EnhancedEvent{
 					Event:   v,

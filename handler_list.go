@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log/slog"
 	"net/http"
+	"strconv"
 
 	"github.com/a-h/templ"
 )
@@ -25,8 +26,18 @@ func NewHandler(log *slog.Logger, es EventService) *Handler {
 func (s *Handler) CodeHandler(w http.ResponseWriter, r *http.Request) {
 
 	code := r.PathValue("code")
+	pageStr := r.URL.Query().Get("page")
 
-	data, err := s.requestData(r.Context(), code, false)
+	var page int
+	if pageStr != "" {
+		page, err := strconv.Atoi(pageStr)
+		if err != nil {
+			panic(err)
+		}
+		page += 1
+	}
+
+	data, err := s.requestData(r.Context(), code, page, false)
 	if err != nil {
 		s.log.Error("failed to get events", slog.Any("error", err))
 		http.Error(w, "failed to get counts", http.StatusInternalServerError)
@@ -39,6 +50,7 @@ func (s *Handler) CodeHandler(w http.ResponseWriter, r *http.Request) {
 	case ListArticle:
 		component = IndexTemplate(ListArticleParams{
 			Notes: data.Notes,
+			Page:  page,
 		})
 	case Article:
 		component = ArticleTemplate(ArticleParams{

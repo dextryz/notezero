@@ -25,7 +25,7 @@ templ IndexTemplate(params ListArticleParams) {
 				<input class="search-bar" name="search" type="search" placeholder="Paste npub and Enter"/>
 			</form>
 			<main id="cards">
-				<article class="article-cards">
+				<article id="article-cards" class="article-cards">
 					for _, note := range params.Notes {
 						<article id={ fmt.Sprintf("%s", note.Naddr()) } class="article-card-container">
 							if note.Image() != "" {
@@ -72,6 +72,14 @@ templ IndexTemplate(params ListArticleParams) {
 						</article>
 					}
 				</article>
+				<button
+					hx-target="#article-cards"
+					hx-swap="beforeend"
+					hx-select="#article-cards > article"
+					hx-get={ fmt.Sprintf("/?page=%d", params.Page) }
+				>
+					Load More
+				</button>
 			</main>
 			<footer>
 				<p>Made with <i class="fas fa-heart"></i> by <a href="https://github.com/dextryz">dextryz</a></p>
