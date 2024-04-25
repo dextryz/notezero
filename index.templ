@@ -22,7 +22,7 @@ templ IndexTemplate(params ListArticleParams) {
 				hx-indicator="#spinner"
 				hx-swap="innerHTML"
 			>
-				<input class="search-bar" name="search" type="search" placeholder="Paste naddr or npub and Enter"/>
+				<input class="search-bar" name="search" type="search" placeholder="Paste npub and Enter"/>
 			</form>
 			<main id="cards">
 				<article class="article-cards">
@@ -59,13 +59,15 @@ templ IndexTemplate(params ListArticleParams) {
 									</div>
 								}
 								<hr class="custom-divider"/>
-								<section class="card-profile">
-									<img src={ fmt.Sprintf("%s", note.Picture) }/>
-									<div>
-										<b class="author-name">{ note.Name }</b>
-										<b class="card-date">{ note.CreatedAtStr() }</b>
-									</div>
-								</section>
+								if note.Profile != nil {
+									<section class="card-profile">
+										<img src={ fmt.Sprintf("%s", note.Profile.Picture) }/>
+										<div>
+											<b class="author-name">{ note.Profile.Name }</b>
+											<b class="card-date">{ note.CreatedAtStr() }</b>
+										</div>
+									</section>
+								}
 							</div>
 						</article>
 					}

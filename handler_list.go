@@ -1,6 +1,7 @@
 package notezero
 
 import (
+	"fmt"
 	"html/template"
 	"log/slog"
 	"net/http"
@@ -49,6 +50,8 @@ func (s *Handler) CodeHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "tried to render an unsupported template", 500)
 		return
 	}
+
+	fmt.Println("ready to render")
 
 	err = component.Render(r.Context(), w)
 	if err != nil {

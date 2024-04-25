@@ -9,8 +9,8 @@ import (
 
 type EnhancedEvent struct {
 	*nostr.Event
-	*ProfileMetadata
-	Relays []string
+	Profile *ProfileMetadata
+	Relays  []string
 }
 
 func (s EnhancedEvent) Image() string {

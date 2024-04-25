@@ -3,9 +3,9 @@ package notezero
 import (
 	"context"
 	"fmt"
-	"sort"
 	"time"
 
+	"github.com/nbd-wtf/go-nostr"
 	"github.com/nbd-wtf/go-nostr/nip19"
 )
 
@@ -42,20 +42,40 @@ func (s *Handler) requestData(ctx context.Context, code string, content bool) (*
 
 	if code == "" {
 
-		// 1. Request parent event
 		data := Data{
 			TemplateId: ListArticle,
 		}
 
-		for _, npub := range CURATED_LIST {
-			d, err := s.requestData(ctx, npub, false)
-			if err != nil {
-				return nil, err
-			}
-			data.Notes = append(data.Notes, d.Notes...)
+		events, err := s.service.PullLatest(ctx, CURATED_LIST)
+		if err != nil {
+			return nil, err
 		}
 
-		sort.Slice(data.Notes, func(i, j int) bool { return data.Notes[i].CreatedAt > data.Notes[j].CreatedAt })
+		profiles := make(map[string]*ProfileMetadata)
+
+		for _, v := range events {
+			if v.Kind == nostr.KindProfileMetadata {
+				metadata, err := ParseMetadata(*v)
+				if err != nil {
+					return nil, err
+				}
+				profiles[v.PubKey] = metadata
+			}
+		}
+
+		for _, v := range events {
+			if v.Kind == nostr.KindArticle {
+				p, ok := profiles[v.PubKey]
+				if !ok {
+					return nil, fmt.Errorf("cannot find profile metadata for pubkey: %s", v.PubKey)
+				}
+				note := EnhancedEvent{
+					Event:   v,
+					Profile: p,
+				}
+				data.Notes = append(data.Notes, note)
+			}
+		}
 
 		return &data, nil
 	}
@@ -113,7 +133,7 @@ func (s *Handler) requestData(ctx context.Context, code string, content bool) (*
 
 		// FIXME: Maybe dont encode metadata into Notes
 		for _, e := range events {
-			data.Notes = append(data.Notes, EnhancedEvent{Event: e, ProfileMetadata: metadata})
+			data.Notes = append(data.Notes, EnhancedEvent{Event: e, Profile: metadata})
 		}
 
 		data.Metadata = *metadata
