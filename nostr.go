@@ -109,9 +109,6 @@ func (s Nostr) pullProfileList(ctx context.Context, npubs []string) ([]*nostr.Ev
 
 func (s Nostr) pullNextArticlePage(ctx context.Context, npubs []string, page int) ([]*nostr.Event, error) {
 
-	fmt.Println("PAGE!!!!")
-	fmt.Println(page)
-
 	filter := nostr.Filter{
 		Kinds: []int{nostr.KindArticle},
 		//		Until: &pageUntil,
@@ -202,11 +199,11 @@ func (s Nostr) pullNextArticlePage(ctx context.Context, npubs []string, page int
 	done := make(chan struct{})
 	noteStream := latestNotes(done)
 	for count < pageLimit {
-        n := <-noteStream
-        if n != nil {
-            notes = append(notes, n)
-            count++
-        }
+		n := <-noteStream
+		if n != nil {
+			notes = append(notes, n)
+			count++
+		}
 	}
 	close(done)
 

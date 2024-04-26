@@ -466,8 +466,8 @@ footer i {
 .ripple {
     text-decoration: none;
     color: #fff;
-    width: 6px;
-    height: 6px;
+    max-width: 6px;
+    max-height: 6px;
     background-color: #00E7FF;
     margin: 0 auto;
     border-radius: 100px;
@@ -491,11 +491,12 @@ footer i {
   }
 }
 
+/*
 .htmx-indicator{
-    flex-grow: 1; /* Allows the search bar to grow and take up available space */
+    flex-grow: 1; 
     padding-top: 2rem;
     height: 60px;
-    margin: 0 auto;  /* center text */
+    margin: 0 auto;
     opacity: 0;
     transition: opacity 500ms ease-in;
 }
@@ -505,6 +506,7 @@ footer i {
 .htmx-request.htmx-indicator{
     opacity: 1;
 }
+*/
 
 b {
     font-size: var(--fs-small);
@@ -564,13 +566,20 @@ b {
     object-position: center;
 }
 
+.btn-ripple {
+    flex-grow: 1; /* Allows the search bar to grow and take up available space */
+    align-self: center;
+    margin-top: 4em; /* FIXME */
+    margin-bottom: 2em; /* FIXME */
+}
+
 button {
     flex-grow: 1; /* Allows the search bar to grow and take up available space */
     max-width: 20em;
     min-height: 3em;
-    align-self: center;
     color: var(--text);
     background: var(--card);
+    align-self: center;
     border-radius: 0.5em;
     border: 0px solid var(--text);
     padding: 0.25em 1em;
@@ -580,4 +589,13 @@ button {
 button:hover {
     cursor: pointer;
     background: var(--bor);
+}
+
+.btn-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.full-width {
+  grid-column: 1 / -1;
 }

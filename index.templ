@@ -67,15 +67,17 @@ templ IndexTemplate(params ListArticleParams) {
 							</div>
 						</article>
 					}
-					<article>
+					<article class="btn-container full-width">
 						<button
 							hx-target="closest article"
 							hx-swap="outerHTML"
 							hx-select="#article-cards > article"
+							hx-indicator="#spinner"
 							hx-get={ fmt.Sprintf("/?page=%d", params.Page+1) }
 						>
 							Load More
 						</button>
+						<div id="spinner" class="btn-ripple ripple htmx-indicator"></div>
 					</article>
 				</article>
 			</main>
