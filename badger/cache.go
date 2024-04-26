@@ -9,7 +9,6 @@ type Cache struct {
 }
 
 func New(db *badger.DB) (*Cache, error) {
-
 	return &Cache{
 		DB: db,
 	}, nil

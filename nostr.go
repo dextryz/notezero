@@ -8,9 +8,7 @@ import (
 	"log/slog"
 	"net/http"
 	"path"
-	"slices"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/dextryz/notezero/badger"
@@ -20,6 +18,8 @@ import (
 	"gocloud.dev/blob"
 	"gocloud.dev/blob/fileblob"
 )
+
+var eventMap = make(map[string]bool)
 
 type Nostr struct {
 	db     eventstore.Store
@@ -107,12 +107,15 @@ func (s Nostr) pullProfileList(ctx context.Context, npubs []string) ([]*nostr.Ev
 	return profiles, nil
 }
 
-func (s Nostr) pullNextArticlePage(ctx context.Context, npubs []string) ([]*nostr.Event, error) {
+func (s Nostr) pullNextArticlePage(ctx context.Context, npubs []string, page int) ([]*nostr.Event, error) {
+
+	fmt.Println("PAGE!!!!")
+	fmt.Println(page)
 
 	filter := nostr.Filter{
 		Kinds: []int{nostr.KindArticle},
-		Until: &pageUntil,
-		Limit: pageLimit,
+		//		Until: &pageUntil,
+		Limit: page * pageLimit,
 	}
 
 	for _, npub := range npubs {
@@ -125,7 +128,7 @@ func (s Nostr) pullNextArticlePage(ctx context.Context, npubs []string) ([]*nost
 
 	pool := nostr.NewSimplePool(context.Background())
 
-	latestNotes := func() <-chan *nostr.Event {
+	latestNotes := func(done <-chan struct{}) <-chan *nostr.Event {
 		notes := make(chan *nostr.Event)
 		go func() {
 
@@ -135,14 +138,10 @@ func (s Nostr) pullNextArticlePage(ctx context.Context, npubs []string) ([]*nost
 			defer close(notes)
 			ch := pool.SubManyEose(ctx, s.relays, nostr.Filters{filter})
 
-			// Wait for all images to be saved to blob before ending routine.
-			var wg sync.WaitGroup
-
 			for {
 				select {
 				case ie, more := <-ch:
 					if !more {
-						wg.Wait()
 						return
 					}
 
@@ -154,25 +153,31 @@ func (s Nostr) pullNextArticlePage(ctx context.Context, npubs []string) ([]*nost
 						url = "https://pfp.nostr.build/dfc3716d64302de9edff417fb561aae1ee90fc109acb8fc82839e580868cf34d.jpg"
 					}
 
-					wg.Add(1)
-					go func() {
-						defer wg.Done()
-						err := s.SaveImage(url)
-						if err != nil {
-							log.Fatalln(err)
-							return
-						}
-					}()
+					err := s.SaveImage(url)
+					if err != nil {
+						log.Fatalln(err)
+						return
+					}
 
 					// TODO: Update image tag in event to point to blob instead of url
 
 					updateImageTag(ie.Event, s.imgDir, url)
 
-					notes <- ie.Event
-					s.db.SaveEvent(ctx, ie.Event)
+					_, ok := s.cache.Get(ie.GetID())
+					if !ok {
+						notes <- ie.Event
+						err = s.db.SaveEvent(ctx, ie.Event)
+						if err != nil {
+							log.Fatalln(err)
+							return
+						}
+						s.cache.Set(ie.GetID(), nil)
+					}
 
 				case <-ctx.Done():
-					wg.Wait()
+					return
+				case <-done:
+					fmt.Println("reutrn case done")
 					return
 				}
 			}
@@ -186,23 +191,38 @@ func (s Nostr) pullNextArticlePage(ctx context.Context, npubs []string) ([]*nost
 		return nil, err
 	}
 
-	if len(lastNotes) < pageLimit {
-		for n := range latestNotes() {
-			lastNotes = append(lastNotes, n)
-		}
+	notes := []*nostr.Event{}
+	i := (page - 1) * pageLimit
+	for i < len(lastNotes) {
+		notes = append(notes, lastNotes[i])
+		i++
 	}
 
-	slices.SortFunc(lastNotes, func(a, b *nostr.Event) int { return int(b.CreatedAt - a.CreatedAt) })
+	count := len(notes)
+	done := make(chan struct{})
+	noteStream := latestNotes(done)
+	for count < pageLimit {
+        n := <-noteStream
+        if n != nil {
+            notes = append(notes, n)
+            count++
+        }
+	}
+	close(done)
 
-	pageUntil = lastNotes[len(lastNotes)-1].CreatedAt - 1
+	slog.Info("notes pulled from relay set or cache", "count", count)
 
-	//	for _, v := range lastNotes {
-	//		fmt.Printf("pageUntil: %v\n", time.Unix(int64(v.CreatedAt), 0).Format("2006-01-02 15:04:05"))
-	//	}
+	//slices.SortFunc(lastNotes, func(a, b *nostr.Event) int { return int(b.CreatedAt - a.CreatedAt) })
 
-	//	fmt.Printf("last pageUntil: %v\n", time.Unix(int64(pageUntil), 0).Format("2006-01-02 15:04:05"))
+	for _, v := range notes {
+		fmt.Println(v)
+	}
 
-	return lastNotes, nil
+	if len(notes) > 0 {
+		pageUntil = notes[len(notes)-1].CreatedAt - 1
+	}
+
+	return notes, nil
 }
 
 func (s Nostr) SaveImage(url string) error {
@@ -237,24 +257,26 @@ func (s Nostr) SaveImage(url string) error {
 	return nil
 }
 
+// TODO oh god fix this.
 func updateImageTag(e *nostr.Event, imgDir, url string) {
 
 	name := path.Base(url)
 
-	fmt.Println("")
-	fmt.Println("IMAGEEEEEEE")
-	fmt.Println(name)
-	fmt.Println("")
-
+	var imgAdded bool
 	var tags nostr.Tags
 	for _, t := range e.Tags {
-		var tag nostr.Tag
 		if t.Key() == "image" {
-			tag = nostr.Tag{"image", fmt.Sprintf("%s/%s", imgDir, name)}
-		} else {
-			tag = t
+			t = nostr.Tag{"image", fmt.Sprintf("%s/%s", imgDir, name)}
+			imgAdded = true
 		}
-		tags = append(tags, tag)
+		tags = append(tags, t)
+	}
+
+	// If event does not have an image tag in the list
+	if !imgAdded {
+		t := nostr.Tag{"image", fmt.Sprintf("%s/%s", imgDir, name)}
+		tags = append(tags, t)
+		imgAdded = true
 	}
 
 	e.Tags = tags

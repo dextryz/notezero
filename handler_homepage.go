@@ -2,6 +2,7 @@ package notezero
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"strconv"
 )
@@ -9,16 +10,14 @@ import (
 func (s *Handler) HomepageHandler(w http.ResponseWriter, r *http.Request) {
 
 	pageStr := r.URL.Query().Get("page")
-	var page int
+	page := 1
 	if pageStr != "" {
-		page, err := strconv.Atoi(pageStr)
-		if err != nil {
-			panic(err)
-		}
-		page += 1
+		page, _ = strconv.Atoi(pageStr)
+		fmt.Println("paging pull")
+		fmt.Println(page)
 	}
 
-	data, err := s.processEmptyPrompt(r.Context())
+	data, err := s.processEmptyPrompt(r.Context(), page)
 	if err != nil {
 		s.log.Error("cannot process empty prompt", "error", err.Error())
 	}
@@ -38,7 +37,7 @@ func (s *Handler) HomepageHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s *Handler) processEmptyPrompt(ctx context.Context) (*RawData, error) {
+func (s *Handler) processEmptyPrompt(ctx context.Context, page int) (*RawData, error) {
 
 	data := RawData{}
 
@@ -58,7 +57,7 @@ func (s *Handler) processEmptyPrompt(ctx context.Context) (*RawData, error) {
 
 	// 2. Pull next page of articles and map to profile
 
-	noteEvents, err := s.ns.pullNextArticlePage(ctx, CURATED_LIST)
+	noteEvents, err := s.ns.pullNextArticlePage(ctx, CURATED_LIST, page)
 	if err != nil {
 		s.log.Error("error rendering tmpl", "error", err.Error())
 	}

@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	pageLimit = 4
+	pageLimit = 10
 	pageUntil = nostr.Now()
 )
 

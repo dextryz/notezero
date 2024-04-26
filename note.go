@@ -1,7 +1,6 @@
 package notezero
 
 import (
-	"fmt"
 	"path"
 	"strings"
 	"time"
