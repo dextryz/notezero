@@ -8,6 +8,7 @@ import (
 	"log/slog"
 	"net/http"
 	"path"
+	"slices"
 	"strings"
 	"time"
 
@@ -111,7 +112,6 @@ func (s Nostr) pullNextArticlePage(ctx context.Context, npubs []string, page int
 
 	filter := nostr.Filter{
 		Kinds: []int{nostr.KindArticle},
-		//		Until: &pageUntil,
 		Limit: page * pageLimit,
 	}
 
@@ -133,6 +133,7 @@ func (s Nostr) pullNextArticlePage(ctx context.Context, npubs []string, page int
 			defer cancel()
 			defer fmt.Println("latestNotes producer exited")
 			defer close(notes)
+
 			ch := pool.SubManyEose(ctx, s.relays, nostr.Filters{filter})
 
 			for {
@@ -142,33 +143,39 @@ func (s Nostr) pullNextArticlePage(ctx context.Context, npubs []string, page int
 						return
 					}
 
-					// Save it to blob concurrently while pulling new notes
-					url := eventImageUrl(ie.Event)
-					// Event does not have image upload to be stored.
-					// This is fine, no need to through an error.
-					if url == "" {
-						url = "https://pfp.nostr.build/dfc3716d64302de9edff417fb561aae1ee90fc109acb8fc82839e580868cf34d.jpg"
-					}
-
-					err := s.SaveImage(url)
-					if err != nil {
-						log.Fatalln(err)
-						return
-					}
-
-					// TODO: Update image tag in event to point to blob instead of url
-
-					updateImageTag(ie.Event, s.imgDir, url)
-
 					_, ok := s.cache.Get(ie.GetID())
 					if !ok {
-						notes <- ie.Event
+
+						// Save it to blob concurrently while pulling new notes
+						url := eventImageUrl(ie.Event)
+						// Event does not have image upload to be stored.
+						// This is fine, no need to through an error.
+						if url == "" {
+							url = "https://pfp.nostr.build/dfc3716d64302de9edff417fb561aae1ee90fc109acb8fc82839e580868cf34d.jpg"
+						}
+
+						err := s.SaveImage(url)
+						if err != nil {
+							fmt.Println("AAAAA")
+							log.Fatalln(err)
+							return
+						}
+
+						// TODO: Update image tag in event to point to blob instead of url
+
+						//updateImageTag(ie.Event, s.imgDir, url)
+
 						err = s.db.SaveEvent(ctx, ie.Event)
 						if err != nil {
 							log.Fatalln(err)
 							return
 						}
-						s.cache.Set(ie.GetID(), nil)
+
+						name := path.Base(url)
+						img := fmt.Sprintf("%s/%s", s.imgDir, name)
+						s.cache.Set(ie.GetID(), []byte(img))
+
+						notes <- ie.Event
 					}
 
 				case <-ctx.Done():
@@ -200,20 +207,19 @@ func (s Nostr) pullNextArticlePage(ctx context.Context, npubs []string, page int
 	noteStream := latestNotes(done)
 	for count < pageLimit {
 		n := <-noteStream
+		fmt.Println(n)
 		if n != nil {
 			notes = append(notes, n)
 			count++
+		} else {
+			break
 		}
 	}
 	close(done)
 
 	slog.Info("notes pulled from relay set or cache", "count", count)
 
-	//slices.SortFunc(lastNotes, func(a, b *nostr.Event) int { return int(b.CreatedAt - a.CreatedAt) })
-
-	for _, v := range notes {
-		fmt.Println(v)
-	}
+	slices.SortFunc(notes, func(a, b *nostr.Event) int { return int(b.CreatedAt - a.CreatedAt) })
 
 	if len(notes) > 0 {
 		pageUntil = notes[len(notes)-1].CreatedAt - 1

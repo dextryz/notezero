@@ -71,6 +71,10 @@ func (s *Handler) processEmptyPrompt(ctx context.Context, page int) (*RawData, e
 			Event:   v,
 			Profile: p,
 		}
+		imgPath, ok := s.ns.cache.Get(v.GetID())
+		if ok {
+			note.ImagePath = string(imgPath)
+		}
 		data.Notes = append(data.Notes, note)
 	}
 

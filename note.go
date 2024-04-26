@@ -11,8 +11,9 @@ import (
 
 type EnhancedEvent struct {
 	*nostr.Event
-	Profile *ProfileMetadata
-	Relays  []string
+	ImagePath string
+	Profile   *ProfileMetadata
+	Relays    []string
 }
 
 func (s EnhancedEvent) ImageUrl() string {
