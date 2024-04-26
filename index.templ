@@ -28,11 +28,7 @@ templ IndexTemplate(params ListArticleParams) {
 				<article id="article-cards" class="article-cards">
 					for _, note := range params.Notes {
 						<article id={ fmt.Sprintf("%s", note.Naddr()) } class="article-card-container">
-							if note.Image() != "" {
-								<img class="card-thumbnail" src={ fmt.Sprintf("%s", note.Image()) }/>
-							} else {
-								<img class="card-thumbnail" src="https://pfp.nostr.build/dfc3716d64302de9edff417fb561aae1ee90fc109acb8fc82839e580868cf34d.jpg"/>
-							}
+							<img class="card-thumbnail" src={ fmt.Sprintf("%s", note.Image()) }/>
 							<div id="content-area" class="article-card-body">
 								<header
 									class="article-card-header"

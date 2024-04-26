@@ -1,6 +1,9 @@
 package notezero
 
 import (
+	"fmt"
+	"path"
+	"strings"
 	"time"
 
 	"github.com/nbd-wtf/go-nostr"
@@ -11,6 +14,23 @@ type EnhancedEvent struct {
 	*nostr.Event
 	Profile *ProfileMetadata
 	Relays  []string
+}
+
+func (s EnhancedEvent) ImageUrl() string {
+	var res string
+	for _, t := range s.Tags {
+		if t.Key() == "image" {
+			res = t.Value()
+		}
+	}
+	if strings.Split(res, ":")[0] != "https" {
+		return ""
+	}
+	return res
+}
+
+func (s EnhancedEvent) ImageName() string {
+	return path.Base(s.ImageUrl())
 }
 
 func (s EnhancedEvent) Image() string {

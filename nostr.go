@@ -3,26 +3,52 @@ package notezero
 import (
 	"context"
 	"fmt"
+	"io"
+	"log"
+	"log/slog"
+	"net/http"
+	"path"
 	"slices"
+	"strings"
+	"sync"
 	"time"
 
 	"github.com/dextryz/notezero/badger"
 	"github.com/fiatjaf/eventstore"
 	"github.com/nbd-wtf/go-nostr"
 	"github.com/nbd-wtf/go-nostr/nip19"
+	"gocloud.dev/blob"
+	"gocloud.dev/blob/fileblob"
 )
 
 type Nostr struct {
 	db     eventstore.Store
+	bucket *blob.Bucket
+	imgDir string
 	cache  *badger.Cache
 	relays []string
 }
 
-func NewNostr(db eventstore.Store, cache *badger.Cache, relays []string) Nostr {
+func NewNostr(db eventstore.Store, dir string, cache *badger.Cache, relays []string) Nostr {
+
+	b, err := fileblob.OpenBucket(dir, nil)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 	return Nostr{
 		db:     db,
+		bucket: b,
+		imgDir: dir,
 		cache:  cache,
 		relays: relays,
+	}
+}
+
+func (s *Nostr) Close() {
+	err := s.bucket.Close()
+	if err != nil {
+		log.Fatalln(err)
 	}
 }
 
@@ -102,20 +128,51 @@ func (s Nostr) pullNextArticlePage(ctx context.Context, npubs []string) ([]*nost
 	latestNotes := func() <-chan *nostr.Event {
 		notes := make(chan *nostr.Event)
 		go func() {
+
 			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 			defer cancel()
 			defer fmt.Println("latestNotes producer exited")
 			defer close(notes)
 			ch := pool.SubManyEose(ctx, s.relays, nostr.Filters{filter})
+
+			// Wait for all images to be saved to blob before ending routine.
+			var wg sync.WaitGroup
+
 			for {
 				select {
 				case ie, more := <-ch:
 					if !more {
+						wg.Wait()
 						return
 					}
+
+					// Save it to blob concurrently while pulling new notes
+					url := eventImageUrl(ie.Event)
+					// Event does not have image upload to be stored.
+					// This is fine, no need to through an error.
+					if url == "" {
+						url = "https://pfp.nostr.build/dfc3716d64302de9edff417fb561aae1ee90fc109acb8fc82839e580868cf34d.jpg"
+					}
+
+					wg.Add(1)
+					go func() {
+						defer wg.Done()
+						err := s.SaveImage(url)
+						if err != nil {
+							log.Fatalln(err)
+							return
+						}
+					}()
+
+					// TODO: Update image tag in event to point to blob instead of url
+
+					updateImageTag(ie.Event, s.imgDir, url)
+
 					notes <- ie.Event
 					s.db.SaveEvent(ctx, ie.Event)
+
 				case <-ctx.Done():
+					wg.Wait()
 					return
 				}
 			}
@@ -146,4 +203,73 @@ func (s Nostr) pullNextArticlePage(ctx context.Context, npubs []string) ([]*nost
 	//	fmt.Printf("last pageUntil: %v\n", time.Unix(int64(pageUntil), 0).Format("2006-01-02 15:04:05"))
 
 	return lastNotes, nil
+}
+
+func (s Nostr) SaveImage(url string) error {
+
+	ctx := context.Background()
+
+	slog.Info("saving image to blob storage", "url", url)
+
+	res, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		return err
+	}
+
+	if res.StatusCode > 299 {
+		return fmt.Errorf("response failed with status code: %d and\nbody: %s", res.StatusCode, body)
+	}
+
+	name := path.Base(url)
+	err = s.bucket.WriteAll(ctx, name, body, nil)
+	if err != nil {
+		return err
+	}
+
+	slog.Info("image stored to bucket", "name", name, "url", url)
+
+	return nil
+}
+
+func updateImageTag(e *nostr.Event, imgDir, url string) {
+
+	name := path.Base(url)
+
+	fmt.Println("")
+	fmt.Println("IMAGEEEEEEE")
+	fmt.Println(name)
+	fmt.Println("")
+
+	var tags nostr.Tags
+	for _, t := range e.Tags {
+		var tag nostr.Tag
+		if t.Key() == "image" {
+			tag = nostr.Tag{"image", fmt.Sprintf("%s/%s", imgDir, name)}
+		} else {
+			tag = t
+		}
+		tags = append(tags, tag)
+	}
+
+	e.Tags = tags
+}
+
+func eventImageUrl(e *nostr.Event) string {
+
+	var res string
+	for _, t := range e.Tags {
+		if t.Key() == "image" {
+			res = t.Value()
+		}
+	}
+	if strings.Split(res, ":")[0] != "https" {
+		return ""
+	}
+	return res
 }

@@ -30,7 +30,7 @@ func main() {
 	}
 
 	db := &eventstore_badger.BadgerBackend{
-		Path: "nostr.db",
+		Path: "eventstore.db",
 	}
 	err := db.Init()
 	if err != nil {
@@ -43,10 +43,17 @@ func main() {
 		os.Exit(1)
 	}
 
+	const imgDir = "./static/img"
+	err = os.MkdirAll(imgDir, 0777)
+	if err != nil {
+		slog.Error("unable to create dir", "err", err)
+	}
+
 	s := nz.NewEventService(db, cache, relays)
-	n := nz.NewNostr(db, cache, relays)
 	l := nz.NewLogging(log, s)
+	n := nz.NewNostr(db, imgDir, cache, relays)
 	h := nz.NewHandler(log, l, n)
+	defer n.Close()
 
 	mux := http.NewServeMux()
 
