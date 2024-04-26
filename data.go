@@ -15,6 +15,7 @@ const (
 	Profile TemplateID = iota
 	ListArticle
 	ListHighlight
+	ListTodo
 	Article
 	Highlight
 	Unkown
@@ -23,11 +24,12 @@ const (
 // Has a parent event and a set of children:
 // 1. Parent is 30023 - Children is 9802
 // 2. Parent is 0 - Children is 30023
-type Data struct {
+type RawData struct {
 	TemplateId TemplateID
 	Event      EnhancedEvent
 	Metadata   ProfileMetadata // Obviously always needs the author profile data
 	Notes      []EnhancedEvent // For example, if the parent is an article, the children will be highlights
+	PubKey     string
 	Npub       string
 	Naddr      string
 	NaddrNaked string
@@ -40,47 +42,9 @@ type Data struct {
 var profiles = make(map[string]*ProfileMetadata)
 
 // FIXME: Remove the content bool hack
-func (s *Handler) processPrompt(ctx context.Context, code string, page int, content bool) (*Data, error) {
+func (s *Handler) processPrompt(ctx context.Context, code string, page int, content bool) (*RawData, error) {
 
-	if code == "" {
-
-		data := Data{
-			TemplateId: ListArticle,
-		}
-
-		// 1. Pull profiles from curated list
-
-		for _, npub := range CURATED_LIST {
-			d, err := s.processPrompt(ctx, "profile:"+npub, page, false)
-			if err != nil {
-				return nil, err
-			}
-			_, pk, err := nip19.Decode(npub)
-			if err != nil {
-				return nil, err
-			}
-			profiles[pk.(string)] = &d.Metadata
-		}
-
-		events, err := s.service.PullLatest(ctx, CURATED_LIST)
-		if err != nil {
-			return nil, err
-		}
-
-		for _, v := range events {
-			p, ok := profiles[v.PubKey]
-			if !ok {
-				return nil, fmt.Errorf("cannot find profile metadata for pubkey: %s", v.PubKey)
-			}
-			note := EnhancedEvent{
-				Event:   v,
-				Profile: p,
-			}
-			data.Notes = append(data.Notes, note)
-		}
-
-		return &data, nil
-	}
+	fmt.Println(code)
 
 	codes := strings.Split(code, ":")
 
@@ -90,22 +54,36 @@ func (s *Handler) processPrompt(ctx context.Context, code string, page int, cont
 		code = codes[1]
 	}
 
+	fmt.Println(prefix, code)
+
 	// 1. Request parent event
 	rootEvent, err := s.service.RequestEvent(ctx, code)
 	if err != nil {
 		return nil, err
 	}
 
-	data := &Data{
+	// 2. Get the owner of this root event.
+	npub, _ := nip19.EncodePublicKey(rootEvent.PubKey)
+	profileEvent, err := s.service.Profile(ctx, npub)
+	if err != nil {
+		return nil, err
+	}
+	metadata, err := ParseMetadata(*profileEvent)
+	if err != nil {
+		return nil, err
+	}
+
+	data := &RawData{
+		Metadata: *metadata,
 		Event: EnhancedEvent{
 			Event:  rootEvent,
 			Relays: []string{},
 		},
 	}
-
-	npub, _ := nip19.EncodePublicKey(rootEvent.PubKey)
+	data.TemplateId = Unkown
 	data.CreatedAt = rootEvent.CreatedAt.Time().String()
-	data.Npub = npub // hopefully will be replaced later
+	data.PubKey = rootEvent.PubKey
+	data.Npub = npub // later
 	data.Naddr = ""
 	data.NaddrNaked = ""
 	data.CreatedAt = time.Unix(int64(rootEvent.CreatedAt), 0).Format("2006-01-02 15:04:05")
@@ -124,19 +102,9 @@ func (s *Handler) processPrompt(ctx context.Context, code string, page int, cont
 	switch rootEvent.Kind {
 	case 0:
 
-		profileEvent, err := s.service.Profile(ctx, npub)
-		if err != nil {
-			return nil, err
-		}
-		metadata, err := ParseMetadata(*profileEvent)
-		if err != nil {
-			return nil, err
-		}
-		data.Metadata = *metadata
-		data.TemplateId = Profile
-
 		// If prompt is not profile:npub.., but only npub, then pull articles too
-		if prefix == "" {
+		switch prefix {
+		case "article":
 
 			events, err := s.service.AuthorArticles(ctx, npub)
 			if err != nil {
@@ -152,6 +120,13 @@ func (s *Handler) processPrompt(ctx context.Context, code string, page int, cont
 			}
 
 			data.TemplateId = ListArticle
+		case "profile":
+			// TODO replave with nprofile code
+			data.TemplateId = Profile
+		case "highlight":
+			fmt.Println("list author highlights")
+		case "todo":
+			fmt.Println("list author todos")
 		}
 
 	case 30023:

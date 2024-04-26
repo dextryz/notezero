@@ -44,8 +44,9 @@ func main() {
 	}
 
 	s := nz.NewEventService(db, cache, relays)
+	n := nz.NewNostr(db, cache, relays)
 	l := nz.NewLogging(log, s)
-	h := nz.NewHandler(log, l)
+	h := nz.NewHandler(log, l, n)
 
 	mux := http.NewServeMux()
 

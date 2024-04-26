@@ -59,11 +59,6 @@ func (s logging) AuthorArticles(ctx context.Context, npub string) ([]*nostr.Even
 	return s.next.AuthorArticles(ctx, npub)
 }
 
-func (s logging) PullLatest(ctx context.Context, npubs []string) ([]*nostr.Event, error) {
-	s.log.Info("event retrieved from relays", "npubCount", len(npubs))
-	return s.next.PullLatest(ctx, npubs)
-}
-
 func (s logging) ArticleHighlights(ctx context.Context, kind int, pubkey, identifier string) ([]*nostr.Event, error) {
 	return s.next.ArticleHighlights(ctx, kind, pubkey, identifier)
 }

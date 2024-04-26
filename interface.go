@@ -11,5 +11,4 @@ type EventService interface {
 	RequestEvent(ctx context.Context, code string) (*nostr.Event, error)
 	AuthorArticles(ctx context.Context, npub string) ([]*nostr.Event, error)
 	ArticleHighlights(ctx context.Context, kind int, pubkey, identifier string) ([]*nostr.Event, error)
-	PullLatest(ctx context.Context, npubs []string) ([]*nostr.Event, error)
 }
