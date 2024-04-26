@@ -53,7 +53,6 @@ p {
     --borders: #9fb9d0;
     --bor: #2f3943;
     --card: #1b262c; /* dark blue (--nc) */
-    --search: #091319;
 
     --fs-h2: 1.25rem;
     --fs-h3: 1rem;
@@ -563,4 +562,22 @@ b {
     height: 10rem;
     object-fit: cover;
     object-position: center;
+}
+
+button {
+    flex-grow: 1; /* Allows the search bar to grow and take up available space */
+    max-width: 20em;
+    min-height: 3em;
+    align-self: center;
+    color: var(--text);
+    background: var(--card);
+    border-radius: 0.5em;
+    border: 0px solid var(--text);
+    padding: 0.25em 1em;
+    margin-top: 1em; /* FIXME */
+}
+
+button:hover {
+    cursor: pointer;
+    background: var(--bor);
 }
