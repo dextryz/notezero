@@ -137,13 +137,23 @@ main {
     background-color: var(--bor); /* Sets the color of the divider */
 }
 
-/* https://www.youtube.com/watch?v=345V2MU3E_w&list=PLvbSExvFRKLO7k618HWtC5P_cCfvXDjy_&index=2 */
+
 .article-img {
-    display: block;
+    vertical-align: middle;
     max-width: 100%;
     height: 30vh;
+    border-radius: 2em;
+}
+
+/* https://www.youtube.com/watch?v=345V2MU3E_w&list=PLvbSExvFRKLO7k618HWtC5P_cCfvXDjy_&index=2 */
+/* https://www.youtube.com/watch?v=345V2MU3E_w&list=PLvbSExvFRKLO7k618HWtC5P_cCfvXDjy_&index=2 */
+img {
+    vertical-align: middle;
+    max-width: 100%;
+    height: auto;
     border-radius: 1.5em;
 }
+
 
 .article-container {
     display: flex;
