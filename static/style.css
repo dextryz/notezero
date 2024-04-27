@@ -9,7 +9,7 @@
 
 /* https://www.youtube.com/watch?v=cH8VbLM1958&list=PLvbSExvFRKLO7k618HWtC5P_cCfvXDjy_&index=7 */
 * {
-    min-width: 0;
+    min-width: 0; /* https://www.youtube.com/watch?v=FD3aC_Ke8uk */
     margin: 0;
     padding: 0;
     line-height: 1.7;
@@ -33,6 +33,15 @@ h4 {
 p {
     max-width: 80ch;
     text-wrap: pretty; /* Prevent any orphans from text wrapping */
+}
+
+/* https://www.youtube.com/watch?v=345V2MU3E_w&list=PLvbSExvFRKLO7k618HWtC5P_cCfvXDjy_&index=2 */
+img {
+    font-style: italic;
+    vertical-align: middle;
+    max-width: 100%;
+    height: auto;
+    border-radius: 1em;
 }
 
 /* ---------------------------------------------------- */
@@ -137,23 +146,14 @@ main {
     background-color: var(--bor); /* Sets the color of the divider */
 }
 
-
 .article-img {
-    vertical-align: middle;
-    max-width: 100%;
+    width: 100%;
     height: 30vh;
     border-radius: 2em;
+    object-fit: cover; /* prevent image from being strectched */
+    object-position: center;
+    margin: 1rem 0rem;
 }
-
-/* https://www.youtube.com/watch?v=345V2MU3E_w&list=PLvbSExvFRKLO7k618HWtC5P_cCfvXDjy_&index=2 */
-/* https://www.youtube.com/watch?v=345V2MU3E_w&list=PLvbSExvFRKLO7k618HWtC5P_cCfvXDjy_&index=2 */
-img {
-    vertical-align: middle;
-    max-width: 100%;
-    height: auto;
-    border-radius: 1.5em;
-}
-
 
 .article-container {
     display: flex;
@@ -236,11 +236,11 @@ section {
     color: var(--red);
     font-weight: normal;
     text-decoration: none;
-}
 
-.inline:hover {
-    color: var(--clr-blue);
-    font-weight: normal;
+    &:hover {
+        color: var(--clr-blue);
+        font-weight: normal;
+    }
 }
 
 /* Force link to break to newline */
@@ -249,11 +249,11 @@ a {
     text-decoration: none; /* Removes the underline */
     word-wrap: break-word; /* Standard property is overflow-wrap */
     word-break: break-all;
-}
 
-/* Changing the color when the link is hovered over */
-a:hover {
-    color: var(--t); /* Set your desired hover color */
+    /* Changing the color when the link is hovered over */
+    &:hover {
+        color: var(--t); /* Set your desired hover color */
+    }
 }
 
 .card-highlights {
@@ -287,24 +287,6 @@ a:hover {
     overflow: hidden;
 }
 
-.card-profile {
-    -webkit-margin-before: auto;
-    margin-block-start: auto;
-    display: grid;
-    grid-template-columns: 60px 1fr;
-    gap: 1rem;
-    align-items: center;
-    cursor: pointer;
-}
-
-.card-profile img {
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    transition: border-radius 200ms ease-in-out;
-    border: 2px solid transparent;
-}
-
 .card-profile img:hover {
     border: 2px solid var(--borders);
 }
@@ -313,28 +295,10 @@ a:hover {
     background-color: rgba(179, 135, 250, 0.5); /* Apply a pink background color as the highlight */
     padding: 0 2px; /* Add some padding to the left and right of the text for better visibility */
     border-radius: 0px; /* Optional: add rounded corners to the highlight */
-}
 
-.highlight:hover {
-    background-color: rgba(253, 111, 156, 0.5);
-}
-
-.card-profile {
-    -webkit-margin-before: auto;
-    margin-block-start: auto;
-    display: grid;
-    grid-template-columns: 60px 1fr;
-    gap: 1rem;
-    align-items: center;
-    cursor: pointer;
-}
-
-.card-profile img {
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    transition: border-radius 200ms ease-in-out;
-    border: 2px solid transparent;
+    &:hover {
+        background-color: rgba(253, 111, 156, 0.5);
+    }
 }
 
 .card-header {
@@ -343,14 +307,14 @@ a:hover {
     font-size: var(--fs-small);
     text-transform: capitalize;
     cursor: pointer;
-}
 
-.card-header:hover {
-    background: var(--t);
-    text-shadow: none;
-    -webkit-text-fill-color: transparent;
-    -webkit-background-clip: text;
-    background-clip: text;
+    &:hover {
+        background: var(--t);
+        text-shadow: none;
+        -webkit-text-fill-color: transparent;
+        -webkit-background-clip: text;
+        background-clip: text;
+    }
 }
 
 .card-profile {
@@ -361,14 +325,14 @@ a:hover {
     gap: 1rem;
     align-items: center;
     cursor: pointer;
-}
 
-.card-profile img {
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    transition: border-radius 200ms ease-in-out;
-    border: 0px solid black;
+    & img {
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        transition: border-radius 200ms ease-in-out;
+        border: 0px solid black;
+    }
 }
 
 footer {
@@ -392,6 +356,7 @@ footer i {
     overflow-x: auto;
     scrollbar-width: none;
 
+    /* Nesting: https://www.youtube.com/watch?v=YnWPeA6l5UE */
     .tag {
         flex: 0 0 auto; /* don't wrap a tag to newline */
         color: var(--text);
@@ -401,12 +366,13 @@ footer i {
         border: 1px solid var(--text); /* Consolidated border property */
         padding: 1px 5px;
         background-color: var(--card); /* Example, adjust or use a CSS variable */
-    }
 
-    .tag:hover, .tag:focus {
-        color: var(--bg);
-        background-color: var(--text);
-        cursor: pointer;
+        &:hover,
+        &:focus {
+            color: var(--bg);
+            background-color: var(--text);
+            cursor: pointer;
+        }
     }
 }
 
@@ -540,10 +506,10 @@ b {
     background-color: rgba(179, 135, 250, 0.5); /* Apply a pink background color as the highlight */
     padding: 0 2px; /* Add some padding to the left and right of the text for better visibility */
     border-radius: 0px; /* Optional: add rounded corners to the highlight */
-}
 
-.highlight:hover {
-    background-color: rgba(253, 111, 156, 0.5);
+    &:hover {
+        background-color: rgba(253, 111, 156, 0.5);
+    }
 }
 
 .card-profile {
@@ -554,20 +520,20 @@ b {
     gap: 1em;
     align-items: center;
     cursor: pointer;
-}
 
-/* FIXME: Do not use fized sizes */
-.card-profile img {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 50%;
-    transition: border-radius 200ms ease-in-out;
-    border: 0px solid black;
-}
+    /* FIXME: Do not use fized sizes */
+    & img {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        transition: border-radius 200ms ease-in-out;
+        border: 0px solid black;
 
-.card-profile img:hover {
-    color: var(--p);
-    border-radius: 5px;
+        &:hover {
+            color: var(--p);
+            border-radius: 5px;
+        }
+    }
 }
 
 .author-name {
@@ -601,11 +567,6 @@ b {
 .load {
     flex-grow: 1; /* Allows the search bar to grow and take up available space */
     align-self: center;
-}
-
-button:hover {
-    cursor: pointer;
-    background: var(--bor);
 }
 
 .btn-container {
