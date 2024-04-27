@@ -44,8 +44,6 @@ var profiles = make(map[string]*ProfileMetadata)
 // FIXME: Remove the content bool hack
 func (s *Handler) processPrompt(ctx context.Context, code string, page int, content bool) (*RawData, error) {
 
-	fmt.Println(code)
-
 	codes := strings.Split(code, ":")
 
 	var prefix string
@@ -53,8 +51,6 @@ func (s *Handler) processPrompt(ctx context.Context, code string, page int, cont
 		prefix = codes[0]
 		code = codes[1]
 	}
-
-	fmt.Println(prefix, code)
 
 	// 1. Request parent event
 	rootEvent, err := s.service.RequestEvent(ctx, code)
@@ -154,7 +150,6 @@ func (s *Handler) processPrompt(ctx context.Context, code string, page int, cont
 				highlights := []string{}
 				for _, v := range events {
 					highlights = append(highlights, v.Content)
-					fmt.Println(v.Content)
 				}
 
 				intervals := highlightIntervals(data.Content, highlights)

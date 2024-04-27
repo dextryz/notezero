@@ -2,19 +2,16 @@ package notezero
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"strconv"
 )
 
 func (s *Handler) HomepageHandler(w http.ResponseWriter, r *http.Request) {
 
-	pageStr := r.URL.Query().Get("page")
 	page := 1
+	pageStr := r.URL.Query().Get("page")
 	if pageStr != "" {
 		page, _ = strconv.Atoi(pageStr)
-		fmt.Println("paging pull")
-		fmt.Println(page)
 	}
 
 	data, err := s.processEmptyPrompt(r.Context(), page)

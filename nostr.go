@@ -7,6 +7,7 @@ import (
 	"log"
 	"log/slog"
 	"net/http"
+	"os"
 	"path"
 	"slices"
 	"strings"
@@ -21,6 +22,8 @@ import (
 )
 
 var eventMap = make(map[string]bool)
+
+var defaultImage = "https://pfp.nostr.build/dfc3716d64302de9edff417fb561aae1ee90fc109acb8fc82839e580868cf34d.jpg"
 
 type Nostr struct {
 	db     eventstore.Store
@@ -146,24 +149,13 @@ func (s Nostr) pullNextArticlePage(ctx context.Context, npubs []string, page int
 					_, ok := s.cache.Get(ie.GetID())
 					if !ok {
 
-						// Save it to blob concurrently while pulling new notes
-						url := eventImageUrl(ie.Event)
-						// Event does not have image upload to be stored.
-						// This is fine, no need to through an error.
-						if url == "" {
-							url = "https://pfp.nostr.build/dfc3716d64302de9edff417fb561aae1ee90fc109acb8fc82839e580868cf34d.jpg"
-						}
+						url, name := imageDetails(ie.Event, s.imgDir)
 
 						err := s.SaveImage(url)
 						if err != nil {
-							fmt.Println("AAAAA")
 							log.Fatalln(err)
 							return
 						}
-
-						// TODO: Update image tag in event to point to blob instead of url
-
-						//updateImageTag(ie.Event, s.imgDir, url)
 
 						err = s.db.SaveEvent(ctx, ie.Event)
 						if err != nil {
@@ -171,9 +163,7 @@ func (s Nostr) pullNextArticlePage(ctx context.Context, npubs []string, page int
 							return
 						}
 
-						name := path.Base(url)
-						img := fmt.Sprintf("%s/%s", s.imgDir, name)
-						s.cache.Set(ie.GetID(), []byte(img))
+						s.cache.Set(ie.GetID(), []byte(name))
 
 						notes <- ie.Event
 					}
@@ -207,7 +197,6 @@ func (s Nostr) pullNextArticlePage(ctx context.Context, npubs []string, page int
 	noteStream := latestNotes(done)
 	for count < pageLimit {
 		n := <-noteStream
-		fmt.Println(n)
 		if n != nil {
 			notes = append(notes, n)
 			count++
@@ -250,6 +239,10 @@ func (s Nostr) SaveImage(url string) error {
 	}
 
 	name := path.Base(url)
+	if len(name) > 64 {
+		name = name[:64]
+	}
+
 	err = s.bucket.WriteAll(ctx, name, body, nil)
 	if err != nil {
 		return err
@@ -260,41 +253,45 @@ func (s Nostr) SaveImage(url string) error {
 	return nil
 }
 
-// TODO oh god fix this.
-func updateImageTag(e *nostr.Event, imgDir, url string) {
-
-	name := path.Base(url)
-
-	var imgAdded bool
-	var tags nostr.Tags
+func imageDetails(e *nostr.Event, imgDir string) (url, name string) {
 	for _, t := range e.Tags {
 		if t.Key() == "image" {
-			t = nostr.Tag{"image", fmt.Sprintf("%s/%s", imgDir, name)}
-			imgAdded = true
+			url = t.Value()
 		}
-		tags = append(tags, t)
+	}
+	if strings.Split(url, ":")[0] != "https" || url == "" {
+		url = defaultImage
 	}
 
-	// If event does not have an image tag in the list
-	if !imgAdded {
-		t := nostr.Tag{"image", fmt.Sprintf("%s/%s", imgDir, name)}
-		tags = append(tags, t)
-		imgAdded = true
+	name = path.Base(url)
+	if len(name) > 64 {
+		name = name[:64]
 	}
 
-	e.Tags = tags
+	name = fmt.Sprintf("%s/%s", imgDir, name)
+
+	imageFiletype(name)
+
+	return url, name
 }
 
-func eventImageUrl(e *nostr.Event) string {
+func imageFiletype(name string) {
+	file, err := os.Open(name)
+	if err != nil {
+		fmt.Println("Error opening file:", err)
+		return
+	}
+	defer file.Close()
 
-	var res string
-	for _, t := range e.Tags {
-		if t.Key() == "image" {
-			res = t.Value()
-		}
+	// Read the first 512 bytes of the file to pass to DetectContentType.
+	buffer := make([]byte, 512)
+	_, err = file.Read(buffer)
+	if err != nil {
+		fmt.Println("Error reading file:", err)
+		return
 	}
-	if strings.Split(res, ":")[0] != "https" {
-		return ""
-	}
-	return res
+
+	// Use http.DetectContentType to determine the content type.
+	contentType := http.DetectContentType(buffer)
+	fmt.Println("Detected content type:", contentType)
 }

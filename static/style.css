@@ -573,7 +573,7 @@ b {
     margin-bottom: 2em; /* FIXME */
 }
 
-button {
+.load {
     flex-grow: 1; /* Allows the search bar to grow and take up available space */
     max-width: 20em;
     min-height: 3em;
