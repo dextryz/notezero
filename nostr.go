@@ -234,8 +234,9 @@ func (s Nostr) SaveImage(url string) error {
 		return err
 	}
 
+	// TODO: THis breaks my server when image is no longer available at src.
 	if res.StatusCode > 299 {
-		return fmt.Errorf("response failed with status code: %d and\nbody: %s", res.StatusCode, body)
+		return fmt.Errorf("response failed with status code: %d and body: %s", res.StatusCode, body)
 	}
 
 	name := path.Base(url)

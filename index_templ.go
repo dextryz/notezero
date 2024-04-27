@@ -169,20 +169,26 @@ func IndexTemplate(params ListArticleParams) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<article class=\"btn-container full-width\"><span class=\"load\" hx-target=\"closest article\" hx-swap=\"outerHTML\" hx-trigger=\"revealed\" hx-select=\"#article-cards &gt; article\" hx-get=\"")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
+		if len(params.Notes) > 0 {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<article class=\"btn-container full-width\"><span class=\"load\" hx-target=\"closest article\" hx-swap=\"outerHTML\" hx-trigger=\"revealed\" hx-select=\"#article-cards &gt; article\" hx-get=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var10 string
+			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/?page=%d", params.Page+1))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `index.templ`, Line: 78, Col: 56}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><div id=\"spinner\" class=\"btn-ripple ripple htmx-indicator\"></div></span></article>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
 		}
-		var templ_7745c5c3_Var10 string
-		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/?page=%d", params.Page+1))
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `index.templ`, Line: 77, Col: 55}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><div id=\"spinner\" class=\"btn-ripple ripple htmx-indicator\"></div></span></article></article></main><footer><p>Made with <i class=\"fas fa-heart\"></i> by <a href=\"https://github.com/dextryz\">dextryz</a></p></footer></body></html>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</article></main><footer><p>Made with <i class=\"fas fa-heart\"></i> by <a href=\"https://github.com/dextryz\">dextryz</a></p></footer></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

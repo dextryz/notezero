@@ -67,18 +67,20 @@ templ IndexTemplate(params ListArticleParams) {
 							</div>
 						</article>
 					}
-					<article class="btn-container full-width">
-						<span
-							class="load"
-							hx-target="closest article"
-							hx-swap="outerHTML"
-							hx-trigger="revealed"
-							hx-select="#article-cards > article"
-							hx-get={ fmt.Sprintf("/?page=%d", params.Page+1) }
-						>
-							<div id="spinner" class="btn-ripple ripple htmx-indicator"></div>
-						</span>
-					</article>
+					if len(params.Notes) > 0 {
+						<article class="btn-container full-width">
+							<span
+								class="load"
+								hx-target="closest article"
+								hx-swap="outerHTML"
+								hx-trigger="revealed"
+								hx-select="#article-cards > article"
+								hx-get={ fmt.Sprintf("/?page=%d", params.Page+1) }
+							>
+								<div id="spinner" class="btn-ripple ripple htmx-indicator"></div>
+							</span>
+						</article>
+					}
 				</article>
 			</main>
 			<footer>

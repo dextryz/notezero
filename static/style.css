@@ -357,7 +357,7 @@ footer {
     color: var(--clr-text);
     background: var(--clr-black);
     padding-top: 1rem;
-    padding-bottom: 1rem;
+    padding-bottom: 3rem;
 }
 
 footer i {
@@ -575,15 +575,7 @@ b {
 
 .load {
     flex-grow: 1; /* Allows the search bar to grow and take up available space */
-    max-width: 20em;
-    min-height: 3em;
-    color: var(--text);
-    background: var(--card);
     align-self: center;
-    border-radius: 0.5em;
-    border: 0px solid var(--text);
-    padding: 0.25em 1em;
-    margin-top: 1em; /* FIXME */
 }
 
 button:hover {
