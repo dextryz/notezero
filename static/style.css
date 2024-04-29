@@ -335,7 +335,9 @@ a {
     border-radius: 1em;
     border: 0px solid none;
 
-    /* FIXME: */
+    /* update image hover with filters
+     * https://www.youtube.com/watch?v=o1HzOJfgugE&list=PLvbSExvFRKLO7k618HWtC5P_cCfvXDjy_&index=4
+     */
     & img {
         width: 100%;
         border-radius: 1em 1em 0em 0em;
@@ -343,6 +345,12 @@ a {
         height: 10rem;
         object-fit: cover;
         object-position: center;
+        filter: grayscale(100%);
+        transition: fitler 500ms ease;
+
+        &:hover {
+            filter: grayscale(0%);
+        }
     }
 }
 
