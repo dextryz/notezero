@@ -14,18 +14,20 @@ templ IndexTemplate(params ListArticleParams) {
 			<script src="https://unpkg.com/htmx.org@1.9.2"></script>
 		</head>
 		<body hx-boost="true">
-			<form
-				class="search-container"
-				hx-get="/search"
-				hx-push-url="true"
-				hx-target="body"
-				hx-indicator="#spinner"
-				hx-swap="innerHTML"
-			>
-				<input class="search-bar" name="search" type="search" placeholder="Paste npub and Enter"/>
-			</form>
+			<header>
+				<form
+					class="search-form"
+					hx-get="/search"
+					hx-push-url="true"
+					hx-target="body"
+					hx-indicator="#spinner"
+					hx-swap="innerHTML"
+				>
+					<input name="search" type="search" placeholder="Paste npub and Enter"/>
+				</form>
+			</header>
 			<main id="cards">
-				<article id="article-cards" class="article-cards">
+				<article id="article-cards" class="grid-cards">
 					for _, note := range params.Notes {
 						<article id={ fmt.Sprintf("%s", note.Naddr()) } class="article-card-container">
 							<img class="card-thumbnail" src={ fmt.Sprintf("%s", note.ImagePath) }/>
@@ -84,6 +86,7 @@ templ IndexTemplate(params ListArticleParams) {
 				</article>
 			</main>
 			<footer>
+				<hr class="custom-divider"/>
 				<p>Made with <i class="fas fa-heart"></i> by <a href="https://github.com/dextryz">dextryz</a></p>
 			</footer>
 		</body>

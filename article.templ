@@ -16,30 +16,38 @@ templ ArticleTemplate(params ArticleParams) {
 			<script src="https://unpkg.com/htmx.org@1.9.2"></script>
 		</head>
 		<body hx-boost="true">
-			<div class="article-container">
-				<article class="article">
-					<img class="article-img" src={ fmt.Sprintf("%s", params.Event.Image()) }/>
-					<h2>
-						{ params.Event.Title() }
-					</h2>
-					<div class="tag-container">
+			<header>
+				<div class="article-header">
+					<img src={ fmt.Sprintf("%s", params.Event.Image()) }/>
+					<h2>{ params.Event.Title() }</h2>
+					<section>
 						for _, tag := range params.Event.HashTags() {
 							<a class="tag" href="/tags/coding">{ tag }</a>
 						}
-					</div>
+					</section>
 					<hr class="custom-divider"/>
-					<div
-						id="content-spinner"
-						class="spinner-container"
-						hx-get={ fmt.Sprintf("/content/%s", params.Event.Naddr()) }
-						hx-target="#content-spinner"
-						hx-swap="outerHTML"
-						hx-trigger="load delay:200ms changed"
-					>
-						<div class="ripple"></div>
-					</div>
-				</article>
-			</div>
+				</div>
+			</header>
+			<main>
+				<div class="article-container">
+					<article class="article">
+						<div
+							id="content-spinner"
+							class="spinner-container"
+							hx-get={ fmt.Sprintf("/content/%s", params.Event.Naddr()) }
+							hx-target="#content-spinner"
+							hx-swap="outerHTML"
+							hx-trigger="load delay:200ms changed"
+						>
+							<div class="ripple"></div>
+						</div>
+					</article>
+				</div>
+			</main>
+			<footer>
+				<hr class="custom-divider"/>
+				<p>Made with <i class="fas fa-heart"></i> by <a href="https://github.com/dextryz">dextryz</a></p>
+			</footer>
 		</body>
 	</html>
 }

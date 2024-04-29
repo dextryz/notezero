@@ -27,14 +27,14 @@ func ArticleTemplate(params ArticleParams) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css\"><link href=\"https://fonts.googleapis.com/css2?family=Fira+Code&amp;display=swap\" rel=\"stylesheet\"><link rel=\"stylesheet\" href=\"/static/style.css\" type=\"text/css\"><script src=\"https://unpkg.com/htmx.org@1.9.2\"></script></head><body hx-boost=\"true\"><div class=\"article-container\"><article class=\"article\"><img class=\"article-img\" src=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css\"><link href=\"https://fonts.googleapis.com/css2?family=Fira+Code&amp;display=swap\" rel=\"stylesheet\"><link rel=\"stylesheet\" href=\"/static/style.css\" type=\"text/css\"><script src=\"https://unpkg.com/htmx.org@1.9.2\"></script></head><body hx-boost=\"true\"><header><div class=\"article-header\"><img src=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%s", params.Event.Image()))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `article.templ`, Line: 21, Col: 75}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `article.templ`, Line: 21, Col: 55}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -47,13 +47,13 @@ func ArticleTemplate(params ArticleParams) templ.Component {
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(params.Event.Title())
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `article.templ`, Line: 23, Col: 28}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `article.templ`, Line: 22, Col: 31}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h2><div class=\"tag-container\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h2><section>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -65,7 +65,7 @@ func ArticleTemplate(params ArticleParams) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(tag)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `article.templ`, Line: 27, Col: 47}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `article.templ`, Line: 25, Col: 47}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
@@ -76,20 +76,20 @@ func ArticleTemplate(params ArticleParams) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><hr class=\"custom-divider\"><div id=\"content-spinner\" class=\"spinner-container\" hx-get=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</section><hr class=\"custom-divider\"></div></header><main><div class=\"article-container\"><article class=\"article\"><div id=\"content-spinner\" class=\"spinner-container\" hx-get=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/content/%s", params.Event.Naddr()))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `article.templ`, Line: 34, Col: 63}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `article.templ`, Line: 37, Col: 64}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#content-spinner\" hx-swap=\"outerHTML\" hx-trigger=\"load delay:200ms changed\"><div class=\"ripple\"></div></div></article></div></body></html>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#content-spinner\" hx-swap=\"outerHTML\" hx-trigger=\"load delay:200ms changed\"><div class=\"ripple\"></div></div></article></div></main><footer><hr class=\"custom-divider\"><p>Made with <i class=\"fas fa-heart\"></i> by <a href=\"https://github.com/dextryz\">dextryz</a></p></footer></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
