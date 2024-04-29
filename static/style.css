@@ -54,9 +54,9 @@ img {
 :root {
     --clr-bg: #121c22;
     --clr-txt: #9fb9d0;
-    --clr-prim: #ff865b; /* orange */
-    --clr-sec: #fd6f9c;  /* purple */
-    --clr-ter: #b387fa;  /* red-pinkish */
+    --clr-primary: #ff865b; /* orange */
+    --clr-secondary: #fd6f9c;  /* purple */
+    --clr-tertiary: #b387fa;  /* red-pinkish */
     --clr-card: #1b262c; /* dark blue */
     --clr-border: #2f3943;
     --clr-red: #f87171;
@@ -109,9 +109,7 @@ body {
 
         /* https://www.youtube.com/watch?v=p3_xN2Zp1TY&list=PL4-IK0AVhVjM6kuUoUexfmnD8vHtZkXdd&index=4 */
         .grid-cards {
-            /* FIXME: EM or REM? */
-            --min-col-size: 20em;
-
+            --min-col-size: 20em; /* FIXME: EM or REM? */
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(min(var(--min-col-size), 100%), 1fr));
             gap: 1em;
@@ -139,7 +137,6 @@ body {
 
     & input {
         flex-grow: 1; /* Allows the search bar to grow and take up available space */
-        flex-basis: auto;
         color: var(--clr-txt);
         background: var(--clr-card);
         outline: 0; /* https://www.youtube.com/watch?v=xx_pJ2ouGnc&list=PLvbSExvFRKLO7k618HWtC5P_cCfvXDjy_&index=2 */
@@ -151,7 +148,7 @@ body {
         &:focus {
             background:
                 linear-gradient(to right, var(--clr-card), var(--clr-card)) padding-box,
-                linear-gradient(to right, var(--clr-prim), var(--clr-sec)) border-box;
+                linear-gradient(to right, var(--clr-primary), var(--clr-secondary)) border-box;
         }
     }
 }
@@ -267,7 +264,7 @@ hr {
     & section {
         color: var(--clr-txt);
         font-size: var(--fs-normal);
-        max-width: 800px;
+        max-width: 40rem;
     }
 }
 
@@ -284,46 +281,15 @@ hr {
 
 /* Force link to break to newline */
 a {
-    color: var(--clr-sec);
+    color: var(--clr-secondary);
     text-decoration: none; /* Removes the underline */
     word-wrap: break-word; /* Standard property is overflow-wrap */
     word-break: break-all;
 
     /* Changing the color when the link is hovered over */
     &:hover {
-        color: var(--clr-ter); /* Set your desired hover color */
+        color: var(--clr-tertiary); /* Set your desired hover color */
     }
-}
-
-.card-highlights {
-    display: flex;
-    flex-flow: column wrap;
-    align-items: stretch;
-    gap: 1rem;
-}
-
-.card-container {
-    display: flex;
-    flex-flow: column;
-    flex: 1;
-    position: relative;
-    gap: 1em;
-    padding: 1em;
-    background: var(--clr-card);
-    border-radius: 1em;
-}
-
-.card-body {
-    display: flex;
-    flex-flow: column;
-}
-
-/* Cut-off text after 3 lines */
-.card-section {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
 }
 
 .highlight {
@@ -333,22 +299,6 @@ a {
 
     &:hover {
         background-color: rgba(253, 111, 156, 0.5);
-    }
-}
-
-.card-header {
-    color: var(--clr-txt);
-    font-weight: normal;
-    font-size: var(--fs-small);
-    text-transform: capitalize;
-    cursor: pointer;
-
-    &:hover {
-        background: var(--clr-ter);
-        text-shadow: none;
-        -webkit-text-fill-color: transparent;
-        -webkit-background-clip: text;
-        background-clip: text;
     }
 }
 
@@ -380,21 +330,23 @@ a {
     }
 }
 
-/* Ensure your CSS variables (--clr-txt, --clr-terag-background, etc.) are defined in a :root selector or within relevant parent selectors */
-
-::placeholder {
-    font-size: var(--fs-normal); /* Example, adjust based on your design system */
-    color: var(--clr-txt);
-}
-
-.article-card-container {
-    border-radius: 1rem;
+.card-container {
     background-color: var(--clr-card);
-    border-width: 0px;
-    border-style: solid;
+    border-radius: 1em;
+    border: 0px solid none;
+
+    /* FIXME: */
+    & img {
+        width: 100%;
+        border-radius: 1em 1em 0em 0em;
+        border-width: 0px;
+        height: 10rem;
+        object-fit: cover;
+        object-position: center;
+    }
 }
 
-.article-card-body {
+.card-body {
     display: flex;
     flex-flow: column;
     flex: 1;
@@ -402,18 +354,42 @@ a {
     position: relative;
     gap: 1em;
     padding: 1em;
+
+    & header {
+        color: var(--clr-txt);
+        font-weight: bold;
+        font-size: var(--fs-normal);
+        text-transform: capitalize;
+        cursor: pointer;
+
+        &:hover {
+            color: var(--clr-secondary);
+        }
+    }
 }
 
-.article-card-header {
-    color: var(--clr-txt);
-    font-weight: bold;
-    font-size: var(--fs-normal);
-    text-transform: capitalize;
+.card-profile {
+    -webkit-margin-before: auto;
+    margin-block-start: auto;
+    display: grid;
+    grid-template-columns: 30px 1fr;
+    gap: 1em;
+    align-items: center;
     cursor: pointer;
-}
 
-.article-card-header:hover {
-    color: var(--clr-sec);
+    /* FIXME: Do not use fized sizes */
+    & img {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        transition: border-radius 200ms ease-in-out;
+        border: 0px solid black;
+
+        &:hover {
+            color: var(--clr-primary);
+            border-radius: 5px;
+        }
+    }
 }
 
 .loading-container {
@@ -504,30 +480,6 @@ b {
     }
 }
 
-.card-profile {
-    -webkit-margin-before: auto;
-    margin-block-start: auto;
-    display: grid;
-    grid-template-columns: 30px 1fr;
-    gap: 1em;
-    align-items: center;
-    cursor: pointer;
-
-    /* FIXME: Do not use fized sizes */
-    & img {
-        width: 2rem;
-        height: 2rem;
-        border-radius: 50%;
-        transition: border-radius 200ms ease-in-out;
-        border: 0px solid black;
-
-        &:hover {
-            color: var(--clr-prim);
-            border-radius: 5px;
-        }
-    }
-}
-
 .author-name {
     padding-right: 0.5em;
     color: var(--clr-txt);
@@ -537,16 +489,6 @@ b {
 .card-date {
     color: var(--clr-txt);
     font-size: var(--fs-small);
-}
-
-/* FIXME: */
-.card-thumbnail {
-    width: 100%;
-    border-radius: 1rem 1rem 0rem 0rem;
-    border-width: 0px;
-    height: 10rem;
-    object-fit: cover;
-    object-position: center;
 }
 
 .btn-ripple {
@@ -559,11 +501,6 @@ b {
 .load {
     flex-grow: 1; /* Allows the earch bar to grow and take up available space */
     align-self: center;
-}
-
-.btn-container {
-    display: flex;
-    flex-direction: column;
 }
 
 .full-width {

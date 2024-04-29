@@ -29,11 +29,10 @@ templ IndexTemplate(params ListArticleParams) {
 			<main id="cards">
 				<div id="article-cards" class="grid-cards">
 					for _, note := range params.Notes {
-						<article id={ fmt.Sprintf("%s", note.Naddr()) } class="article-card-container">
-							<img class="card-thumbnail" src={ fmt.Sprintf("%s", note.ImagePath) }/>
-							<div id="content-area" class="article-card-body">
+						<article id={ fmt.Sprintf("%s", note.Naddr()) } class="card-container">
+							<img src={ fmt.Sprintf("%s", note.ImagePath) }/>
+							<div id="content-area" class="card-body">
 								<header
-									class="article-card-header"
 									hx-get={ fmt.Sprintf("/%s", note.Naddr()) }
 									hx-push-url="true"
 									hx-target="body"
@@ -56,7 +55,7 @@ templ IndexTemplate(params ListArticleParams) {
 										}
 									</div>
 								}
-								<hr class="custom-divider"/>
+								<hr/>
 								if note.Profile != nil {
 									<section class="card-profile">
 										<img src={ fmt.Sprintf("%s", note.Profile.Picture) }/>
