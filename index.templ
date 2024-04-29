@@ -16,7 +16,7 @@ templ IndexTemplate(params ListArticleParams) {
 		<body hx-boost="true">
 			<header>
 				<form
-					class="search-form"
+					class="search"
 					hx-get="/search"
 					hx-push-url="true"
 					hx-target="body"
@@ -27,7 +27,7 @@ templ IndexTemplate(params ListArticleParams) {
 				</form>
 			</header>
 			<main id="cards">
-				<article id="article-cards" class="grid-cards">
+				<div id="article-cards" class="grid-cards">
 					for _, note := range params.Notes {
 						<article id={ fmt.Sprintf("%s", note.Naddr()) } class="article-card-container">
 							<img class="card-thumbnail" src={ fmt.Sprintf("%s", note.ImagePath) }/>
@@ -83,7 +83,7 @@ templ IndexTemplate(params ListArticleParams) {
 							</span>
 						</article>
 					}
-				</article>
+				</div>
 			</main>
 			<footer>
 				<hr class="custom-divider"/>

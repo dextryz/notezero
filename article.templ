@@ -25,27 +25,25 @@ templ ArticleTemplate(params ArticleParams) {
 							<a class="tag" href="/tags/coding">{ tag }</a>
 						}
 					</section>
-					<hr class="custom-divider"/>
+					<hr/>
 				</div>
 			</header>
 			<main>
-				<div class="article-container">
-					<article class="article">
-						<div
-							id="content-spinner"
-							class="spinner-container"
-							hx-get={ fmt.Sprintf("/content/%s", params.Event.Naddr()) }
-							hx-target="#content-spinner"
-							hx-swap="outerHTML"
-							hx-trigger="load delay:200ms changed"
-						>
-							<div class="ripple"></div>
-						</div>
-					</article>
-				</div>
+				<article class="article">
+					<div
+						id="content-spinner"
+						class="spinner-container"
+						hx-get={ fmt.Sprintf("/content/%s", params.Event.Naddr()) }
+						hx-target="#content-spinner"
+						hx-swap="outerHTML"
+						hx-trigger="load delay:200ms changed"
+					>
+						<div class="ripple"></div>
+					</div>
+				</article>
 			</main>
 			<footer>
-				<hr class="custom-divider"/>
+				<hr/>
 				<p>Made with <i class="fas fa-heart"></i> by <a href="https://github.com/dextryz">dextryz</a></p>
 			</footer>
 		</body>
