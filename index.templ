@@ -44,7 +44,6 @@ templ IndexTemplate(params ListArticleParams) {
 									<div class="tag-container">
 										for _, v := range note.HashTags() {
 											<h2
-												class="tag"
 												hx-get="hashtag/{ v }"
 												hx-push-url="true"
 												hx-target="body"

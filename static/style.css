@@ -67,6 +67,7 @@ img {
     --fs-h3: 1rem;
     --fs-normal: 1rem; /* normal */
     --fs-small: 0.8rem; /* small */
+    --fs-xs: 0.7rem; /* small */
 }
 
 /* Target screens of below 40rem */
@@ -78,6 +79,7 @@ img {
         --fs-h3: 1rem;
         --fs-normal: 1rem;
         --fs-small: 0.75rem; /* small */
+        --fs-xs: 0.7rem; /* small */
     }
 }
 
@@ -307,28 +309,26 @@ a {
 /* https://www.youtube.com/watch?v=p3_xN2Zp1TY&list=PL4-IK0AVhVjM6kuUoUexfmnD8vHtZkXdd&index=5 */
 .tag-container {
     display: flex;
-    gap: 0.75em;
+    gap: 0.5em;
     flex-wrap: nowrap;
     overflow-x: auto;
     scrollbar-width: none;
+}
 
-    /* Nesting: https://www.youtube.com/watch?v=YnWPeA6l5UE */
-    .tag {
-        flex: 0 0 auto; /* don't wrap a tag to newline */
-        color: var(--clr-txt);
-        font-size: var(--fs-small); /* Example, adjust based on your design system */
-        font-weight: 550;
-        border-radius: 10px;
-        border: 1px solid var(--clr-txt); /* Consolidated border property */
-        padding: 1px 5px;
-        background-color: var(--clr-card); /* Example, adjust or use a CSS variable */
+.tag-container > * {
+    flex: 0 0 auto; /* don't wrap a tag to newline */
+    color: var(--clr-txt);
+    font-size: var(--fs-xs); /* Example, adjust based on your design system */
+    border-radius: 1em;
+    border: 1px solid var(--clr-txt); /* Consolidated border property */
+    padding: 0em 0.5em;
+    background-color: var(--clr-card); /* Example, adjust or use a CSS variable */
 
-        &:hover,
-        &:focus {
-            color: var(--clr-bg);
-            background-color: var(--clr-txt);
-            cursor: pointer;
-        }
+    &:hover,
+    &:focus {
+        color: var(--clr-bg);
+        background-color: var(--clr-txt);
+        cursor: pointer;
     }
 }
 
