@@ -140,7 +140,7 @@ body {
         outline: 0; /* https://www.youtube.com/watch?v=xx_pJ2ouGnc&list=PLvbSExvFRKLO7k618HWtC5P_cCfvXDjy_&index=2 */
         border: 1px solid transparent; /* required to mock outline, so layout does not shift */
         padding: var(--pad-small);
-        border-radius: 1em;
+        border-radius: 100vmax; /* https://www.youtube.com/watch?v=MywezIxlp8Y&list=WL&index=4&t=311s */
         font-size: var(--fs-normal);
 
         &:focus {
@@ -181,7 +181,7 @@ hr {
             flex: 0 0 auto; /* don't wrap tag text to newline */
             color: var(--clr-txt);
             font-size: var(--fs-small);
-            border-radius: 0.5em;
+            border-radius: 100vmax; /* https://www.youtube.com/watch?v=MywezIxlp8Y&list=WL&index=4&t=311s */
             border: 1px solid var(--clr-txt);
             padding-left: 0.5em;
             padding-right: 0.5em;
@@ -314,7 +314,7 @@ a {
     flex: 0 0 auto; /* don't wrap a tag to newline */
     color: var(--clr-txt);
     font-size: var(--fs-xs); /* Example, adjust based on your design system */
-    border-radius: 1em;
+    border-radius: 100vmax; /* https://www.youtube.com/watch?v=MywezIxlp8Y&list=WL&index=4&t=311s */
     border: 1px solid var(--clr-txt); /* Consolidated border property */
     padding: 0em 0.5em;
     background-color: var(--clr-card); /* Example, adjust or use a CSS variable */
