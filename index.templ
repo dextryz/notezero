@@ -14,57 +14,52 @@ templ IndexTemplate(params ListArticleParams) {
 			<script src="https://unpkg.com/htmx.org@1.9.2"></script>
 		</head>
 		<body hx-boost="true">
-			<form
-				class="search-container"
-				hx-get="/search"
-				hx-push-url="true"
-				hx-target="body"
-				hx-indicator="#spinner"
-				hx-swap="innerHTML"
-			>
-				<input class="search-bar" name="search" type="search" placeholder="Paste npub and Enter"/>
-			</form>
+			<header>
+				<form
+					class="search"
+					hx-get="/search"
+					hx-push-url="true"
+					hx-target="body"
+					hx-indicator="#spinner"
+					hx-swap="innerHTML"
+				>
+					<input name="search" type="search" placeholder="Paste npub and Enter"/>
+				</form>
+			</header>
 			<main id="cards">
-				<article id="article-cards" class="article-cards">
+				<div id="article-cards" class="card-grid">
 					for _, note := range params.Notes {
-						<article id={ fmt.Sprintf("%s", note.Naddr()) } class="article-card-container">
-							<img class="card-thumbnail" src={ fmt.Sprintf("%s", note.ImagePath) }/>
-							<div id="content-area" class="article-card-body">
-								<header
-									class="article-card-header"
-									hx-get={ fmt.Sprintf("/%s", note.Naddr()) }
-									hx-push-url="true"
-									hx-target="body"
-									hx-swap="outerHTML"
-								>
-									{ note.Title() }
-								</header>
-								if len(note.HashTags()) != 0 {
-									<div class="tag-container">
-										for _, v := range note.HashTags() {
-											<h2
-												class="tag"
-												hx-get="hashtag/{ v }"
-												hx-push-url="true"
-												hx-target="body"
-												hx-swap="outerHTML"
-											>
-												{ v }
-											</h2>
-										}
-									</div>
-								}
-								<hr class="custom-divider"/>
-								if note.Profile != nil {
-									<section class="card-profile">
-										<img src={ fmt.Sprintf("%s", note.Profile.Picture) }/>
-										<div>
-											<b class="author-name">{ note.Profile.Name }</b>
-											<b class="card-date">{ note.CreatedAtStr() }</b>
-										</div>
-									</section>
+						<article id={ fmt.Sprintf("%s", note.Naddr()) } class="card">
+							<img src={ fmt.Sprintf("%s", note.ImagePath) }/>
+							<h3
+								hx-get={ fmt.Sprintf("/%s", note.Naddr()) }
+								hx-push-url="true"
+								hx-target="body"
+								hx-swap="outerHTML"
+							>
+								{ note.Title() }
+							</h3>
+							<div class="tag-container">
+								for _, v := range note.HashTags() {
+									<h2
+										hx-get="hashtag/{ v }"
+										hx-push-url="true"
+										hx-target="body"
+										hx-swap="outerHTML"
+									>
+										{ v }
+									</h2>
 								}
 							</div>
+							if note.Profile != nil {
+								<section class="card-profile">
+									<img src={ fmt.Sprintf("%s", note.Profile.Picture) }/>
+									<div>
+										<b class="author-name">{ note.Profile.Name }</b>
+										<b class="card-date">{ note.CreatedAtStr() }</b>
+									</div>
+								</section>
+							}
 						</article>
 					}
 					if len(params.Notes) > 0 {
@@ -81,9 +76,10 @@ templ IndexTemplate(params ListArticleParams) {
 							</span>
 						</article>
 					}
-				</article>
+				</div>
 			</main>
 			<footer>
+				<hr class="custom-divider"/>
 				<p>Made with <i class="fas fa-heart"></i> by <a href="https://github.com/dextryz">dextryz</a></p>
 			</footer>
 		</body>

@@ -13,21 +13,29 @@
     line-height: 1.7;
 }
 
-input, button, textarea, select {
+input,
+button,
+textarea,
+select {
     font: inherit;
 }
 
 /* https://www.youtube.com/watch?v=snKm-VzJCOo */
-h1, h2, h3, h4 {
-    text-wrap: balance;
-}
+h1, h2, h3, { text-wrap: balance; }
 
 p {
     max-width: 80ch;
     text-wrap: pretty; /* Prevent any orphans from text wrapping */
 }
 
-/* ---------------------------------------------------- */
+/* https://www.youtube.com/watch?v=345V2MU3E_w&list=PLvbSExvFRKLO7k618HWtC5P_cCfvXDjy_&index=2 */
+img {
+    font-style: italic;
+    vertical-align: middle;
+    max-width: 100%;
+    height: auto;
+    border-radius: 1em;
+}
 
 @font-face {
     font-family: 'Geist';
@@ -42,112 +50,157 @@ p {
 }
 
 :root {
-    --red: #f87171;
-    --bg: #121c22;
-    /* --b2: #0e171e */
-    /* --b3: #091319 */
-    --text: #9fb9d0;
-    --p: #ff865b; /* orange */
-    --s: #fd6f9c; /* purple */
-    --t: #b387fa;  /* red-pinkish */
-    --borders: #9fb9d0;
-    --bor: #2f3943;
-    --card: #1b262c; /* dark blue (--nc) */
+    --gap: 1em;
+    --gap-small: 0.5em;
+    --pad: 1em;
+    --pad-small: 0.5em;
+    --rad: 1em;
+    --rad-large: 1em;
+    --img-height: 10em;
+
+    --clr-bg: #121c22;
+    --clr-txt: #9fb9d0;
+    --clr-primary: #ff865b; /* orange */
+    --clr-secondary: #fd6f9c;  /* purple */
+    --clr-tertiary: #b387fa;  /* red-pinkish */
+    --clr-card: #1b262c; /* dark blue */
+    --clr-border: #2f3943;
+    --clr-red: #f87171;
 
     --fs-h2: 1.25rem;
     --fs-h3: 1rem;
     --fs-normal: 1rem; /* normal */
     --fs-small: 0.8rem; /* small */
+    --fs-xs: 0.7rem; /* small */
 }
 
 /* Target screens of below 40rem */
+/* https://www.youtube.com/watch?v=wARbgs5Fmuw&list=PLvbSExvFRKLPcbP9PbvGMSxZJZjdIiRfJ&index=2 */
+/* https://www.youtube.com/watch?v=VQraviuwbzU&list=PL4-IK0AVhVjM6kuUoUexfmnD8vHtZkXdd&index=4 */
 @media screen and (max-width: 40em) {
     :root {
         --fs-h2: 1.125rem;
         --fs-h3: 1rem;
         --fs-normal: 1rem;
         --fs-small: 0.75rem; /* small */
+        --fs-xs: 0.7rem; /* small */
     }
 }
 
 body {
     font-family: 'Geist';
     font-size: var(--fs-normal);
-    color: var(--text);
-    background: var(--bg);
+    color: var(--clr-txt);
+    background: var(--clr-bg);
+
+    /* https://www.youtube.com/watch?v=JHregeIsjPQ&list=PLvbSExvFRKLPcbP9PbvGMSxZJZjdIiRfJ&index=13 */
+    min-height: 100vh;
+    padding: var(--pad);
+    display: grid;
+    justify-items: stretch;
+    gap: var(--gap);
+    grid-template-columns: 1fr auto 1fr;
+    grid-template-rows: 1fr auto 1fr;
+    grid-template-areas:
+        ". header ."
+        ". main ."
+        "footer footer footer";
+
+    & header {
+        grid-area: header;
+    }
+
+    & main {
+        min-width: 0; /* OMFG this thing */
+        grid-area: main;
+    }
+
+    & footer {
+        grid-area: footer;
+        justify-self: center;
+
+        display: flex;
+        justify-content: center;
+        color: var(--clr-txt);
+        background: var(--clr-black);
+
+        & i {
+            color: var(--clr-red);
+        }
+    }
 }
 
-main {
+.search {
     display: flex;
-    flex-flow: column nowrap; /* Wrap causes the footer to freak out. ? */
-    align-items: stretch;
-    gap: 1rem;
-    padding: 1rem;
+
+    & input {
+        flex-grow: 1; /* Allows the search bar to grow and take up available space */
+        color: var(--clr-txt);
+        background: var(--clr-card);
+        outline: 0; /* https://www.youtube.com/watch?v=xx_pJ2ouGnc&list=PLvbSExvFRKLO7k618HWtC5P_cCfvXDjy_&index=2 */
+        border: 1px solid transparent; /* required to mock outline, so layout does not shift */
+        padding: var(--pad-small);
+        border-radius: 100vmax; /* https://www.youtube.com/watch?v=MywezIxlp8Y&list=WL&index=4&t=311s */
+        font-size: var(--fs-normal);
+
+        &:focus {
+            background:
+                linear-gradient(to right, var(--clr-card), var(--clr-card)) padding-box,
+                linear-gradient(to right, var(--clr-primary), var(--clr-secondary)) border-box;
+        }
+    }
 }
 
-.search-container {
-    display: flex; /* Changed from 'box' to 'flex' */
-    flex-grow: 1; /* Allows the search bar to grow and take up available space */
-    padding: 1rem 1rem 0rem 1rem;
-}
-
-.search-bar {
-    flex-grow: 1; /* Allows the search bar to grow and take up available space */
-    color: var(--text);
-    background: var(--card);
-    outline: 0;
-    border: 1px solid transparent; /* required to mock outline, so layout does not shift */
-    padding: 8px;
-    border-radius: 8px;
-    font-size: var(--fs-normal);
-}
-
-.search-bar:focus {
-    background:
-        linear-gradient(to right, var(--card), var(--card)) padding-box,
-        linear-gradient(to right, var(--p), var(--s)) border-box;
-}
-
-.small {
-    flex-grow: 1; /* Allows the search bar to grow and take up available space */
-    padding: 1rem;
-}
-
-.message.error {
-    color: var(--red);
-}
-
-.message.success {
-    color: var(--clr-green);
-}
-
-.custom-divider {
+hr {
     border: 0; /* Removes the default border */
     height: 1px; /* Sets the height of the divider */
-    background-color: var(--bor); /* Sets the color of the divider */
+    background-color: var(--clr-border); /* Sets the color of the divider */
 }
 
-.article-img {
-    width: 100%;
-    height: 30vh;
-    border-radius: 2rem;
-    object-fit: cover; /* prevent image from being strectched */
-    object-position: center;
-    margin: 1rem 0rem;
-}
-
-.article-container {
+.article-header {
     display: flex;
+    flex-direction: column;
     justify-content: space-evenly;
-    gap: 1rem;
-    padding: 1rem;
+    gap: var(--gap);
+
+    & img {
+        width: 100%;
+        height: 30vh;
+        border-radius: var(--rad-large);
+        object-fit: cover; /* prevent image from being strectched */
+        object-position: center;
+    }
+
+    /* https://www.youtube.com/watch?v=p3_xN2Zp1TY&list=PL4-IK0AVhVjM6kuUoUexfmnD8vHtZkXdd&index=5 */
+    & section {
+        display: flex;
+        gap: var(--gap);
+        flex-wrap: wrap;
+
+        .tag {
+            flex: 0 0 auto; /* don't wrap tag text to newline */
+            color: var(--clr-txt);
+            font-size: var(--fs-small);
+            border-radius: 100vmax; /* https://www.youtube.com/watch?v=MywezIxlp8Y&list=WL&index=4&t=311s */
+            border: 1px solid var(--clr-txt);
+            padding-left: 0.5em;
+            padding-right: 0.5em;
+
+            &:hover,
+            &:focus {
+                color: var(--clr-bg);
+                background-color: var(--clr-txt);
+                cursor: pointer;
+            }
+        }
+    }
 }
 
 .article {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    gap: 1rem;
+    gap: var(--gap);
 }
 
 .content {
@@ -155,284 +208,193 @@ main {
     flex-grow: 1; /* Allows the search bar to grow and take up available space */
     flex-direction: column;
     justify-content: center;
-    gap: 1rem;
-}
+    gap: var(--gap);
 
-.content img {
-    width: 100%;
-    object-fit: cover; /* prevent image from being strectched */
-    object-position: center;
-    padding: 0.5rem 0rem; /* top-bot, left-right */
-    border-radius: 2rem;
-}
+    & img {
+        width: 100%;
+        object-fit: cover; /* prevent image from being strectched */
+        object-position: center;
+        padding: 0.5em 0em; /* top-bot, left-right */
+        border-radius: 2em;
+    }
 
-h2 {
-    color: var(--text);
-    font-size: var(--fs-h2);
-    line-height: 1.1;
-    text-transform: capitalize;
-}
+    & h2 {
+        color: var(--clr-txt);
+        font-size: var(--fs-h2);
+        line-height: 1.1;
+        text-transform: capitalize;
+    }
 
-ul, ol {
-    font-size: var(--fs-normal);
-    color: var(--text);
-    max-width: 801px;
-    padding-left: 1rem;
-}
+    & ul,
+    & ol {
+        font-size: var(--fs-normal);
+        color: var(--clr-txt);
+        max-width: 801px;
+        padding-left: 1em;
+    }
 
-code {
-    font-size: 13px;
-    background: var(--card);
-    color: var(--text);
-    padding: 0.2rem;
-    border-radius: 4px;
-    font-family: 'Fira Code', monospace;
-}
+    & code {
+        font-size: 13px;
+        background: var(--clr-card);
+        color: var(--clr-txt);
+        padding: 0.2em;
+        border-radius: 4px;
+        font-family: 'Fira Code', monospace;
+    }
 
-pre {
-    background: var(--card);
-    border: 1px solid var(--bor);
-    border-radius: 1rem;
-    color: var(--text);
-    page-break-inside: avoid;
-    font-family: 'Fira Code', monospace;
-    font-size: 13px;
-    line-height: 1.6;
-    margin-bottom: 1.6em;
-    max-width: 100%;
-    overflow: auto;
-    padding: 1rem;
-    display: block;
-    word-wrap: break-word;
-}
+    & pre {
+        padding: var(--pad);
+        background: var(--clr-card);
+        border: 1px solid var(--clr-border);
+        border-radius: var(--rad);
+        color: var(--clr-txt);
+        page-break-inside: avoid;
+        font-family: 'Fira Code', monospace;
+        font-size: 13px;
+        line-height: 1.6;
+        margin-bottom: 1.6em;
+        max-width: 100%;
+        overflow: auto;
+        display: block;
+        word-wrap: break-word;
+    }
 
-section {
-    color: var(--text);
-    font-size: var(--fs-normal);
-    max-width: 800px;
+    & section {
+        color: var(--clr-txt);
+        font-size: var(--fs-normal);
+        max-width: 40rem;
+    }
 }
 
 .inline {
-    color: var(--red);
+    color: var(--clr-red);
     font-weight: normal;
     text-decoration: none;
-}
 
-.inline:hover {
-    color: var(--clr-blue);
-    font-weight: normal;
+    &:hover {
+        color: var(--clr-blue);
+        font-weight: normal;
+    }
 }
 
 /* Force link to break to newline */
 a {
-    color: var(--s);
+    color: var(--clr-secondary);
     text-decoration: none; /* Removes the underline */
     word-wrap: break-word; /* Standard property is overflow-wrap */
     word-break: break-all;
-}
 
-/* Changing the color when the link is hovered over */
-a:hover {
-    color: var(--t); /* Set your desired hover color */
-}
-
-.card-highlights {
-    display: flex;
-    flex-flow: column wrap;
-    align-items: stretch;
-    gap: 1rem;
-}
-
-.card-container {
-    display: flex;
-    flex-flow: column;
-    flex: 1;
-    position: relative;
-    gap: 1rem;
-    padding: 1rem;
-    background: var(--card);
-    border-radius: 1rem;
-}
-
-.card-body {
-    display: flex;
-    flex-flow: column;
-}
-
-/* Cut-off text after 3 lines */
-.card-section {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-.card-profile {
-    -webkit-margin-before: auto;
-    margin-block-start: auto;
-    display: grid;
-    grid-template-columns: 60px 1fr;
-    gap: 1rem;
-    align-items: center;
-    cursor: pointer;
-}
-
-.card-profile img {
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    transition: border-radius 200ms ease-in-out;
-    border: 2px solid transparent;
-}
-
-.card-profile img:hover {
-    border: 2px solid var(--borders);
+    /* Changing the color when the link is hovered over */
+    &:hover {
+        color: var(--clr-tertiary); /* Set your desired hover color */
+    }
 }
 
 .highlight {
     background-color: rgba(179, 135, 250, 0.5); /* Apply a pink background color as the highlight */
     padding: 0 2px; /* Add some padding to the left and right of the text for better visibility */
     border-radius: 0px; /* Optional: add rounded corners to the highlight */
+
+    &:hover {
+        background-color: rgba(253, 111, 156, 0.5);
+    }
 }
 
-.highlight:hover {
-    background-color: rgba(253, 111, 156, 0.5);
-}
-
-.card-profile {
-    -webkit-margin-before: auto;
-    margin-block-start: auto;
-    display: grid;
-    grid-template-columns: 60px 1fr;
-    gap: 1rem;
-    align-items: center;
-    cursor: pointer;
-}
-
-.card-profile img {
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    transition: border-radius 200ms ease-in-out;
-    border: 2px solid transparent;
-}
-
-.card-header {
-    color: var(--text);
-    font-weight: normal;
-    font-size: var(--fs-small);
-    text-transform: capitalize;
-    cursor: pointer;
-}
-
-.card-header:hover {
-    background: var(--t);
-    text-shadow: none;
-    -webkit-text-fill-color: transparent;
-    -webkit-background-clip: text;
-    background-clip: text;
-}
-
-.card-profile {
-    -webkit-margin-before: auto;
-    margin-block-start: auto;
-    display: grid;
-    grid-template-columns: 60px 1fr;
-    gap: 1rem;
-    align-items: center;
-    cursor: pointer;
-}
-
-.card-profile img {
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    transition: border-radius 200ms ease-in-out;
-    border: 0px solid black;
-}
-
-footer {
-    display: flex;
-    justify-content: center;
-    color: var(--clr-text);
-    background: var(--clr-black);
-    padding-top: 1rem;
-    padding-bottom: 3rem;
-}
-
-footer i {
-    color: var(--red);
-}
-
+/* https://www.youtube.com/watch?v=p3_xN2Zp1TY&list=PL4-IK0AVhVjM6kuUoUexfmnD8vHtZkXdd&index=5 */
 .tag-container {
     display: flex;
-    gap: 0.75rem;
+    gap: var(--gap-small);
+    padding: var(--pad-small);
     flex-wrap: nowrap;
     overflow-x: auto;
     scrollbar-width: none;
+}
 
-    .tag {
-        flex: 0 0 auto; /* don't wrap a tag to newline */
-        color: var(--text);
-        font-size: var(--fs-small); /* Example, adjust based on your design system */
-        font-weight: 550;
-        border-radius: 10px;
-        border: 1px solid var(--text); /* Consolidated border property */
-        padding: 1px 5px;
-        background-color: var(--card); /* Example, adjust or use a CSS variable */
-    }
+.tag-container > * {
+    flex: 0 0 auto; /* don't wrap a tag to newline */
+    color: var(--clr-txt);
+    font-size: var(--fs-xs); /* Example, adjust based on your design system */
+    border-radius: 100vmax; /* https://www.youtube.com/watch?v=MywezIxlp8Y&list=WL&index=4&t=311s */
+    border: 1px solid var(--clr-txt); /* Consolidated border property */
+    padding: 0em 0.5em;
+    background-color: var(--clr-card); /* Example, adjust or use a CSS variable */
 
-    .tag:hover, .tag:focus {
-        color: var(--bg);
-        background-color: var(--text);
+    &:hover,
+    &:focus {
+        color: var(--clr-bg);
+        background-color: var(--clr-txt);
         cursor: pointer;
     }
 }
 
-/* Ensure your CSS variables (--text, --tag-background, etc.) are defined in a :root selector or within relevant parent selectors */
-
-::placeholder {
-    font-size: var(--fs-normal); /* Example, adjust based on your design system */
-    color: var(--clr-text);
-}
-
-/*-----------------------------------------------------------
- * Article Cards
- * ----------------------------------------------------------- */
-
-.article-cards {
+/* https://www.youtube.com/watch?v=p3_xN2Zp1TY&list=PL4-IK0AVhVjM6kuUoUexfmnD8vHtZkXdd&index=4 */
+.card-grid {
+    --min-col-size: 15em; /* FIXME: EM or REM? */
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(20em, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--min-col-size)), 1fr));
+    grid-auto-rows: var(--img-height) auto auto auto;
+    gap: var(--gap);
 }
 
-.article-card-container {
-    border-radius: 1rem;
-    background-color: var(--card);
-    border-width: 0px;
-    border-style: solid;
+.card {
+
+    grid-row: span 4;
+
+    display: grid;
+    grid-template-rows: subgrid;
+    gap: 0; /* Do not inherit gap from parent */
+    background-color: var(--clr-card);
+    border-radius: 1em;
+    border: 0px solid none;
+
+    /* update image hover with filters
+     * https://www.youtube.com/watch?v=o1HzOJfgugE&list=PLvbSExvFRKLO7k618HWtC5P_cCfvXDjy_&index=4
+     */
+    & img {
+        width: 100%;
+        border-radius: 1em 1em 0em 0em;
+        border-width: 0;
+        height: var(--img-height);
+        object-fit: cover;
+        object-position: center;
+        filter: grayscale(100%);
+        transition: fitler 500ms ease;
+
+        &:hover {
+            filter: grayscale(0%);
+        }
+    }
+
+    & h3 {
+        padding: var(--pad-small);
+        color: var(--clr-txt);
+        font-weight: bold;
+        font-size: var(--fs-normal);
+        text-transform: capitalize;
+        cursor: pointer;
+
+        &:hover {
+            color: var(--clr-secondary);
+        }
+    }
 }
 
-.article-card-body {
-    display: flex;
-    flex-flow: column;
-    flex: 1;
-    justify-content: center;
-    position: relative;
-    gap: 1rem;
-    padding: 1rem;
-}
-
-.article-card-header {
-    color: var(--text);
-    font-weight: bold;
-    font-size: var(--fs-normal);
-    text-transform: capitalize;
+.card-profile {
+    display: grid;
+    padding: var(--pad-small);
+    /* FIXME */
+    grid-template-columns: 30px 1fr;
+    gap: var(--gap-small);
+    align-items: center;
     cursor: pointer;
-}
 
-.article-card-header:hover {
-    color: var(--s);
+    /* FIXME: Do not use fized sizes */
+    & img {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        border: 0px solid black;
+    }
 }
 
 .loading-container {
@@ -460,7 +422,7 @@ footer i {
     justify-content: center;
     align-items: center;
     height: 100%; /* Take up full height of the parent */
-    padding-top: 4rem;
+    padding-top: 4em;
 }
 
 .ripple {
@@ -517,53 +479,21 @@ b {
     background-color: rgba(179, 135, 250, 0.5); /* Apply a pink background color as the highlight */
     padding: 0 2px; /* Add some padding to the left and right of the text for better visibility */
     border-radius: 0px; /* Optional: add rounded corners to the highlight */
-}
 
-.highlight:hover {
-    background-color: rgba(253, 111, 156, 0.5);
-}
-
-.card-profile {
-    -webkit-margin-before: auto;
-    margin-block-start: auto;
-    display: grid;
-    grid-template-columns: 30px 1fr;
-    gap: 1rem;
-    align-items: center;
-    cursor: pointer;
-}
-
-.card-profile img {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 50%;
-    transition: border-radius 200ms ease-in-out;
-    border: 0px solid black;
-}
-
-.card-profile img:hover {
-    color: var(--p);
-    border-radius: 5px;
+    &:hover {
+        background-color: rgba(253, 111, 156, 0.5);
+    }
 }
 
 .author-name {
-    padding-right: 0.5rem;
-    color: var(--text);
+    padding-right: 0.5em;
+    color: var(--clr-txt);
     font-size: var(--fs-normal);
 }
 
 .card-date {
-    color: var(--text);
+    color: var(--clr-txt);
     font-size: var(--fs-small);
-}
-
-.card-thumbnail {
-    width: 100%;
-    border-radius: 1rem 1rem 0rem 0rem;
-    border-width: 0px;
-    height: 10rem;
-    object-fit: cover;
-    object-position: center;
 }
 
 .btn-ripple {
@@ -574,18 +504,8 @@ b {
 }
 
 .load {
-    flex-grow: 1; /* Allows the search bar to grow and take up available space */
+    flex-grow: 1; /* Allows the earch bar to grow and take up available space */
     align-self: center;
-}
-
-button:hover {
-    cursor: pointer;
-    background: var(--bor);
-}
-
-.btn-container {
-    display: flex;
-    flex-direction: column;
 }
 
 .full-width {

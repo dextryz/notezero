@@ -35,18 +35,18 @@ func NewEventService(db eventstore.Store, cache *badger.Cache, relays []string) 
 
 var CURATED_LIST = []string{
 	"npub14ge829c4pvgx24c35qts3sv82wc2xwcmgng93tzp6d52k9de2xgqq0y4jk", // dextryz
-	"npub1m4ny6hjqzepn4rxknuq94c2gpqzr29ufkkw7ttcxyak7v43n6vvsajc2jl", // Laeserin
-	"npub1mu2tx4ue4yt7n7pymcql3agslnx0zeyt34zmmfex2g07k6ymtksq7hansc", // CYB3RX
-	"npub18jvyjwpmm65g8v9azmlvu8knd5m7xlxau08y8vt75n53jtkpz2ys6mqqu3", // onigirl
+	//"npub1m4ny6hjqzepn4rxknuq94c2gpqzr29ufkkw7ttcxyak7v43n6vvsajc2jl", // Laeserin
+	//"npub1mu2tx4ue4yt7n7pymcql3agslnx0zeyt34zmmfex2g07k6ymtksq7hansc", // CYB3RX
+	//"npub18jvyjwpmm65g8v9azmlvu8knd5m7xlxau08y8vt75n53jtkpz2ys6mqqu3", // onigirl
 	//"npub180cvv07tjdrrgpa0j7j7tmnyl2yr6yr7l8j4s3evf6u64th6gkwsyjh6w6", // fiatjaf
-	"npub1l2vyh47mk2p0qlsku7hg0vn29faehy9hy34ygaclpn66ukqp3afqutajft", // pablo
+	//"npub1l2vyh47mk2p0qlsku7hg0vn29faehy9hy34ygaclpn66ukqp3afqutajft", // pablo
 	//"npub1r0rs5q2gk0e3dk3nlc7gnu378ec6cnlenqp8a3cjhyzu6f8k5sgs4sq9ac", // karnage
-	"npub1mygerccwqpzyh9pvp6pv44rskv40zutkfs38t0hqhkvnwlhagp6s3psn5p", // gsoverienty
+	//"npub1mygerccwqpzyh9pvp6pv44rskv40zutkfs38t0hqhkvnwlhagp6s3psn5p", // gsoverienty
 	//"npub1xtscya34g58tk0z605fvr788k263gsu6cy9x0mhnm87echrgufzsevkk5s", // Will
 	//"npub18ams6ewn5aj2n3wt2qawzglx9mr4nzksxhvrdc4gzrecw7n5tvjqctp424", // Derek Ros
 	//"npub12262qa4uhw7u8gdwlgmntqtv7aye8vdcmvszkqwgs0zchel6mz7s6cgrkj", // semisol
 	//"npub1h8nk2346qezka5cpm8jjh3yl5j88pf4ly2ptu7s6uu55wcfqy0wq36rpev", // Dan Swann
-	"npub1utx00neqgqln72j22kej3ux7803c2k986henvvha4thuwfkper4s7r50e8", // utxo
+	//"npub1utx00neqgqln72j22kej3ux7803c2k986henvvha4thuwfkper4s7r50e8", // utxo
 }
 
 func (s eventService) Profile(ctx context.Context, npub string) (*nostr.Event, error) {

@@ -16,18 +16,20 @@ templ ArticleTemplate(params ArticleParams) {
 			<script src="https://unpkg.com/htmx.org@1.9.2"></script>
 		</head>
 		<body hx-boost="true">
-			<div class="article-container">
-				<article class="article">
-					<img class="article-img" src={ fmt.Sprintf("%s", params.Event.Image()) }/>
-					<h2>
-						{ params.Event.Title() }
-					</h2>
-					<div class="tag-container">
+			<header>
+				<div class="article-header">
+					<img src={ fmt.Sprintf("%s", params.Event.Image()) }/>
+					<h2>{ params.Event.Title() }</h2>
+					<section>
 						for _, tag := range params.Event.HashTags() {
 							<a class="tag" href="/tags/coding">{ tag }</a>
 						}
-					</div>
-					<hr class="custom-divider"/>
+					</section>
+					<hr/>
+				</div>
+			</header>
+			<main>
+				<article class="article">
 					<div
 						id="content-spinner"
 						class="spinner-container"
@@ -39,7 +41,11 @@ templ ArticleTemplate(params ArticleParams) {
 						<div class="ripple"></div>
 					</div>
 				</article>
-			</div>
+			</main>
+			<footer>
+				<hr/>
+				<p>Made with <i class="fas fa-heart"></i> by <a href="https://github.com/dextryz">dextryz</a></p>
+			</footer>
 		</body>
 	</html>
 }
