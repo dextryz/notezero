@@ -153,13 +153,13 @@ func (s Nostr) pullNextArticlePage(ctx context.Context, npubs []string, page int
 
 						err := s.SaveImage(url)
 						if err != nil {
-							log.Fatalln(err)
+                            log.Fatalf("cannot store img to bucket: %v", err)
 							return
 						}
 
 						err = s.db.SaveEvent(ctx, ie.Event)
 						if err != nil {
-							log.Fatalln(err)
+                            log.Fatalf("cannot save event to store: %v", err)
 							return
 						}
 
@@ -219,9 +219,9 @@ func (s Nostr) pullNextArticlePage(ctx context.Context, npubs []string, page int
 
 func (s Nostr) SaveImage(url string) error {
 
-	ctx := context.Background()
-
 	slog.Info("saving image to blob storage", "url", url)
+
+	ctx := context.Background()
 
 	res, err := http.Get(url)
 	if err != nil {
