@@ -21,7 +21,7 @@ RUN CGO_ENABLED=1 GOOS=linux go build -tags 'osusergo netgo static_build' -ldfla
 
 # --------------------------------------------------------------------
 
-FROM scratch
+FROM ubuntu:latest
 
 COPY --from=builder /app/server ./
 COPY --from=builder /app/static ./static

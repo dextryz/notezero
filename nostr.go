@@ -149,9 +149,9 @@ func (s Nostr) pullNextArticlePage(ctx context.Context, npubs []string, page int
 					_, ok := s.cache.Get(ie.GetID())
 					if !ok {
 
-						url, name := imageDetails(ie.Event, s.imgDir)
+						url, filepath := imageDetails(ie.Event, s.imgDir)
 
-						err := s.SaveImage(url)
+						err := s.SaveImage(url, filepath)
 						if err != nil {
 							log.Fatalf("cannot store img to bucket: %v", err)
 							return
@@ -163,7 +163,7 @@ func (s Nostr) pullNextArticlePage(ctx context.Context, npubs []string, page int
 							return
 						}
 
-						s.cache.Set(ie.GetID(), []byte(name))
+						s.cache.Set(ie.GetID(), []byte(filepath))
 
 						notes <- ie.Event
 					}
@@ -218,11 +218,9 @@ func (s Nostr) pullNextArticlePage(ctx context.Context, npubs []string, page int
 	return stack, nil
 }
 
-func (s Nostr) SaveImage(url string) error {
+func (s Nostr) SaveImage(url, filepath string) error {
 
 	slog.Info("saving image to blob storage", "url", url)
-
-	ctx := context.Background()
 
 	res, err := http.Get(url)
 	if err != nil {
@@ -240,17 +238,18 @@ func (s Nostr) SaveImage(url string) error {
 		return fmt.Errorf("response failed with status code: %d and body: %s", res.StatusCode, body)
 	}
 
-	name := path.Base(url)
-	if len(name) > 64 {
-		name = name[:64]
-	}
-
-	err = s.bucket.WriteAll(ctx, name, body, nil)
+	f, err := os.Create(filepath)
 	if err != nil {
 		return err
 	}
+	defer f.Close()
 
-	slog.Info("image stored to bucket", "name", name, "url", url)
+	n, err := f.Write(body)
+	if err != nil {
+		slog.Error("cannot gob write to file", "err", err)
+	}
+
+	slog.Info("image stored to bucket", "filepath", filepath, "byteCount", n)
 
 	return nil
 }
@@ -266,15 +265,15 @@ func imageDetails(e *nostr.Event, imgDir string) (url, name string) {
 	}
 
 	name = path.Base(url)
-	if len(name) > 64 {
-		name = name[:64]
-	}
+	//if len(name) > 64 {
+	//name = name[:64]
+	//	}
 
-	name = fmt.Sprintf("%s/%s", imgDir, name)
+	filepath := fmt.Sprintf("%s/%s", imgDir, name)
 
-	imageFiletype(name)
+	imageFiletype(filepath)
 
-	return url, name
+	return url, filepath
 }
 
 func imageFiletype(name string) {

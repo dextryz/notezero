@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/gob"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -49,6 +50,18 @@ func main() {
 		slog.Error("unable to create dir", "err", err)
 	}
 	slog.Info("success image directory created", "path", imgDir)
+
+	f, err := os.Create("./static/img/hello.txt")
+	if err != nil {
+		slog.Error("cannot create file", "err", err)
+	}
+	defer f.Close()
+
+	err = gob.NewEncoder(f).Encode("hello friend")
+	if err != nil {
+		slog.Error("cannot gob write to file", "err", err)
+	}
+	slog.Info("data persisted to file", "path", "./static/img/hello.txt")
 
 	s := nz.NewEventService(db, cache, relays)
 	l := nz.NewLogging(log, s)
