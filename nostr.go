@@ -153,13 +153,13 @@ func (s Nostr) pullNextArticlePage(ctx context.Context, npubs []string, page int
 
 						err := s.SaveImage(url)
 						if err != nil {
-                            log.Fatalf("cannot store img to bucket: %v", err)
+							log.Fatalf("cannot store img to bucket: %v", err)
 							return
 						}
 
 						err = s.db.SaveEvent(ctx, ie.Event)
 						if err != nil {
-                            log.Fatalf("cannot save event to store: %v", err)
+							log.Fatalf("cannot save event to store: %v", err)
 							return
 						}
 
@@ -185,20 +185,20 @@ func (s Nostr) pullNextArticlePage(ctx context.Context, npubs []string, page int
 		return nil, err
 	}
 
-	notes := []*nostr.Event{}
+	stack := []*nostr.Event{}
 	i := (page - 1) * pageLimit
 	for i < len(lastNotes) {
-		notes = append(notes, lastNotes[i])
+		stack = append(stack, lastNotes[i])
 		i++
 	}
 
-	count := len(notes)
+	count := len(stack)
 	done := make(chan struct{})
 	noteStream := latestNotes(done)
 	for count < pageLimit {
 		n := <-noteStream
 		if n != nil {
-			notes = append(notes, n)
+			stack = append(stack, n)
 			count++
 		} else {
 			break
@@ -208,13 +208,14 @@ func (s Nostr) pullNextArticlePage(ctx context.Context, npubs []string, page int
 
 	slog.Info("notes pulled from relay set or cache", "count", count)
 
-	slices.SortFunc(notes, func(a, b *nostr.Event) int { return int(b.CreatedAt - a.CreatedAt) })
+	slices.SortFunc(stack, func(a, b *nostr.Event) int { return int(b.CreatedAt - a.CreatedAt) })
 
-	if len(notes) > 0 {
-		pageUntil = notes[len(notes)-1].CreatedAt - 1
+	// Check created time for last item (oldest) in stack.
+	if len(stack) > 0 {
+		pageUntil = stack[len(stack)-1].CreatedAt - 1
 	}
 
-	return notes, nil
+	return stack, nil
 }
 
 func (s Nostr) SaveImage(url string) error {

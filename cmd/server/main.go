@@ -48,6 +48,7 @@ func main() {
 	if err != nil {
 		slog.Error("unable to create dir", "err", err)
 	}
+	slog.Info("success image directory created", "path", imgDir)
 
 	s := nz.NewEventService(db, cache, relays)
 	l := nz.NewLogging(log, s)

@@ -17,7 +17,6 @@ func (s *Handler) HomepageHandler(w http.ResponseWriter, r *http.Request) {
 
 	data, err := s.processEmptyPrompt(r.Context(), page)
 	if err != nil {
-		fmt.Println("AAA")
 		s.log.Error("cannot process empty prompt", "error", err.Error())
 	}
 
@@ -32,7 +31,6 @@ func (s *Handler) HomepageHandler(w http.ResponseWriter, r *http.Request) {
 
 	err = component.Render(r.Context(), w)
 	if err != nil {
-		fmt.Println("BBB")
 		s.log.Error("cannot process empty prompt", "error", err.Error())
 		s.log.Error("error rendering tmpl", "error", err.Error())
 	}
@@ -64,6 +62,9 @@ func (s *Handler) processEmptyPrompt(ctx context.Context, page int) (*RawData, e
 		s.log.Error("error rendering tmpl", "error", err.Error())
 	}
 
+	// TODO Add pulling highlights into a discovered map
+
+	// TODO: Can we impl this using a pipeline pattern?
 	for _, v := range noteEvents {
 		p, ok := profiles[v.PubKey]
 		if !ok {

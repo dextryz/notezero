@@ -132,6 +132,8 @@ func (s *Handler) processPrompt(ctx context.Context, code string, page int, cont
 
 		if content {
 
+			// TODO: Update to use channel pipeline pattern
+
 			// 1. Process a list of kind 9082
 			// 2. Use the first identifier of the article to request highlight data
 			// 3. Add the highlights to the data.Notes list
