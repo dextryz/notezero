@@ -136,13 +136,17 @@ body {
 
     & input {
         flex-grow: 1; /* Allows the search bar to grow and take up available space */
-        color: var(--clr-txt);
         background: var(--clr-card);
         outline: 0; /* https://www.youtube.com/watch?v=xx_pJ2ouGnc&list=PLvbSExvFRKLO7k618HWtC5P_cCfvXDjy_&index=2 */
         border: 1px solid transparent; /* required to mock outline, so layout does not shift */
         padding: var(--pad-small) var(--pad);
         border-radius: 100vmax; /* https://www.youtube.com/watch?v=MywezIxlp8Y&list=WL&index=4&t=311s */
         font-size: var(--fs-normal);
+
+        &::placeholder {
+            color: var(--clr-txt);
+            opacity: 0.7;
+        }
 
         &:focus {
             background:
@@ -362,6 +366,14 @@ a {
         transition: fitler 500ms ease;
 
         &:hover {
+            filter: grayscale(0%);
+        }
+    }
+
+    /* Mobile and small devices (usually screens smaller than 768px are considered mobile) */
+    @media (max-width: 40rem) {
+        & img {
+            /* Always show full color images on mobile devices */
             filter: grayscale(0%);
         }
     }
