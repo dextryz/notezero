@@ -35,6 +35,11 @@ func NewEventService(db eventstore.Store, cache *badger.Cache, relays []string) 
 
 var CURATED_LIST = []string{
 	"npub14ge829c4pvgx24c35qts3sv82wc2xwcmgng93tzp6d52k9de2xgqq0y4jk", // dextryz
+    "npub1arkn0xxxll4llgy9qxkrncn3vc4l69s0dz8ef3zadykcwe7ax3dqrrh43w", // arkinox
+    "npub1wmr34t36fy03m8hvgl96zl3znndyzyaqhwmwdtshwmtkg03fetaqhjg240", // Rabble
+    "npub1h8nk2346qezka5cpm8jjh3yl5j88pf4ly2ptu7s6uu55wcfqy0wq36rpev", // TheGuySwan
+    "npub107jk7htfv243u0x5ynn43scq9wrxtaasmrwwa8lfu2ydwag6cx2quqncxg", // verbiricha
+    "npub1sg6plzptd64u62a878hep2kev88swjh3tw00gjsfl8f237lmu63q0uf63m", // jack
 	"npub1m4ny6hjqzepn4rxknuq94c2gpqzr29ufkkw7ttcxyak7v43n6vvsajc2jl", // Laeserin
 	"npub1mu2tx4ue4yt7n7pymcql3agslnx0zeyt34zmmfex2g07k6ymtksq7hansc", // CYB3RX
 	"npub18jvyjwpmm65g8v9azmlvu8knd5m7xlxau08y8vt75n53jtkpz2ys6mqqu3", // onigirl

@@ -8,6 +8,7 @@
 }
 
 * {
+    min-width: 0; /* OMFG this thing */
     margin: 0;
     padding: 0;
     line-height: 1.7;
@@ -89,13 +90,14 @@ img {
 
 body {
     font-family: 'Geist';
-    font-size: var(--fs-normal);
+    font-size: 100%; /* https://adrianroselli.com/2024/03/the-ultimate-ideal-bestest-base-font-size-that-everyone-is-keeping-a-secret-especially-chet.html */
     color: var(--clr-txt);
     background: var(--clr-bg);
 
     /* https://www.youtube.com/watch?v=JHregeIsjPQ&list=PLvbSExvFRKLPcbP9PbvGMSxZJZjdIiRfJ&index=13 */
     min-height: 100vh;
-    padding: var(--pad);
+    padding-top: var(--pad);
+    padding-bottom: var(--pad);
     display: grid;
     justify-items: stretch;
     gap: var(--gap);
@@ -111,7 +113,6 @@ body {
     }
 
     & main {
-        min-width: 0; /* OMFG this thing */
         grid-area: main;
     }
 
@@ -139,7 +140,7 @@ body {
         background: var(--clr-card);
         outline: 0; /* https://www.youtube.com/watch?v=xx_pJ2ouGnc&list=PLvbSExvFRKLO7k618HWtC5P_cCfvXDjy_&index=2 */
         border: 1px solid transparent; /* required to mock outline, so layout does not shift */
-        padding: var(--pad-small);
+        padding: var(--pad-small) var(--pad);
         border-radius: 100vmax; /* https://www.youtube.com/watch?v=MywezIxlp8Y&list=WL&index=4&t=311s */
         font-size: var(--fs-normal);
 
