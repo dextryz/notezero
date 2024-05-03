@@ -136,6 +136,7 @@ body {
 
     & input {
         flex-grow: 1; /* Allows the search bar to grow and take up available space */
+        color: var(--clr-txt);
         background: var(--clr-card);
         outline: 0; /* https://www.youtube.com/watch?v=xx_pJ2ouGnc&list=PLvbSExvFRKLO7k618HWtC5P_cCfvXDjy_&index=2 */
         border: 1px solid transparent; /* required to mock outline, so layout does not shift */

@@ -30,7 +30,7 @@ func (s *Handler) ContentHandler(w http.ResponseWriter, r *http.Request) {
 			Content: template.HTML(data.Content), // data.Content is converted from Md to Html in data service.
 		})
 	default:
-		s.log.Error("unable to render template", "templateId", data.TemplateId)
+		s.log.Error("unable to render template", "func", "ContentHandler", "templateId", data.TemplateId)
 		http.Error(w, "tried to render an unsupported template", 500)
 		return
 	}

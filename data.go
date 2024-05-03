@@ -52,6 +52,8 @@ func (s *Handler) processPrompt(ctx context.Context, code string, page int, cont
 		code = codes[1]
 	}
 
+	s.log.Info("process prompt code", "prefix", prefix, "code", code)
+
 	// 1. Request parent event
 	rootEvent, err := s.service.RequestEvent(ctx, code)
 	if err != nil {
@@ -100,7 +102,8 @@ func (s *Handler) processPrompt(ctx context.Context, code string, page int, cont
 
 		// If prompt is not profile:npub.., but only npub, then pull articles too
 		switch prefix {
-		case "article":
+		//case "article":
+		case "":
 
 			events, err := s.service.AuthorArticles(ctx, npub)
 			if err != nil {
@@ -159,9 +162,8 @@ func (s *Handler) processPrompt(ctx context.Context, code string, page int, cont
 				data.Content = highlight(data.Content, merged)
 			}
 		}
-
 	default:
-		data.TemplateId = Unkown
+		//		data.TemplateId = Unkown
 	}
 
 	return data, nil

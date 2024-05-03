@@ -265,13 +265,13 @@ func imageDetails(e *nostr.Event, imgDir string) (url, name string) {
 	}
 
 	name = path.Base(url)
-	//if len(name) > 64 {
-	//name = name[:64]
-	//	}
+	if len(name) > 64 {
+		name = name[:64]
+	}
 
 	filepath := fmt.Sprintf("%s/%s", imgDir, name)
 
-	imageFiletype(filepath)
+	//imageFiletype(filepath)
 
 	return url, filepath
 }
