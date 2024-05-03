@@ -149,9 +149,7 @@ func (s Nostr) pullNextArticlePage(ctx context.Context, npubs []string, page int
 					_, ok := s.cache.Get(ie.GetID())
 					if !ok {
 
-						url, filepath := imageDetails(ie.Event, s.imgDir)
-
-						err := s.SaveImage(url, filepath)
+						filepath, _, err := s.fetchImage(*ie.Event, s.imgDir)
 						if err != nil {
 							log.Fatalf("cannot store img to bucket: %v", err)
 							return
@@ -208,7 +206,9 @@ func (s Nostr) pullNextArticlePage(ctx context.Context, npubs []string, page int
 
 	slog.Info("notes pulled from relay set or cache", "count", count)
 
-	slices.SortFunc(stack, func(a, b *nostr.Event) int { return int(b.CreatedAt - a.CreatedAt) })
+	slices.SortFunc(stack, func(a, b *nostr.Event) int {
+		return int(b.CreatedAt - a.CreatedAt)
+	})
 
 	// Check created time for last item (oldest) in stack.
 	if len(stack) > 0 {
@@ -218,43 +218,13 @@ func (s Nostr) pullNextArticlePage(ctx context.Context, npubs []string, page int
 	return stack, nil
 }
 
-func (s Nostr) SaveImage(url, filepath string) error {
+func (s Nostr) fetchImage(e nostr.Event, imgDir string) (string, int64, error) {
 
-	slog.Info("saving image to blob storage", "url", url)
+	slog.Info("fetching img", "fn", "fetchImage", "eventId", e.GetID())
 
-	res, err := http.Get(url)
-	if err != nil {
-		return err
-	}
-	defer res.Body.Close()
+	// Extract image URL from event
 
-	body, err := io.ReadAll(res.Body)
-	if err != nil {
-		return err
-	}
-
-	// TODO: THis breaks my server when image is no longer available at src.
-	if res.StatusCode > 299 {
-		return fmt.Errorf("response failed with status code: %d and body: %s", res.StatusCode, body)
-	}
-
-	f, err := os.Create(filepath)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
-	n, err := f.Write(body)
-	if err != nil {
-		slog.Error("cannot gob write to file", "err", err)
-	}
-
-	slog.Info("image stored to bucket", "filepath", filepath, "byteCount", n)
-
-	return nil
-}
-
-func imageDetails(e *nostr.Event, imgDir string) (url, name string) {
+	var url string
 	for _, t := range e.Tags {
 		if t.Key() == "image" {
 			url = t.Value()
@@ -264,16 +234,37 @@ func imageDetails(e *nostr.Event, imgDir string) (url, name string) {
 		url = defaultImage
 	}
 
-	name = path.Base(url)
+	// Do the actual fetch
+
+	res, err := http.Get(url)
+	if err != nil {
+		return "", 0, err
+	}
+	defer res.Body.Close()
+
+	// Generate a new unique image name and store locally
+
+	// TODO: rename using a UUID
+	name := path.Base(url)
 	if len(name) > 64 {
 		name = name[:64]
 	}
-
 	filepath := fmt.Sprintf("%s/%s", imgDir, name)
 
-	//imageFiletype(filepath)
+	f, err := os.Create(filepath)
+	if err != nil {
+		return "", 0, err
+	}
+	defer f.Close()
 
-	return url, filepath
+	n, err := io.Copy(f, res.Body)
+	if err != nil {
+		slog.Error("cannot gob write to file", "err", err)
+	}
+
+	slog.Info("image stored to bucket", "filepath", filepath, "byteCount", n)
+
+	return filepath, n, nil
 }
 
 func imageFiletype(name string) {
