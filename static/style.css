@@ -57,7 +57,7 @@ img {
     --pad-small: 0.5em;
     --rad: 1em;
     --rad-large: 1em;
-    --img-height: 8em;
+    --img-height: 10em;
 
     --clr-bg: #121c22;
     --clr-txt: #9fb9d0;
@@ -101,8 +101,8 @@ body {
     display: grid;
     justify-items: stretch;
     gap: var(--gap);
-    grid-template-columns: 1fr 4fr 1fr;
-    grid-template-rows: 1fr auto 1fr;
+    grid-template-columns: 1fr auto 1fr;
+    grid-template-rows: 3fr auto auto;
     grid-template-areas:
         ". header ."
         ". main ."
@@ -119,6 +119,8 @@ body {
     & footer {
         grid-area: footer;
         justify-self: center;
+
+        padding: 2em 0;
 
         display: flex;
         justify-content: center;
@@ -191,7 +193,7 @@ hr {
     /* https://www.youtube.com/watch?v=p3_xN2Zp1TY&list=PL4-IK0AVhVjM6kuUoUexfmnD8vHtZkXdd&index=5 */
     & section {
         display: flex;
-        gap: var(--gap);
+        gap: var(--gap-small);
         flex-wrap: wrap;
 
         .tag {

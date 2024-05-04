@@ -89,7 +89,7 @@ func ArticleTemplate(params ArticleParams) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#content-spinner\" hx-swap=\"outerHTML\" hx-trigger=\"load delay:200ms changed\"><div class=\"ripple\"></div></div></article></main><footer><hr><p>Made with <i class=\"fas fa-heart\"></i> by <a href=\"https://github.com/dextryz\">dextryz</a></p></footer></body></html>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#content-spinner\" hx-swap=\"outerHTML\" hx-trigger=\"load delay:200ms changed\"><div class=\"btn-ripple ripple htmx-indicator\"></div></div></article></main><footer><hr><p>Made with <i class=\"fas fa-heart\"></i> by <a href=\"https://github.com/dextryz\">dextryz</a></p></footer></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
