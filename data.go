@@ -105,15 +105,42 @@ func (s *Handler) processPrompt(ctx context.Context, code string, page int, cont
 		//case "article":
 		case "":
 
-			events, err := s.service.AuthorArticles(ctx, npub)
+			profileEvents, err := s.ns.pullProfileList(ctx, []string{npub})
 			if err != nil {
-				return nil, err
+				s.log.Error("error rendering tmpl", "error", err.Error())
+			}
+			for _, v := range profileEvents {
+				metadata, err := ParseMetadata(*v)
+				if err != nil {
+					fmt.Println("CCC")
+					s.log.Error("error rendering tmpl", "error", err.Error())
+				}
+				profiles[v.PubKey] = metadata
 			}
 
-			for _, e := range events {
+			// 2. Pull next page of articles and map to profile
+
+			noteEvents, err := s.ns.pullNextArticlePage(ctx, []string{npub}, page)
+			if err != nil {
+				s.log.Error("error rendering tmpl", "error", err.Error())
+			}
+
+			// TODO Add pulling highlights into a discovered map
+
+			// TODO: Can we impl this using a pipeline pattern?
+			for _, v := range noteEvents {
+				p, ok := profiles[v.PubKey]
+				if !ok {
+					fmt.Println("DDD")
+					s.log.Error("error rendering tmpl", "error", err.Error())
+				}
 				note := EnhancedEvent{
-					Event:   e,
-					Profile: metadata,
+					Event:   v,
+					Profile: p,
+				}
+				imgPath, ok := s.ns.cache.Get(v.GetID())
+				if ok {
+					note.ImagePath = string(imgPath)
 				}
 				data.Notes = append(data.Notes, note)
 			}

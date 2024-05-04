@@ -24,6 +24,7 @@ func (s *Handler) HomepageHandler(w http.ResponseWriter, r *http.Request) {
 
 	component := IndexTemplate(ListArticleParams{
 		Notes: data.Notes,
+		Code:  "",
 		Page:  page,
 	})
 

@@ -25,6 +25,7 @@ type BaseEventPageParams struct {
 
 type ListArticleParams struct {
 	Notes []EnhancedEvent
+	Code  string // Used when infinite scrolling on a specific user.
 	Page  int
 }
 

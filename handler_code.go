@@ -26,14 +26,10 @@ func NewHandler(log *slog.Logger, es EventService, ns Nostr) *Handler {
 // Poplated the data.Notes field with a list of requested notes based on the search field.
 func (s *Handler) CodeHandler(w http.ResponseWriter, r *http.Request) {
 
+	page := 1
 	pageStr := r.URL.Query().Get("page")
-	var page int
 	if pageStr != "" {
-		page, err := strconv.Atoi(pageStr)
-		if err != nil {
-			panic(err)
-		}
-		page += 1
+		page, _ = strconv.Atoi(pageStr)
 	}
 
 	code := r.PathValue("code")
@@ -58,6 +54,7 @@ func (s *Handler) CodeHandler(w http.ResponseWriter, r *http.Request) {
 	case ListArticle:
 		component = IndexTemplate(ListArticleParams{
 			Notes: data.Notes,
+			Code:  code,
 			Page:  page,
 		})
 	case Article:
